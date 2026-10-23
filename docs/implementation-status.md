@@ -29,3 +29,6 @@
 
 ### Этап 4 — контрольная точка
 Парсеры пяти форматов: 9/9. Загрузка идемпотентна, лимиты configurable, удалённые документы исключаются из retrieval и нового контекста. Secret scan: без находок.
+
+### Этап 5 — контрольная точка
+10/10 targeted tests: HTTP LLM contract, отказ без ключа, бюджет чата, prompt isolation, redirect на private IP, DNS pinning. Поиск конкурентов и сохранение отказа проверены integration. Live smoke: SKIP, ключи не настроены.
