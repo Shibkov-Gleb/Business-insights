@@ -1,0 +1,15 @@
+node_modules/
+.next/
+dist/
+.env
+.env.*
+!.env.example
+storage/
+coverage/
+test-results/
+playwright-report/
+packages/db/generated/
+*.log
+*.tsbuildinfo
+.cache/
+backups/
