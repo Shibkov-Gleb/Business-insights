@@ -1,1 +1,23 @@
-{"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"esModuleInterop":true,"skipLibCheck":true,"resolveJsonModule":true,"noEmit":true,"allowImportingTsExtensions":true,"types":["node"],"jsx":"react-jsx"},"include":["apps/api/**/*.ts","apps/worker/**/*.ts","packages/**/*.ts","tests/**/*.ts","prisma.config.ts"],"exclude":["node_modules","packages/db/generated"]}
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "types": ["node"],
+    "jsx": "react-jsx"
+  },
+  "include": [
+    "apps/api/**/*.ts",
+    "apps/worker/**/*.ts",
+    "packages/**/*.ts",
+    "tests/**/*.ts",
+    "prisma.config.ts"
+  ],
+  "exclude": ["node_modules", "packages/db/generated"]
+}

@@ -8,6 +8,7 @@ import type { Request, Response, NextFunction } from "express";
 import { db, json } from "@context/db";
 import { config } from "@context/config";
 import { Redis } from "ioredis";
+import { z } from "zod";
 export const redis = new Redis(config.REDIS_URL, {
   maxRetriesPerRequest: null,
 });
@@ -39,12 +40,13 @@ declare global {
     }
   }
 }
-export const id = (req: Request, key: string) => String(req.params[key] || "");
+export const id = (req: Request, key: string) =>
+  z.uuid().parse(req.params[key]);
 export function authenticated(req: Request) {
   return req.userId || fail(401, "UNAUTHENTICATED", "Войдите в аккаунт");
 }
 export async function session(req: Request, res: Response, next: NextFunction) {
-  req.requestId = randomUUID();
+  req.requestId ||= randomUUID();
   res.setHeader("X-Request-Id", req.requestId);
   const raw = req.cookies?.context_session;
   const found =

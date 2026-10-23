@@ -382,6 +382,8 @@ export async function processRun(runId: string) {
     });
     await event(runId, "completed", { status: final.status });
   } catch (error) {
+    // Terminal failures must not retain a checkpoint containing revoked/deleted context.
+    await checkpointer.deleteThread(runId);
     if (new URL(config.DATABASE_URL).pathname.startsWith("/context_test_"))
       console.error(error);
     const code = error instanceof Error ? error.message : "WORKER_ERROR",

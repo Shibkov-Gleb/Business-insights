@@ -1,4 +1,5 @@
 import express from "express";
+import { randomUUID } from "node:crypto";
 import cookieParser from "cookie-parser";
 import { MulterError } from "multer";
 import { ZodError } from "zod";
@@ -16,7 +17,9 @@ import { deletion } from "./deletion.ts";
 import { openapi } from "../../../packages/contracts/src/openapi.ts";
 export const app = express();
 app.disable("x-powered-by");
-app.use((_req, res, next) => {
+app.use((req, res, next) => {
+  req.requestId = randomUUID();
+  res.setHeader("X-Request-Id", req.requestId);
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "same-origin");
   res.setHeader("Cache-Control", "no-store");
@@ -55,19 +58,24 @@ export function finishRoutes() {
       _next: express.NextFunction,
     ) => {
       const err =
-        error instanceof MulterError
-          ? new HttpError(
-              422,
-              "INVALID_UPLOAD",
-              "Файл превышает лимит или неверно сформирован запрос",
-            )
-          : error instanceof Error && error.message === "IDEMPOTENCY_CONFLICT"
+        error &&
+        typeof error === "object" &&
+        "type" in error &&
+        error.type === "entity.parse.failed"
+          ? new HttpError(422, "INVALID_JSON", "Некорректный JSON запроса")
+          : error instanceof MulterError
             ? new HttpError(
-                409,
-                "IDEMPOTENCY_CONFLICT",
-                "Ключ уже использован с другим запросом",
+                422,
+                "INVALID_UPLOAD",
+                "Файл превышает лимит или неверно сформирован запрос",
               )
-            : error;
+            : error instanceof Error && error.message === "IDEMPOTENCY_CONFLICT"
+              ? new HttpError(
+                  409,
+                  "IDEMPOTENCY_CONFLICT",
+                  "Ключ уже использован с другим запросом",
+                )
+              : error;
       if (err instanceof ZodError) {
         res.status(422).json({
           error: {

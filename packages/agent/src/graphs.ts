@@ -76,6 +76,18 @@ export async function assertRun(runId: string) {
     )
       throw new Error("ACCESS_REVOKED");
   }
+  if (run.kind === "chat") {
+    const thread = await db.chatThread.findUnique({
+      where: { id: run.resourceId! },
+    });
+    if (
+      !thread ||
+      thread.orgId !== run.orgId ||
+      thread.scopeId !== run.scopeId ||
+      (thread.visibility === "private" && thread.userId !== run.userId)
+    )
+      throw new Error("ACCESS_REVOKED");
+  }
   return run;
 }
 export async function retrieveChunks(

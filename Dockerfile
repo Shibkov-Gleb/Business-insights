@@ -2,8 +2,15 @@ FROM node:22.19.0-bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
 RUN npm install -g pnpm@11.25.0
 WORKDIR /app
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
+COPY apps/web/package.json apps/web/package.json
+COPY packages/agent/package.json packages/agent/package.json
+COPY packages/config/package.json packages/config/package.json
+COPY packages/contracts/package.json packages/contracts/package.json
+COPY packages/db/package.json packages/db/package.json
+COPY packages/ui/package.json packages/ui/package.json
+RUN --mount=type=cache,id=context-pnpm,target=/root/.local/share/pnpm/store pnpm install --frozen-lockfile
 COPY . .
-RUN pnpm install --frozen-lockfile
 ENV DATABASE_URL=postgresql://build:build@localhost/build
 RUN pnpm db:generate
 RUN pnpm --filter @context/web build

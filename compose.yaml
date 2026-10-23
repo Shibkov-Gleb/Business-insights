@@ -1,13 +1,16 @@
 name: context-${APP_MODE:-demo}
 x-app: &app
   build: .
+  image: context-local:${APP_MODE:-demo}
   env_file: .env
   environment: &environment
+    APP_MODE: ${APP_MODE:-demo}
     DATABASE_URL: postgresql://context:${POSTGRES_PASSWORD:-context_local_only}@postgres:5432/context
     REDIS_URL: redis://redis:6379
     STORAGE_ROOT: /data/files
-    SMTP_HOST: ${SMTP_HOST:-mailpit}
+    SMTP_HOST: ${COMPOSE_SMTP_HOST:-mailpit}
     SMTP_PORT: ${SMTP_PORT:-1025}
+    PUBLIC_APP_URL: ${PUBLIC_APP_URL:-http://localhost:3000}
   volumes: [files:/data/files]
   restart: unless-stopped
 services:
@@ -18,46 +21,85 @@ services:
       POSTGRES_USER: context
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-context_local_only}
     volumes: [database:/var/lib/postgresql/data]
-    healthcheck: {test: [CMD-SHELL, 'pg_isready -U context'], interval: 3s, timeout: 3s, retries: 30}
+    healthcheck:
+      {
+        test: [CMD-SHELL, "pg_isready -U context"],
+        interval: 3s,
+        timeout: 3s,
+        retries: 30,
+      }
   redis:
     image: redis:7.4.5-bookworm
-    command: [redis-server, --appendonly, 'yes']
+    command: [redis-server, --appendonly, "yes"]
     volumes: [redis:/data]
-    healthcheck: {test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30}
+    healthcheck:
+      { test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30 }
   migrate:
     <<: *app
-    command: [sh, -c, 'pnpm db:migrate && if [ "$$APP_MODE" = demo ]; then pnpm db:seed:demo; fi']
-    restart: 'no'
+    command:
+      [
+        sh,
+        -c,
+        'pnpm db:migrate && if [ "$$APP_MODE" = demo ]; then pnpm db:seed:demo; fi',
+      ]
+    restart: "no"
     depends_on:
-      postgres: {condition: service_healthy}
+      postgres: { condition: service_healthy }
   api:
     <<: *app
     command: [pnpm, api]
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:4000/api/v1/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 20
     depends_on:
-      migrate: {condition: service_completed_successfully}
-      redis: {condition: service_healthy}
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
   worker:
     <<: *app
     command: [pnpm, worker]
     depends_on:
-      migrate: {condition: service_completed_successfully}
-      redis: {condition: service_healthy}
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
   web:
     <<: *app
-    command: [pnpm, --filter, '@context/web', start]
+    command: [pnpm, --filter, "@context/web", start]
     environment:
       <<: *environment
       INTERNAL_API_URL: http://api:4000
-    depends_on: [api]
+    healthcheck:
+      test:
+        [
+          CMD,
+          node,
+          -e,
+          "fetch('http://127.0.0.1:3000').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 20
+    depends_on:
+      api: { condition: service_healthy }
   ingress:
     image: nginx:1.28.0-bookworm
-    ports: ['3000:80']
-    volumes: ['./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro']
-    depends_on: [api, web]
+    ports: ["127.0.0.1:${APP_PORT:-3000}:80"]
+    volumes: ["./infra/nginx.conf:/etc/nginx/conf.d/default.conf:ro"]
+    depends_on:
+      api: { condition: service_healthy }
+      web: { condition: service_healthy }
   mailpit:
     image: axllent/mailpit:v1.27.8
     profiles: [demo, development]
-    ports: ['127.0.0.1:8025:8025']
+    ports: ["127.0.0.1:${MAILPIT_PORT:-8025}:8025"]
 volumes:
   database:
   redis:
