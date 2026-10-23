@@ -1,0 +1,15 @@
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE UNIQUE INDEX "one_active_analysis" ON "InsightRun" ("scopeId") WHERE kind = 'analysis' AND status IN ('queued','running','cancel_requested');
+CREATE UNIQUE INDEX "one_active_chat" ON "InsightRun" ("resourceId") WHERE kind = 'chat' AND status IN ('queued','running','cancel_requested');
+CREATE UNIQUE INDEX "profile_versions" ON "ProfileVersion" ("orgId", COALESCE("scopeId", '00000000-0000-0000-0000-000000000000'::uuid), version);
+CREATE UNIQUE INDEX "default_scope" ON "AnalysisScope" ("orgId") WHERE "isDefault";
+CREATE INDEX "chunks_ru" ON "DocumentChunk" USING GIN (to_tsvector('russian', text));
+CREATE INDEX "chunks_en" ON "DocumentChunk" USING GIN (to_tsvector('english', text));
+CREATE INDEX "chunks_simple" ON "DocumentChunk" USING GIN (to_tsvector('simple', text));
+CREATE INDEX "chunks_trgm" ON "DocumentChunk" USING GIN (text gin_trgm_ops);
+ALTER TABLE "Membership" ADD CONSTRAINT member_org FOREIGN KEY ("orgId") REFERENCES "Organization"(id) ON DELETE CASCADE;
+ALTER TABLE "Membership" ADD CONSTRAINT member_user FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE;
+ALTER TABLE "AnalysisScope" ADD CONSTRAINT scope_org FOREIGN KEY ("orgId") REFERENCES "Organization"(id) ON DELETE CASCADE;
+ALTER TABLE "DocumentChunk" ADD CONSTRAINT chunk_doc FOREIGN KEY ("documentId") REFERENCES "Document"(id) ON DELETE CASCADE;
+ALTER TABLE "InsightRevision" ADD CONSTRAINT revision_insight FOREIGN KEY ("insightId") REFERENCES "Insight"(id) ON DELETE CASCADE;
+ALTER TABLE "ChatMessage" ADD CONSTRAINT message_thread FOREIGN KEY ("threadId") REFERENCES "ChatThread"(id) ON DELETE CASCADE;

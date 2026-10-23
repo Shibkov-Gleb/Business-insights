@@ -1,0 +1,270 @@
+generator client {
+ provider = "prisma-client"
+ output = "../generated"
+}
+datasource db {
+ provider = "postgresql"
+}
+model User {
+ id String @id @default(uuid()) @db.Uuid
+ email String @unique
+ passwordHash String
+ verified Boolean @default(false)
+ timezone String @default("Europe/Moscow")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Session {
+ id String @id
+ userId String? @db.Uuid
+ csrf String
+ expiresAt DateTime @db.Timestamptz
+ @@index([userId])
+}
+model AuthToken {
+ id String @id
+ userId String @db.Uuid
+ kind String
+ expiresAt DateTime @db.Timestamptz
+}
+model Organization {
+ id String @id @default(uuid()) @db.Uuid
+ name String
+ stage String
+ description String
+ version Int @default(1)
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Membership {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ userId String @db.Uuid
+ role String
+ allScopes Boolean @default(true)
+ scopeIds String[] @default([])
+ workRole String @default("founder")
+ interests String[] @default([])
+ @@unique([orgId,userId])
+}
+model Invitation {
+ id String @id @default(uuid()) @db.Uuid
+ tokenHash String @unique
+ orgId String @db.Uuid
+ email String?
+ role String
+ allScopes Boolean
+ scopeIds String[]
+ expiresAt DateTime @db.Timestamptz
+ acceptedAt DateTime? @db.Timestamptz
+ revoked Boolean @default(false)
+}
+model AnalysisScope {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ name String
+ isDefault Boolean @default(false)
+ version Int @default(1)
+ cursorAt DateTime? @db.Timestamptz
+ cursorVersion Int @default(0)
+ settings Json @default("{}")
+ @@index([orgId])
+}
+model ProfileVersion {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String? @db.Uuid
+ version Int
+ fields Json
+ createdBy String @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([orgId,scopeId,version])
+}
+model ProfileProposal {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String? @db.Uuid
+ documentId String? @db.Uuid
+ expectedVersion Int
+ fields Json
+ status String @default("proposed")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Document {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String? @db.Uuid
+ name String
+ extension String
+ storageKey String
+ hash String
+ size Int
+ status String @default("uploaded")
+ coverage Json @default("{}")
+ createdBy String @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([orgId,scopeId])
+}
+model DocumentChunk {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String? @db.Uuid
+ documentId String @db.Uuid
+ text String
+ locator Json
+ @@index([documentId])
+ @@index([orgId,scopeId])
+}
+model Competitor {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ identity String
+ name String
+ data Json
+ decision String
+ monitoring String
+ fingerprint String
+ revision Int @default(1)
+ userEdited Boolean @default(false)
+ @@unique([scopeId,identity])
+}
+model SourceDocument {
+ id String @id @default(uuid()) @db.Uuid
+ canonicalUrl String @unique
+ title String
+ publisher String
+ language String
+ publishedAt DateTime? @db.Timestamptz
+ updatedAt DateTime? @db.Timestamptz
+ fetchedAt DateTime @default(now()) @db.Timestamptz
+ checksum String
+ text String
+ status String
+ provenance Json
+}
+model InsightRun {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ userId String @db.Uuid
+ kind String @default("analysis")
+ resourceId String?
+ mode String @default("normal")
+ status String @default("queued")
+ windowFrom DateTime @db.Timestamptz
+ windowTo DateTime @db.Timestamptz
+ cursorVersion Int @default(0)
+ snapshot Json
+ coverage Json @default("{}")
+ budget Json @default("{}")
+ error String?
+ acceptedAt DateTime @default(now()) @db.Timestamptz
+ finishedAt DateTime? @db.Timestamptz
+ @@index([orgId,scopeId,acceptedAt])
+}
+model Idempotency {
+ id String @id
+ userId String @db.Uuid
+ payloadHash String
+ resourceId String @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Outbox {
+ id String @id @db.Uuid
+ deliveredAt DateTime? @db.Timestamptz
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model RunEvent {
+ id BigInt @id @default(autoincrement())
+ runId String @db.Uuid
+ type String
+ data Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([runId,id])
+}
+model Insight {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ eventKey String
+ title String
+ severity String
+ potentialSeverity String?
+ confidence String
+ lifecycle String @default("active")
+ workStatus String @default("open")
+ latestRevisionId String? @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+ updatedAt DateTime @updatedAt @db.Timestamptz
+ @@unique([scopeId,eventKey])
+}
+model InsightRevision {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ insightId String @db.Uuid
+ runId String @db.Uuid
+ fingerprint String
+ profileVersionId String
+ data Json
+ evidence Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([insightId,fingerprint,profileVersionId])
+}
+model ReadState {
+ userId String @db.Uuid
+ insightId String @db.Uuid
+ at DateTime @default(now()) @db.Timestamptz
+ @@id([userId,insightId])
+}
+model ChatThread {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ userId String @db.Uuid
+ insightId String? @db.Uuid
+ title String
+ visibility String @default("private")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model ChatMessage {
+ id String @id @default(uuid()) @db.Uuid
+ threadId String @db.Uuid
+ userId String? @db.Uuid
+ role String
+ content String
+ citations Json @default("[]")
+ status String @default("complete")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Decision {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ userId String @db.Uuid
+ threadId String @db.Uuid
+ text String
+ assertion String @default("hypothesis")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model AuditRecord {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String? @db.Uuid
+ userId String? @db.Uuid
+ action String
+ metadata Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model UsageRecord {
+ id String @id @default(uuid()) @db.Uuid
+ runId String @db.Uuid
+ data Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model Feedback {
+ id String @id @default(uuid()) @db.Uuid
+ insightId String @db.Uuid
+ userId String @db.Uuid
+ useful Boolean
+ comment String?
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
