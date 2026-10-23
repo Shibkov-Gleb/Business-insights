@@ -1,0 +1,3 @@
+Synthetic B2B SaaS project. Testing hypotheses for small teams.
+
+No revenue is assumed.
