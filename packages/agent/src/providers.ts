@@ -39,18 +39,23 @@ export class HttpLLM implements LLMProvider {
     if (!config.LLM_API_KEY || !config.LLM_MODEL_ID)
       throw new Error("LLM_NOT_READY");
     const payload = JSON.stringify(data);
-    if (payload.length / 3 > config.LLM_CONTEXT_LIMIT - 2000)
+    const schemaJson = z.toJSONSchema(schema);
+    // A conservative byte bound also covers Cyrillic and unusual Unicode. Reserve
+    // space for instructions, the JSON schema, repair text and the output budget.
+    const inputBound =
+      Buffer.byteLength(payload + task + JSON.stringify(schemaJson), "utf8") +
+      1600;
+    if (inputBound > config.LLM_CONTEXT_LIMIT - 2000)
       throw new Error("CONTEXT_LIMIT");
     for (let attempt = 0; attempt < 2; attempt++) {
       if (
         budget.llm >= (budget.limits?.llm ?? config.RUN_MAX_LLM) ||
-        budget.inputTokens + budget.outputTokens + payload.length / 3 + 2000 >
+        budget.inputTokens + budget.outputTokens + inputBound + 2000 >
           (budget.limits?.tokens ?? config.RUN_MAX_TOKENS) ||
         Date.now() - budget.startedAt > config.RUN_MAX_MS
       )
         throw new Error("BUDGET_EXHAUSTED");
       budget.llm++;
-      const schemaJson = z.toJSONSchema(schema);
       const response = await fetch(
         config.LLM_BASE_URL.replace(/\/$/, "") + "/chat/completions",
         {
@@ -103,8 +108,7 @@ export class HttpLLM implements LLMProvider {
       }
       if (!response.ok) throw new Error("LLM_PROVIDER_ERROR");
       const body = (await response.json()) as any;
-      budget.inputTokens +=
-        body.usage?.prompt_tokens || Math.ceil(payload.length / 3);
+      budget.inputTokens += body.usage?.prompt_tokens || inputBound;
       budget.outputTokens += body.usage?.completion_tokens || 2000;
       try {
         return schema.parse(

@@ -35,3 +35,6 @@
 
 ### Этап 6 — контрольная точка
 Собственный LangGraph, outbox, checkpoints, фиксированные окна, атомарный cursor и revisions проверены integration (13/13). Unit suite: 57/57. Evaluation: 16/16 синтетических пар; оценка не является метрикой точности live LLM. pnpm build: passed.
+
+### Этап 7 — контрольная точка
+Private/shared chat, подтверждённые решения, версии инсайдов, read-state, общая лента разрешённых направлений, persisted SSE и polling fallback реализованы. Контейнерный браузерный прогон: 6/6; integration: 14/14. Проверка файлов и истории после restart: passed.

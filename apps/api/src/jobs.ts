@@ -28,8 +28,15 @@ runs.post("/", async (req, res) => {
     scope = await db.analysisScope.findUniqueOrThrow({
       where: { id: scopeId },
     });
-  const repeated=await db.idempotency.findUnique({where:{id:sha([userId,orgId,scopeId,'analysis',key])}});
-  if (input.mode === "normal" && input.initialFrom && scope.cursorAt && !repeated)
+  const repeated = await db.idempotency.findUnique({
+    where: { id: sha([userId, orgId, scopeId, "analysis", key]) },
+  });
+  if (
+    input.mode === "normal" &&
+    input.initialFrom &&
+    scope.cursorAt &&
+    !repeated
+  )
     fail(
       422,
       "CURSOR_EXISTS",

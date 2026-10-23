@@ -83,9 +83,18 @@ export async function retrieveChunks(
   scopeId: string,
   query: string,
 ) {
+  type Chunk = { id: string; text: string; documentId: string; locator: any };
+  const terms = (query.match(/[\p{L}\p{N}]{3,}/gu) || [])
+    .slice(0, 16)
+    .join(" OR ");
+  const matches = await db.$queryRaw<
+    Chunk[]
+  >`SELECT c.id,c.text,c."documentId",c.locator FROM "DocumentChunk" c JOIN "Document" d ON d.id=c."documentId" WHERE c."orgId"=${orgId}::uuid AND (c."scopeId" IS NULL OR c."scopeId"=${scopeId}::uuid) AND d.status IN ('ready','partial') AND (to_tsvector('russian',c.text) @@ websearch_to_tsquery('russian',${terms}) OR to_tsvector('english',c.text) @@ websearch_to_tsquery('english',${terms}) OR c.text % ${query}) ORDER BY ts_rank(to_tsvector('russian',c.text),websearch_to_tsquery('russian',${terms})) DESC LIMIT 12`;
+  if (matches.length) return matches;
+  // Generic questions still need a small, authorized sample of company context.
   return db.$queryRaw<
-    { id: string; text: string; documentId: string; locator: any }[]
-  >`SELECT c.id,c.text,c."documentId",c.locator FROM "DocumentChunk" c JOIN "Document" d ON d.id=c."documentId" WHERE c."orgId"=${orgId}::uuid AND (c."scopeId" IS NULL OR c."scopeId"=${scopeId}::uuid) AND d.status IN ('ready','partial') AND (to_tsvector('russian',c.text) @@ plainto_tsquery('russian',${query}) OR to_tsvector('english',c.text) @@ plainto_tsquery('english',${query}) OR to_tsvector('simple',c.text) @@ plainto_tsquery('simple',${query}) OR c.text % ${query}) ORDER BY ts_rank(to_tsvector('russian',c.text),plainto_tsquery('russian',${query})) DESC LIMIT 12`;
+    Chunk[]
+  >`SELECT c.id,c.text,c."documentId",c.locator FROM "DocumentChunk" c JOIN "Document" d ON d.id=c."documentId" WHERE c."orgId"=${orgId}::uuid AND (c."scopeId" IS NULL OR c."scopeId"=${scopeId}::uuid) AND d.status IN ('ready','partial') ORDER BY d."createdAt" DESC,c.id LIMIT 6`;
 }
 const State = Annotation.Root({
   plan: Annotation<SearchStep[]>(),
@@ -565,6 +574,23 @@ export async function chatGraph(runId: string) {
       const thread = await db.chatThread.findUniqueOrThrow({
         where: { id: run.resourceId! },
       });
+      const visibleThreads = await db.chatThread.findMany({
+        where: {
+          orgId: run.orgId,
+          scopeId: run.scopeId,
+          OR: [{ visibility: "shared" }, { id: thread.id }],
+        },
+        select: { id: true },
+      });
+      const decisions = await db.decision.findMany({
+        where: {
+          orgId: run.orgId,
+          scopeId: run.scopeId,
+          threadId: { in: visibleThreads.map((t) => t.id) },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 8,
+      });
       const history = await db.chatMessage.findMany({
         where: { threadId: thread.id, status: "complete" },
         orderBy: { createdAt: "desc" },
@@ -609,6 +635,7 @@ export async function chatGraph(runId: string) {
         context: {
           profile: input.profile,
           history: safeHistory.reverse(),
+          decisions,
           insight: revisionAvailable ? revision?.data : undefined,
           chunks,
         },
@@ -685,7 +712,8 @@ export async function chatGraph(runId: string) {
     .addEdge("verify", END)
     .compile({ checkpointer });
   const state = await graph.getState({ configurable: { thread_id: runId } });
-  if (state.values?.budget && !state.next?.length) return state.values as any;
+  if (state.values?.budget && !state.next?.length)
+    return state.values as typeof ChatState.State;
   return graph.invoke(state.next?.length ? null : {}, {
     configurable: { thread_id: runId },
   });
@@ -773,6 +801,8 @@ export async function competitorsGraph(runId: string) {
     .addEdge("verify", END)
     .compile({ checkpointer });
   const state = await graph.getState({ configurable: { thread_id: runId } });
+  if (state.values?.budget && !state.next?.length)
+    return state.values as typeof CompetitorState.State;
   return graph.invoke(state.next?.length ? null : {}, {
     configurable: { thread_id: runId },
   });

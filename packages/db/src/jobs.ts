@@ -84,7 +84,10 @@ export async function enqueue(
         kind: input.kind,
         resourceId: input.resourceId,
         mode: input.mode || "normal",
-        acceptedAt: input.kind === "analysis" && (input.mode || "normal") === "normal" ? input.to : new Date(),
+        acceptedAt:
+          input.kind === "analysis" && (input.mode || "normal") === "normal"
+            ? input.to
+            : new Date(),
         windowFrom: input.from,
         windowTo: input.to,
         cursorVersion: input.cursorVersion || 0,

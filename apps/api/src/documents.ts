@@ -145,12 +145,20 @@ documents.get("/:documentId/chunks", async (req, res) => {
     id(req, "orgId"),
     id(req, "documentId"),
   );
+  const locators = ["page", "slide", "paragraph"]
+    .filter((key) => req.query[key] !== undefined)
+    .map((key) => ({
+      locator: {
+        path: [key],
+        equals: z.coerce.number().int().positive().parse(req.query[key]),
+      },
+    }));
   res.json(
     list(
       doc.status === "deleted"
         ? []
         : await db.documentChunk.findMany({
-            where: { documentId: doc.id },
+            where: { documentId: doc.id, AND: locators },
             ...pagination(req),
             orderBy: { id: "asc" },
           }),
