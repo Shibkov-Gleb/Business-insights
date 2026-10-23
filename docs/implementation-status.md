@@ -32,3 +32,6 @@
 
 ### Этап 5 — контрольная точка
 10/10 targeted tests: HTTP LLM contract, отказ без ключа, бюджет чата, prompt isolation, redirect на private IP, DNS pinning. Поиск конкурентов и сохранение отказа проверены integration. Live smoke: SKIP, ключи не настроены.
+
+### Этап 6 — контрольная точка
+Собственный LangGraph, outbox, checkpoints, фиксированные окна, атомарный cursor и revisions проверены integration (13/13). Unit suite: 57/57. Evaluation: 16/16 синтетических пар; оценка не является метрикой точности live LLM. pnpm build: passed.

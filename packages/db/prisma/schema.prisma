@@ -161,6 +161,25 @@ model InsightRun {
  finishedAt DateTime? @db.Timestamptz
  @@index([orgId,scopeId,acceptedAt])
 }
+model Event {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ identity String
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([scopeId,identity])
+}
+model EventRevision {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ eventId String @db.Uuid
+ fingerprint String
+ sourceIds Json
+ summary String
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([eventId,fingerprint])
+}
 model Idempotency {
  id String @id
  userId String @db.Uuid
