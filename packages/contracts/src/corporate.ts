@@ -198,6 +198,7 @@ export type CorporateFact = z.infer<typeof corporateFact>;
 export type CorporateInsight = z.infer<typeof corporateInsightSchema>;
 export type WorkRole = (typeof workRoles)[number];
 export const corporateCompanyItem = z.object({
+  industry: z.string().nullable().default(null),
   id: z.uuid(),
   externalId: z.string(),
   name: z.string(),

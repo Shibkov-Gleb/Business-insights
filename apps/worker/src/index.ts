@@ -21,6 +21,8 @@ import { researchGraph } from "../../../packages/agent/src/research.ts";
 import { estimateCost } from "../../../packages/agent/src/cost.ts";
 import { corporateGraph, corporateChatGraph } from "../../../packages/agent/src/corporate.ts";
 import { rubString } from "../../../packages/agent/src/hackathon-budget.ts";
+import { importBankPdf } from "../../../packages/agent/src/bank-corpus.ts";
+import { assertCorporateRun } from "../../../packages/agent/src/corporate.ts";
 const url = new URL(config.REDIS_URL),
   connection = {
     host: url.hostname,
@@ -48,7 +50,15 @@ export async function processRun(runId: string) {
     });
     await event(runId, "progress", { status: "running" });
     let budget: unknown = {};
-    if (run.kind === "corporate" || run.kind === "corporate_chat") {
+    if (run.kind === "bank_import") {
+      const guard = async () => { const state = await assertCorporateRun(runId); const member = await db.membership.findUnique({ where: { orgId_userId: { userId: run.userId, orgId: run.orgId } } }); if (!member || !["owner", "admin"].includes(member.role)) throw new Error("ACCESS_REVOKED"); return state; };
+      await guard();
+      const material = await db.bankMaterial.findUniqueOrThrow({ where: { id: run.resourceId! } });
+      const input = z.object({ bankImport: z.object({ title: z.string(), publishedAt: z.string().optional(), dateConfirmed: z.enum(["true", "false"]) }) }).parse(run.snapshot).bankImport;
+      await importBankPdf({ path: fileStore.resolve(material.storageKey), title: input.title, publishedAt: input.publishedAt, dateConfirmed: input.dateConfirmed === "true", guard, onProgress: (page, total) => event(runId, "progress", { node: "bank_ocr", page, total }) });
+      await guard(); await db.insightRun.update({ where: { id: runId }, data: { status: "succeeded", finishedAt: new Date() } });
+      budget = { startedAt: run.acceptedAt.getTime(), paidCalls: 0 };
+    } else if (run.kind === "corporate" || run.kind === "corporate_chat") {
       const result = run.kind === "corporate" ? await corporateGraph(runId) : await corporateChatGraph(runId);
       budget = result.budget;
     } else if (run.kind === "research") {
@@ -417,6 +427,7 @@ export async function processRun(runId: string) {
         where: { id: current.resourceId!, status: { not: "deleted" } },
         data: { status: "failed" },
       });
+    if (current.kind === "bank_import") await db.bankMaterial.updateMany({ where: { id: current.resourceId!, status: { notIn: ["ready", "partial"] } }, data: { status: cancelled ? "cancelled" : "failed" } });
     if (current.kind === "chat")
       await db.chatMessage.updateMany({
         where: { id: (current.snapshot as any).assistantId, status: "pending" },

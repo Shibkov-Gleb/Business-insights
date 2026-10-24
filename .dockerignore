@@ -3,6 +3,9 @@ node_modules
 .cache
 .git
 .env
+.env.*
+!.env.example
+!.env.hackathon.example
 .next
 **/.next
 storage

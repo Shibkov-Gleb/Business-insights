@@ -1,9 +1,8 @@
 import { Router, type Request } from "express";
 import { z } from "zod";
 import multer from "multer";
-import fs from "node:fs/promises";
 import path from "node:path";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import { db, json, Prisma } from "@context/db";
 import {
   config,
@@ -35,7 +34,6 @@ import {
   extractPage,
   canonicalUrl,
 } from "../../../packages/agent/src/sources.ts";
-import { importBankPdf } from "../../../packages/agent/src/bank-corpus.ts";
 import { checkpointer } from "../../../packages/agent/src/graphs.ts";
 import { fileStore } from "../../../packages/agent/src/documents.ts";
 import { authenticated, access, fail, id, limit } from "./core.ts";
@@ -73,6 +71,7 @@ async function admin(userId: string) {
   if (!company?.orgId)
     fail(403, "FORBIDDEN", "Нужны права администратора импорта");
   await access(userId, company!.orgId!, undefined, true, true);
+  return company!;
 }
 const key = (req: Request) =>
   z.string().min(8).max(200).parse(req.get("idempotency-key"));
@@ -86,6 +85,49 @@ function cursorDecode(value: unknown) {
   } catch {
     return fail(422, "INVALID_CURSOR", "Некорректный cursor");
   }
+}
+function timePage(
+  req: Request,
+  field: "createdAt" | "acceptedAt" = "createdAt",
+) {
+  const take = z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(30)
+    .parse(req.query.limit);
+  const cursor = req.query.cursor
+    ? z
+        .object({ at: z.iso.datetime(), id: z.uuid() })
+        .parse(cursorDecode(req.query.cursor))
+    : null;
+  return {
+    take,
+    after: cursor
+      ? {
+          OR: [
+            { [field]: { lt: new Date(cursor.at) } },
+            { [field]: new Date(cursor.at), id: { lt: cursor.id } },
+          ],
+        }
+      : {},
+  };
+}
+function timeList<T extends { id: string }>(
+  rows: T[],
+  take: number,
+  at: (x: T) => Date,
+) {
+  const items = rows.slice(0, take),
+    last = items.at(-1);
+  return {
+    items,
+    nextCursor:
+      rows.length > take && last
+        ? cursorEncode({ at: at(last).toISOString(), id: last.id })
+        : null,
+  };
 }
 corporate.get("/companies", async (req, res) => {
   const grants = await db.companyGrant.findMany({
@@ -121,11 +163,17 @@ corporate.get("/companies", async (req, res) => {
       synthetic: true,
       version: true,
       conflicts: true,
+      fields: true,
     },
   });
-  const items = rows
-    .slice(0, take)
-    .map((c) => ({ ...c, grant: grants.find((g) => g.companyId === c.id) }));
+  const items = rows.slice(0, take).map(({ fields, ...c }) => ({
+    ...c,
+    industry:
+      typeof (fields as Record<string, unknown>).MAINOKVED_NAME === "string"
+        ? String((fields as Record<string, unknown>).MAINOKVED_NAME)
+        : null,
+    grant: grants.find((g) => g.companyId === c.id),
+  }));
   res.json({
     items,
     nextCursor:
@@ -179,6 +227,23 @@ corporate.patch("/companies/:companyId/context", async (req, res) => {
     companyId = id(req, "companyId");
   await companyAccess(userId, companyId, true);
   const input = corporateContextUpdate.parse(req.body);
+  for (const [key, value] of Object.entries(input.fields)) {
+    if (
+      /^(CL_PRODUCT_.*_MARK|FTS_FLAG|FACTORING_MARK|NEGATIVEMARK)$/.test(key) &&
+      !["0.0", "1.0"].includes(value)
+    )
+      fail(
+        422,
+        "INVALID_FEATURE_VALUE",
+        "Для бинарного признака допустимы 1.0 или 0.0",
+      );
+    if (key === "REVENUE_COMPANY" && !/^\d+(\.\d{1,6})?$/.test(value))
+      fail(
+        422,
+        "INVALID_FEATURE_VALUE",
+        "Выручка — неотрицательное десятичное число в исходных единицах",
+      );
+  }
   if (Object.keys(input.fields).some((k) => !companyFieldLabels[k]))
     fail(422, "UNKNOWN_FEATURE", "Неизвестный признак");
   await db.$transaction(async (tx) => {
@@ -326,14 +391,12 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
   ) SELECT id,"companyId","runId",data,evidence,"createdAt",personal_score score,synthetic FROM ranked
   WHERE true ${cursor ? Prisma.sql`AND (personal_score, "createdAt",id)<(${cursor.score},${new Date(cursor.createdAt)},${cursor.id}::uuid)` : Prisma.empty}
   ORDER BY personal_score DESC,"createdAt" DESC,id DESC LIMIT ${take + 1}`);
-  const items = rows
-    .slice(0, take)
-    .map((x) => ({
-      ...x,
-      createdAt: x.createdAt.toISOString(),
-      data: corporateAssessment.parse(x.data),
-      evidence: z.array(corporateEvidence).parse(x.evidence),
-    }));
+  const items = rows.slice(0, take).map((x) => ({
+    ...x,
+    createdAt: x.createdAt.toISOString(),
+    data: corporateAssessment.parse(x.data),
+    evidence: z.array(corporateEvidence).parse(x.evidence),
+  }));
   const last = items.at(-1);
   res.json({
     items,
@@ -407,13 +470,14 @@ corporate.post("/companies/:companyId/news", async (req, res) => {
 corporate.get("/companies/:companyId/news", async (req, res) => {
   const companyId = id(req, "companyId");
   await companyAccess(authenticated(req), companyId);
+  const page = timePage(req);
   const items = await db.corporateNews.findMany({
-    where: { companyId },
+    where: { companyId, ...page.after },
     orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    take: 50,
+    take: page.take + 1,
     omit: { text: true },
   });
-  res.json({ items, nextCursor: null });
+  res.json(timeList(items, page.take, (x) => x.createdAt));
 });
 corporate.post("/companies/:companyId/runs", async (req, res) => {
   const userId = authenticated(req),
@@ -451,26 +515,29 @@ corporate.post("/companies/:companyId/runs", async (req, res) => {
       : new Date(to.getTime() - 30 * 86400000);
   if (from >= to || to.getTime() > Date.now() + 1000)
     fail(422, "INVALID_WINDOW", "Некорректный период");
-  res
-    .status(202)
-    .json(
-      await enqueue({
-        orgId: company.orgId!,
-        scopeId: company.scopeId!,
-        userId,
-        kind: "corporate",
-        resourceId: companyId,
-        from,
-        to,
-        key: key(req),
-        snapshot: { context: await companyContext(companyId, userId), input },
-        payload: input,
-      }),
-    );
+  res.status(202).json(
+    await enqueue({
+      orgId: company.orgId!,
+      scopeId: company.scopeId!,
+      userId,
+      kind: "corporate",
+      resourceId: companyId,
+      from,
+      to,
+      key: key(req),
+      snapshot: {
+        context: await companyContext(companyId, userId),
+        input,
+        requestId: req.requestId,
+      },
+      payload: input,
+    }),
+  );
 });
 corporate.get("/companies/:companyId/runs", async (req, res) => {
   const companyId = id(req, "companyId");
   await companyAccess(authenticated(req), companyId);
+  const page = timePage(req, "acceptedAt");
   const company = await db.corporateCompany.findUniqueOrThrow({
     where: { id: companyId },
   });
@@ -478,12 +545,13 @@ corporate.get("/companies/:companyId/runs", async (req, res) => {
     where: {
       scopeId: company.scopeId || "00000000-0000-4000-8000-000000000000",
       kind: "corporate",
+      ...page.after,
     },
     orderBy: [{ acceptedAt: "desc" }, { id: "desc" }],
-    take: 30,
+    take: page.take + 1,
     omit: { snapshot: true },
   });
-  res.json({ items, nextCursor: null });
+  res.json(timeList(items, page.take, (x) => x.acceptedAt));
 });
 corporate.post("/companies/:companyId/runs/:runId/cancel", async (req, res) => {
   const companyId = id(req, "companyId");
@@ -496,7 +564,7 @@ corporate.post("/companies/:companyId/runs/:runId/cancel", async (req, res) => {
     where: {
       id: runId,
       scopeId: company.scopeId || "00000000-0000-4000-8000-000000000000",
-      kind: { in: ["corporate", "corporate_chat"] },
+      kind: { in: ["corporate", "corporate_chat", "bank_import"] },
     },
   });
   if (
@@ -585,14 +653,13 @@ corporate.get("/companies/:companyId/chats", async (req, res) => {
   const companyId = id(req, "companyId"),
     userId = authenticated(req);
   await companyAccess(userId, companyId);
-  res.json({
-    items: await db.corporateChat.findMany({
-      where: { companyId, userId },
-      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-      take: 30,
-    }),
-    nextCursor: null,
+  const page = timePage(req);
+  const items = await db.corporateChat.findMany({
+    where: { companyId, userId, ...page.after },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    take: page.take + 1,
   });
+  res.json(timeList(items, page.take, (x) => x.createdAt));
 });
 corporate.post("/companies/:companyId/chats", async (req, res) => {
   const companyId = id(req, "companyId"),
@@ -630,7 +697,7 @@ corporate.post("/companies/:companyId/chats", async (req, res) => {
       to: new Date(),
       key: key(req),
       payload: input,
-      snapshot: { companyId, role: input.role },
+      snapshot: { companyId, role: input.role, requestId: req.requestId },
     },
     async (tx) => {
       await tx.corporateChat.create({
@@ -655,25 +722,22 @@ corporate.post("/companies/:companyId/feedback", async (req, res) => {
     }))
   )
     fail(404, "NOT_FOUND", "Материал недоступен");
-  res
-    .status(201)
-    .json(
-      await db.corporateFeedback.create({
-        data: { companyId, userId, ...input },
-      }),
-    );
+  res.status(201).json(
+    await db.corporateFeedback.create({
+      data: { companyId, userId, ...input },
+    }),
+  );
 });
 corporate.get("/companies/:companyId/feedback", async (req, res) => {
   const companyId = id(req, "companyId");
   await companyAccess(authenticated(req), companyId, true);
-  res.json({
-    items: await db.corporateFeedback.findMany({
-      where: { companyId },
-      orderBy: { createdAt: "desc" },
-      take: 100,
-    }),
-    nextCursor: null,
+  const page = timePage(req);
+  const items = await db.corporateFeedback.findMany({
+    where: { companyId, ...page.after },
+    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+    take: page.take + 1,
   });
+  res.json(timeList(items, page.take, (x) => x.createdAt));
 });
 corporate.patch(
   "/companies/:companyId/feedback/:feedbackId",
@@ -775,6 +839,7 @@ corporate.post(
   "/materials/import",
   async (req, _res, next) => {
     await admin(authenticated(req));
+    await limit("bank-import:" + authenticated(req), 3, 600);
     next();
   },
   upload.single("file"),
@@ -787,26 +852,40 @@ corporate.post(
         dateConfirmed: z.enum(["true", "false"]).default("false"),
       })
       .parse(req.body);
-    await fs.mkdir(path.join(hackConfig.HACKATHON_DATA_ROOT, "admin"), {
-      recursive: true,
-    });
-    const file = path.join(
-      hackConfig.HACKATHON_DATA_ROOT,
-      "admin",
-      randomUUID() + ".pdf",
-    );
-    await fs.writeFile(file, req.file!.buffer);
-    // OCR is local, never a hidden paid AI action. Administrative uploads are serialized by the caller.
-    try {
-      const material = await importBankPdf({
-        path: file,
+    if (req.file!.buffer.subarray(0, 5).toString() !== "%PDF-")
+      fail(422, "BANK_NOT_PDF", "Нужен PDF");
+    const userId = authenticated(req),
+      company = await admin(userId),
+      sha256 = createHash("sha256").update(req.file!.buffer).digest("hex"),
+      storageKey = randomUUID();
+    await fileStore.put(storageKey, req.file!.buffer);
+    const material = await db.bankMaterial.upsert({
+      where: { sha256 },
+      create: {
         title: input.title,
-        publishedAt: input.publishedAt,
-        dateConfirmed: input.dateConfirmed === "true",
-      });
-      res.status(201).json({ ...material, storageKey: undefined });
-    } finally {
-      await fs.rm(file, { force: true });
-    }
+        filename: path.basename(req.file!.originalname),
+        storageKey,
+        sha256,
+      },
+      update: {},
+    });
+    if (material.storageKey !== storageKey) await fileStore.delete(storageKey);
+    res.status(202).json(
+      await enqueue({
+        orgId: company.orgId!,
+        scopeId: company.scopeId!,
+        userId,
+        kind: "bank_import",
+        resourceId: material.id,
+        from: new Date(),
+        to: new Date(),
+        key: key(req),
+        payload: { sha256, ...input },
+        snapshot: {
+          bankImport: { ...input, originalFilename: material.filename },
+          requestId: req.requestId,
+        },
+      }),
+    );
   },
 );

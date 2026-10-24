@@ -129,10 +129,7 @@ export async function hackStructured<T>(
       received = true;
       const raw = await response.text();
       if (!response.ok) {
-        await settleBudget(
-          reservation.id,
-          response.status < 500 ? "not_charged" : "unknown",
-        );
+        await settleBudget(reservation.id, "unknown");
         throw providerError(response.status, raw.slice(0, 2000));
       }
       let parsed: z.infer<typeof completion>;

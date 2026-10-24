@@ -5,6 +5,16 @@ import type {
   WorkRole,
 } from "@context/contracts";
 import { normalizeQuote } from "./bank-corpus.ts";
+import { createHash } from "node:crypto";
+export const eventFingerprint = (text: string) =>
+  createHash("sha256")
+    .update(
+      normalizeQuote(text)
+        .toLowerCase()
+        .replace(/[^\p{L}\p{N}]+/gu, " ")
+        .trim(),
+    )
+    .digest("hex");
 export const roleChannels: Record<WorkRole, string[]> = {
   owner: ["strategy", "demand", "financing"],
   ceo: ["strategy", "supply", "demand"],
@@ -32,10 +42,15 @@ export function corporateQueries(context: CompanyContext) {
   const activity =
     context.facts.find((x) => x.key === "MAINOKVED_NAME")?.value ||
     "экономика России";
-  const safeActivity = activity
-    .replace(/[^\p{L}\s-]/gu, " ")
-    .trim()
-    .slice(0, 130);
+  const safeActivity = /стал|металл|прокат/i.test(activity)
+    ? "металлургия сталь"
+    : /пищев|сельск|продовольств/i.test(activity)
+      ? "пищевое производство АПК"
+      : /транспорт|логист/i.test(activity)
+        ? "грузовой транспорт логистика"
+        : /программ|информацион/i.test(activity)
+          ? "информационные технологии"
+          : "промышленность экономика России";
   const queries = [
     `${safeActivity} новости спрос поставки Россия`,
     `${safeActivity} регулирование новости`,
@@ -49,6 +64,21 @@ export function corporateQueries(context: CompanyContext) {
   if (context.facts.some((x) => x.key === "FTS_FLAG" && x.value === "1.0"))
     queries.push("валютные расчеты логистика внешняя торговля Россия новости");
   return queries;
+}
+export function bankQueryForNews(title: string, text: string) {
+  const value = title + " " + text;
+  if (/ставк|кредит|денежно|инфляц/i.test(value))
+    return "ставка денежно кредитная политика инфляционные ожидания";
+  if (/налог|отч[её]т|НДС|бухгалтер/i.test(value))
+    return "налоговая отчётность НДС налогообложение";
+  if (/валют|курс|логист|экспорт|импорт/i.test(value))
+    return "валютный курс импорт экспорт внешняя торговля";
+  if (/стал|прокат|металлург/i.test(value)) return "сталь прокат металлургия";
+  if (/контрагент|плат[её]ж|поставщик/i.test(value))
+    return "расчёты дебиторская задолженность оборотный капитал";
+  if (/спрос|потреблен|пищев|рознич/i.test(value))
+    return "потребление спрос розничная торговля";
+  return "экономическая активность промышленность предложение";
 }
 export function verifyCorporateAssessment(
   a: CorporateAssessment,
