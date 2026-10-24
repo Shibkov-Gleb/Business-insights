@@ -67,6 +67,19 @@ chats.get("/:chatId", async (req, res) => {
   );
   res.json({
     ...c,
+    activeJobId:
+      (
+        await db.insightRun.findFirst({
+          where: {
+            orgId: c.orgId,
+            scopeId: c.scopeId,
+            resourceId: c.id,
+            kind: "chat",
+            status: { in: ["queued", "running", "cancel_requested"] },
+          },
+          select: { id: true },
+        })
+      )?.id || null,
     messages: await db.chatMessage.findMany({
       where: { threadId: c.id },
       orderBy: { createdAt: "asc" },

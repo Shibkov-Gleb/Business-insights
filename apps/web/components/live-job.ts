@@ -8,6 +8,7 @@ export const nodeLabels: Record<string, string> = {
   compare: "Сравнение версий",
   verify: "Проверка оснований",
   brief: "Аналитическая записка",
+  compose_brief: "Аналитическая записка",
   persist: "Сохранение",
   fetch_extract: "Чтение публикаций",
   cluster: "Объединение событий",
@@ -47,6 +48,11 @@ export function useLiveJob(runId: string | undefined, refresh: () => void) {
       if (data.node) setProgress(nodeLabels[data.node] || data.node);
     });
     stream.addEventListener("completed", completed);
+    stream.addEventListener("snapshot", (e) => {
+      const data = JSON.parse((e as MessageEvent).data);
+      if (["succeeded", "failed", "partial", "cancelled"].includes(data.status))
+        completed();
+    });
     stream.addEventListener("failed", completed);
     return () => {
       stream.close();

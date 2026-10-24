@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { z } from "zod";
-import { db } from "@context/db";
+import { db, Prisma } from "@context/db";
 import {
   access,
   effectiveProfile,
@@ -8,7 +8,6 @@ import {
   fail,
   id,
   list,
-  pagination,
   scopeWhere,
 } from "./core.ts";
 export const insights = Router({ mergeParams: true });
@@ -17,49 +16,105 @@ insights.get("/", async (req, res) => {
   const scopeId =
     typeof req.query.scopeId === "string" ? req.query.scopeId : undefined;
   if (scopeId) await access(authenticated(req), id(req, "orgId"), scopeId);
-  const rows = await db.insight.findMany({
-    where: {
-      ...where,
-      latestRevisionId: { not: null },
-      ...(scopeId ? { scopeId } : {}),
-      ...(req.query.filter === "watch"
-        ? { severity: "medium", potentialSeverity: null }
-        : req.query.filter === "verify"
-          ? { potentialSeverity: { not: null } }
-          : {
-              severity: { in: ["critical", "high"] },
-              potentialSeverity: null,
-            }),
-      lifecycle: { in: ["active", "disputed"] },
-    },
-    ...pagination(req),
-    orderBy: [{ severity: "asc" }, { updatedAt: "desc" }, { id: "desc" }],
-  });
+  const filter = z
+    .enum(["main", "watch", "verify", "partial"])
+    .default("main")
+    .parse(req.query.filter);
+  const limit = z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(100)
+    .default(20)
+    .parse(req.query.limit);
+  const conditions = [
+    Prisma.sql`i."orgId"=${where.orgId}::uuid`,
+    Prisma.sql`i.lifecycle IN ('active','disputed')`,
+  ];
+  if (scopeId)
+    conditions.push(Prisma.sql`i."scopeId"=${z.uuid().parse(scopeId)}::uuid`);
+  if (where.scopeId)
+    conditions.push(
+      where.scopeId.in.length
+        ? Prisma.sql`i."scopeId" IN (${Prisma.join(where.scopeId.in.map((s) => Prisma.sql`${s}::uuid`))})`
+        : Prisma.sql`FALSE`,
+    );
+  conditions.push(
+    filter === "verify"
+      ? Prisma.sql`i."potentialSeverity" IS NOT NULL`
+      : filter === "watch"
+        ? Prisma.sql`i.severity='medium' AND i."potentialSeverity" IS NULL`
+        : Prisma.sql`i.severity IN ('critical','high') AND i."potentialSeverity" IS NULL`,
+  );
+  if (filter !== "partial") conditions.push(Prisma.sql`r.status='succeeded'`);
+  if (req.query.cursor) {
+    try {
+      const c = z
+        .object({
+          severity: z.string(),
+          updatedAt: z.iso.datetime(),
+          id: z.uuid(),
+          filter: z.string(),
+          scope: z.string(),
+        })
+        .parse(
+          JSON.parse(
+            Buffer.from(String(req.query.cursor), "base64url").toString(),
+          ),
+        );
+      if (c.filter !== filter || c.scope !== (scopeId || ""))
+        fail(422, "INVALID_CURSOR", "Курсор относится к другому фильтру");
+      conditions.push(
+        Prisma.sql`(i.severity>${c.severity} OR (i.severity=${c.severity} AND (i."updatedAt"<${new Date(c.updatedAt)} OR (i."updatedAt"=${new Date(c.updatedAt)} AND i.id<${c.id}::uuid))))`,
+      );
+    } catch {
+      fail(422, "INVALID_CURSOR", "Некорректный курсор");
+    }
+  }
+  const fetched = await db.$queryRaw<
+    Prisma.InsightGetPayload<Record<string, never>>[]
+  >(
+    Prisma.sql`SELECT i.* FROM "Insight" i JOIN "InsightRevision" v ON v.id=i."latestRevisionId" JOIN "InsightRun" r ON r.id=v."runId" WHERE ${Prisma.join(conditions, " AND ")} ORDER BY i.severity ASC,i."updatedAt" DESC,i.id DESC LIMIT ${limit + 1}`,
+  );
+  const rows = fetched.slice(0, limit);
   const readStates = await db.readState.findMany({
     where: {
       userId: authenticated(req),
       insightId: { in: rows.map((r) => r.id) },
     },
   });
-  const enriched = [];
-  for (const row of rows) {
-    if (!row.latestRevisionId) continue;
-    const revision = await db.insightRevision.findUnique({
-      where: { id: row.latestRevisionId! },
-    });
-    const run = revision
-      ? await db.insightRun.findUnique({ where: { id: revision.runId } })
-      : null;
-    if (run?.status === "succeeded" || req.query.filter === "partial")
-      enriched.push({
-        ...row,
-        revision,
-        unread: !readStates.some(
-          (r) => r.insightId === row.id && r.at >= row.updatedAt,
+  const revisions = await db.insightRevision.findMany({
+    where: {
+      id: {
+        in: rows.flatMap((r) =>
+          r.latestRevisionId ? [r.latestRevisionId] : [],
         ),
-      });
-  }
-  res.json(list(enriched));
+      },
+    },
+  });
+  const revisionById = new Map(revisions.map((r) => [r.id, r])),
+    readById = new Map(readStates.map((r) => [r.insightId, r.at]));
+  const items = rows.map((row) => ({
+    ...row,
+    revision: revisionById.get(row.latestRevisionId!),
+    unread: !readById.has(row.id) || readById.get(row.id)! < row.updatedAt,
+  }));
+  const last = rows.at(-1);
+  res.json({
+    items,
+    nextCursor:
+      fetched.length > limit && last
+        ? Buffer.from(
+            JSON.stringify({
+              severity: last.severity,
+              updatedAt: last.updatedAt,
+              id: last.id,
+              filter,
+              scope: scopeId || "",
+            }),
+          ).toString("base64url")
+        : null,
+  });
 });
 insights.get("/:insightId", async (req, res) => {
   const row = await getInsight(
@@ -159,11 +214,10 @@ evidence.get("/:sourceId", async (req, res) => {
     userId = authenticated(req),
     sourceId = id(req, "sourceId");
   const where = await scopeWhere(userId, orgId);
-  const revisions = await db.insightRevision.findMany({ where });
-  let found = false;
-  for (const r of revisions)
-    if ((r.evidence as any[]).some((e) => e.sourceId === sourceId))
-      found = true;
+  const found = await db.insightRevision.findFirst({
+    where: { ...where, evidence: { array_contains: [{ sourceId }] } },
+    select: { id: true },
+  });
   if (!found) fail(404, "NOT_FOUND", "Источник не найден");
   const source = await db.sourceDocument.findUnique({
     where: { id: sourceId },

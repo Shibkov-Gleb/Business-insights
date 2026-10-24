@@ -37,6 +37,7 @@ import {
   type Action,
 } from "./shared";
 import { useLiveJob } from "./live-job";
+import { useWorkspaceRoute } from "./workspace-route";
 const fetchTyped = async <T,>(path: string, schema: z.ZodType<T>): Promise<T> =>
   schema.parse(await api(path));
 const classifications = {
@@ -61,9 +62,15 @@ export function MarketWorkspace({
   onCompetitors: () => void;
 }) {
   const qc = useQueryClient();
-  const [days, setDays] = useState(30),
-    [selected, setSelected] = useState<string[] | null>(null),
-    [dossier, setDossier] = useState<string | null>(null),
+  const { route, navigate } = useWorkspaceRoute();
+  const days = [7, 30, 90].includes(Number(route.days))
+    ? Number(route.days)
+    : 30;
+  const setDays = (days: number) => navigate({ days: String(days) });
+  const dossier = route.competitor || null;
+  const setDossier = (value: string | null) =>
+    navigate({ competitor: value || "" });
+  const [selected, setSelected] = useState<string[] | null>(null),
     [compare, setCompare] = useState(false),
     [brief, setBrief] = useState<ResearchBriefDto | null>(null),
     [snapshotId, setSnapshotId] = useState<string | null>(null);
@@ -444,8 +451,10 @@ export function MarketWorkspace({
                   <small>
                     LLM: {String(r.budget.llm || 0)} · Поиск:{" "}
                     {String(r.budget.search || 0)} · Стоимость:{" "}
-                    {r.budget.cost
-                      ? JSON.stringify(r.budget.cost)
+                    {r.budget.cost &&
+                    typeof r.budget.cost === "object" &&
+                    "amount" in r.budget.cost
+                      ? `≈ ${String(r.budget.cost.amount)} USD`
                       : "неизвестна"}
                   </small>
                 </div>

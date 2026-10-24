@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLiveJob } from "./live-job";
 import {
   ArrowUp,
   Plus,
@@ -32,7 +33,9 @@ export function ChatPanel({
   const q = useQuery({
     queryKey: ["chat", chatId],
     queryFn: () => api(base + `/chats/${chatId}`),
-    refetchInterval: 2000,
+  });
+  useLiveJob(q.data?.activeJobId || undefined, () => {
+    void q.refetch();
   });
   const [question, setQuestion] = useState("");
   const pending = q.data?.messages?.some((m: Row) => m.status === "pending");

@@ -3,15 +3,43 @@ import { config } from "@context/config";
 import { setTimeout as delay } from "node:timers/promises";
 export function providerError(status: number, body: string) {
   if (status === 401 || status === 403) return "LLM_ACCESS_DENIED";
-  if (status === 404 || /model.*(not found|not supported|does not exist)/i.test(body)) return "LLM_MODEL_UNAVAILABLE";
-  if (status === 429) return /quota|billing|insufficient/i.test(body) ? "LLM_QUOTA" : "LLM_RATE_LIMIT";
-  if ([400, 422].includes(status) && /(?:response_format|json_schema|structured.output|schema).*(?:unsupported|not supported|invalid)|(?:unsupported|not supported).*(?:schema|response_format)/i.test(body)) return "LLM_SCHEMA_UNSUPPORTED";
+  if (
+    status === 404 ||
+    /model.*(not found|not supported|does not exist)/i.test(body)
+  )
+    return "LLM_MODEL_UNAVAILABLE";
+  if (status === 429)
+    return /quota|billing|insufficient/i.test(body)
+      ? "LLM_QUOTA"
+      : "LLM_RATE_LIMIT";
+  if (
+    [400, 422].includes(status) &&
+    /(?:response_format|json_schema|structured.output|schema).*(?:unsupported|not supported|invalid)|(?:unsupported|not supported).*(?:schema|response_format)/i.test(
+      body,
+    )
+  )
+    return "LLM_SCHEMA_UNSUPPORTED";
   if (status >= 500) return "LLM_UNAVAILABLE";
   return "LLM_INVALID_REQUEST";
 }
-const completionSchema = z.object({ choices: z.array(z.object({ message: z.object({ content: z.string().nullable() }) })), usage: z.object({ prompt_tokens: z.number().nonnegative().optional(), completion_tokens: z.number().nonnegative().optional() }).optional() });
+const completionSchema = z.object({
+  choices: z.array(
+    z.object({ message: z.object({ content: z.string().nullable() }) }),
+  ),
+  usage: z
+    .object({
+      prompt_tokens: z.number().nonnegative().optional(),
+      completion_tokens: z.number().nonnegative().optional(),
+    })
+    .optional(),
+});
 export function providerProfile() {
-  return config.LLM_PROVIDER === "gemini" || (config.LLM_PROVIDER === "auto" && new URL(config.LLM_BASE_URL).hostname === "generativelanguage.googleapis.com") ? "gemini" : "openai-compatible";
+  return config.LLM_PROVIDER === "gemini" ||
+    (config.LLM_PROVIDER === "auto" &&
+      new URL(config.LLM_BASE_URL).hostname ===
+        "generativelanguage.googleapis.com")
+    ? "gemini"
+    : "openai-compatible";
 }
 export type Budget = {
   llm: number;
@@ -53,6 +81,7 @@ export class HttpLLM implements LLMProvider {
       throw new Error("LLM_NOT_READY");
     const payload = JSON.stringify(data);
     const schemaJson = z.toJSONSchema(schema);
+    if (providerProfile() === "gemini") delete schemaJson.$schema;
     // A conservative byte bound also covers Cyrillic and unusual Unicode. Reserve
     // space for instructions, the JSON schema, repair text and the output budget.
     const inputBound =
@@ -68,9 +97,8 @@ export class HttpLLM implements LLMProvider {
         Date.now() - budget.startedAt > config.RUN_MAX_MS
       )
         throw new Error("BUDGET_EXHAUSTED");
-      const request = () => fetch(
-        config.LLM_BASE_URL.replace(/\/$/, "") + "/chat/completions",
-        {
+      const request = () =>
+        fetch(config.LLM_BASE_URL.replace(/\/$/, "") + "/chat/completions", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -111,38 +139,66 @@ export class HttpLLM implements LLMProvider {
               { role: "user", content: payload },
             ],
           }),
-        },
-      );
+        });
       let response: Response | undefined;
       let errorBody = "";
       for (let retry = 0; retry <= 2; retry++) {
-        if (budget.llm >= (budget.limits?.llm ?? config.RUN_MAX_LLM) || Date.now() - budget.startedAt >= config.RUN_MAX_MS) throw new Error("BUDGET_EXHAUSTED");
+        if (
+          budget.llm >= (budget.limits?.llm ?? config.RUN_MAX_LLM) ||
+          Date.now() - budget.startedAt >= config.RUN_MAX_MS
+        )
+          throw new Error("BUDGET_EXHAUSTED");
         budget.llm++;
         try {
           response = await request();
           if (response.ok) break;
           errorBody = (await response.clone().text()).slice(0, 2000);
           const code = providerError(response.status, errorBody);
-          if (!["LLM_UNAVAILABLE", "LLM_RATE_LIMIT"].includes(code) || retry === 2) break;
+          if (
+            !["LLM_UNAVAILABLE", "LLM_RATE_LIMIT"].includes(code) ||
+            retry === 2
+          )
+            break;
           const retryAfter = Number(response.headers.get("retry-after"));
-          await delay(Math.min(5000, retryAfter > 0 ? retryAfter * 1000 : 250 * 2 ** retry), undefined, { signal });
+          await delay(
+            Math.min(
+              5000,
+              retryAfter > 0 ? retryAfter * 1000 : 250 * 2 ** retry,
+            ),
+            undefined,
+            { signal },
+          );
         } catch (error) {
           if (signal?.aborted) throw error;
           // Unknown responses may have consumed tokens. Reserve their upper bound.
           budget.inputTokens += inputBound;
           budget.outputTokens += 2000;
-          if (budget.inputTokens + budget.outputTokens + inputBound + 2000 > (budget.limits?.tokens ?? config.RUN_MAX_TOKENS)) throw new Error("BUDGET_EXHAUSTED");
-          if (retry === 2) throw new Error(error instanceof Error && error.name === "TimeoutError" ? "LLM_TIMEOUT" : "LLM_UNAVAILABLE");
+          if (
+            budget.inputTokens + budget.outputTokens + inputBound + 2000 >
+            (budget.limits?.tokens ?? config.RUN_MAX_TOKENS)
+          )
+            throw new Error("BUDGET_EXHAUSTED");
+          if (retry === 2)
+            throw new Error(
+              error instanceof Error && error.name === "TimeoutError"
+                ? "LLM_TIMEOUT"
+                : "LLM_UNAVAILABLE",
+            );
           await delay(250 * 2 ** retry, undefined, { signal });
         }
       }
       if (!response) throw new Error("LLM_UNAVAILABLE");
-      if (this.structuredSupported && !response.ok && providerError(response.status, errorBody) === "LLM_SCHEMA_UNSUPPORTED") {
+      if (
+        this.structuredSupported &&
+        !response.ok &&
+        providerError(response.status, errorBody) === "LLM_SCHEMA_UNSUPPORTED"
+      ) {
         this.structuredSupported = false;
         attempt--;
         continue;
       }
-      if (!response.ok) throw new Error(providerError(response.status, errorBody));
+      if (!response.ok)
+        throw new Error(providerError(response.status, errorBody));
       const parsedBody = completionSchema.safeParse(await response.json());
       if (!parsedBody.success) throw new Error("INVALID_LLM_OUTPUT");
       const body = parsedBody.data;

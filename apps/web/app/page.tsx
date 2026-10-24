@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-query";
 import {
   ArrowUpRight,
-  ArrowRight,
   Plus,
   MessagesSquare,
   History,
@@ -23,7 +22,6 @@ import {
   Loader2,
   LogOut,
   Sparkles,
-  Link as LinkIcon,
   AlertTriangle,
   Target,
   Layers,
@@ -32,11 +30,12 @@ import {
 } from "lucide-react";
 import { stageLabels } from "@context/contracts";
 import { setDisplayTimezone } from "../components/shared";
+import { Feed, InsightDetail } from "../components/insight";
 import { Auth } from "../components/auth";
 import { MarketWorkspace } from "../components/market";
 import { useWorkspaceRoute } from "../components/workspace-route";
 import { useLiveJob } from "../components/live-job";
-import { ChatPanel, ChatWorkspace } from "../components/chat";
+import { ChatWorkspace } from "../components/chat";
 import { Settings, Wizard, RunHistory } from "../components/settings";
 import {
   api,
@@ -45,10 +44,8 @@ import {
   Empty,
   Loading,
   ErrorNote,
-  Field,
   date,
   type Row,
-  type Action,
 } from "../components/shared";
 const client = new QueryClient({
   defaultOptions: { queries: { retry: false, refetchOnWindowFocus: false } },
@@ -65,12 +62,23 @@ function Application() {
   const { route, navigate } = useWorkspaceRoute();
   const { org: orgId, scope: scopeId, tab, filter } = route;
   const aggregate = route.aggregate === "1";
-  const setOrg = (org: string) => navigate({ org, scope: "", insight: "", competitor: "" });
-  const setScope = (scope: string) => navigate({ scope, insight: "", competitor: "" });
-  const setTab = (tab: string) => navigate({ tab, insight: "", competitor: "" });
+  const setOrg = (org: string) =>
+    navigate({ org, scope: "", insight: "", competitor: "" });
+  const setScope = (scope: string) =>
+    navigate({ scope, insight: "", competitor: "" });
+  const setTab = (tab: string) =>
+    navigate({
+      org: selected,
+      scope: chosen,
+      tab,
+      insight: "",
+      competitor: "",
+    });
   const setFilter = (filter: string) => navigate({ filter });
-  const setAggregate = (value: boolean) => navigate({ aggregate: value ? "1" : "" });
-  const setDetail = (value: Row | null) => navigate({ insight: value?.id || "", tab: "insights" });
+  const setAggregate = (value: boolean) =>
+    navigate({ aggregate: value ? "1" : "" });
+  const setDetail = (value: Row | null) =>
+    navigate({ insight: value?.id || "", tab: "insights" });
   const config = useQuery({
     queryKey: ["config"],
     queryFn: () => api("/config/public"),
@@ -132,20 +140,28 @@ function Application() {
   const scopeRows: Row[] = scopes.data?.items || [],
     chosen = scopeRows.some((s) => s.id === scopeId)
       ? scopeId
-      : scopeRows.find(s => s.isDefault)?.id || scopeRows[0]?.id || "",
+      : scopeRows.find((s) => s.isDefault)?.id || scopeRows[0]?.id || "",
     scope = scopeRows.find((s) => s.id === chosen);
   const base = `/organizations/${selected}`,
     scoped = `${base}/scopes/${chosen}`,
     writable = org?.membership?.role !== "reader";
   useEffect(() => {
-    if (selected && chosen && (selected !== route.org || chosen !== route.scope)) navigate({ org: selected, scope: chosen }, true);
+    if (
+      selected &&
+      chosen &&
+      (selected !== route.org || chosen !== route.scope)
+    )
+      navigate({ org: selected, scope: chosen }, true);
   }, [selected, chosen, route.org, route.scope]);
-  const detailQuery = useQuery({ queryKey: ["insight-detail", selected, route.insight], queryFn: () => api(`${base}/insights/${route.insight}`), enabled: !!selected && !!route.insight });
+  const detailQuery = useQuery({
+    queryKey: ["insight-detail", selected, route.insight],
+    queryFn: () => api(`${base}/insights/${route.insight}`),
+    enabled: !!selected && !!route.insight,
+  });
   const detail = route.insight ? detailQuery.data : null;
   const feed = useInfiniteQuery({
     initialPageParam: "",
-    getNextPageParam: (last: Row) =>
-      last.nextCursor || undefined,
+    getNextPageParam: (last: Row) => last.nextCursor || undefined,
     queryKey: ["feed", selected, chosen, filter, aggregate],
     queryFn: ({ pageParam }) =>
       api(
@@ -175,7 +191,17 @@ function Application() {
   async function showSource(ref: Row) {
     await action(async () => {
       if (ref.sourceSnapshotId) {
-        setSource(await api(`${base}/scopes/${detail?.scopeId || chosen}/source-snapshots/${ref.sourceSnapshotId}`));
+        const snapshot = await api(
+          `${base}/scopes/${detail?.scopeId || chosen}/source-snapshots/${ref.sourceSnapshotId}`,
+        );
+        setSource({
+          ...snapshot,
+          provenance: {
+            synthetic: new URL(snapshot.canonicalUrl).hostname.endsWith(
+              "example.test",
+            ),
+          },
+        });
       } else if (ref.kind === "external") {
         const value = await api(`${base}/evidence/${ref.sourceId}`);
         setSource({
@@ -204,7 +230,9 @@ function Application() {
       }
     });
   }
-  useLiveJob(active?.id, () => { void qc.invalidateQueries(); });
+  useLiveJob(active?.id, () => {
+    void qc.invalidateQueries();
+  });
   if (me.isLoading || config.isLoading) return <Loading />;
   if (!me.data)
     return (
@@ -220,7 +248,7 @@ function Application() {
           href="#"
           className="brand"
           onClick={() => {
-            setTab("insights");
+            setTab("overview");
             setMenu(false);
           }}
         >
@@ -246,6 +274,7 @@ function Application() {
           ].map((n) => (
             <button
               key={n.key}
+              disabled={!chosen}
               className={tab === n.key ? "selected" : ""}
               onClick={() => {
                 setTab(n.key);
@@ -267,6 +296,7 @@ function Application() {
           ].map((n) => (
             <button
               key={n.key}
+              disabled={!chosen}
               className={tab === n.key ? "selected" : ""}
               onClick={() => {
                 setTab(n.key);
@@ -323,7 +353,6 @@ function Application() {
               onChange={(e) => {
                 setOrg(e.target.value);
                 setScope("");
-                setDetail(null);
               }}
             >
               {orgs.map((o) => (
@@ -378,8 +407,38 @@ function Application() {
             </Empty>
           ) : (
             <>
-              {(tab === "overview" || tab === "competitors") && chosen && <MarketWorkspace key={scoped + tab} scoped={scoped} stage={org.stage} writable={writable} action={action} view={tab} onCompetitors={() => setTab("competitors")} />}
-              {route.insight && <section className="insight-page"><Button kind="secondary" onClick={() => setDetail(null)}>← К ленте</Button><ErrorNote error={detailQuery.error} />{detailQuery.isLoading ? <Loading /> : detail && <InsightDetail detail={detail} base={base} action={action} showSource={showSource} writable={writable} />}</section>}
+              {(tab === "overview" || tab === "competitors") && chosen && (
+                <MarketWorkspace
+                  key={scoped + tab}
+                  scoped={scoped}
+                  stage={org.stage}
+                  writable={writable}
+                  action={action}
+                  view={tab}
+                  onCompetitors={() => setTab("competitors")}
+                />
+              )}
+              {route.insight && (
+                <section className="insight-page">
+                  <Button kind="secondary" onClick={() => setDetail(null)}>
+                    ← К ленте
+                  </Button>
+                  <ErrorNote error={detailQuery.error} />
+                  {detailQuery.isLoading ? (
+                    <Loading />
+                  ) : (
+                    detail && (
+                      <InsightDetail
+                        detail={detail}
+                        base={base}
+                        action={action}
+                        showSource={showSource}
+                        writable={writable}
+                      />
+                    )
+                  )}
+                </section>
+              )}
               {tab === "insights" && !route.insight && (
                 <>
                   <div className="page-heading">
@@ -693,294 +752,6 @@ function Application() {
           </div>
         )}
       </Modal>
-    </div>
-  );
-}
-function Feed({ items, open }: { items: Row[]; open: (x: Row) => void }) {
-  const [page, setPage] = useState(0);
-  return (
-    <>
-      <div className="insight-grid">
-        {items.slice(page * 10, page * 10 + 10).map((row) => (
-          <button
-            key={row.id}
-            className="insight-card"
-            onClick={() => open(row)}
-          >
-            <div className="card-top">
-              <span
-                className={
-                  "severity " +
-                  (row.potentialSeverity ? "verify" : row.severity)
-                }
-              >
-                <ArrowUpRight size={13} />
-                {row.potentialSeverity
-                  ? "Требует проверки"
-                  : row.severity === "critical"
-                    ? "Критично"
-                    : row.severity === "high"
-                      ? "Высокая важность"
-                      : "Наблюдение"}
-              </span>
-              <span className="muted">
-                {row.unread ? "Новое · " : ""}
-                {date(row.updatedAt)}
-              </span>
-            </div>
-            <h2>{row.title}</h2>
-            <p>{row.revision?.data?.why}</p>
-            <div className="impact">
-              <span>
-                {row.revision?.data?.risks?.length
-                  ? "ВОЗМОЖНЫЙ РИСК"
-                  : "ВОЗМОЖНОСТЬ"}
-              </span>
-              <p>
-                {row.revision?.data?.risks?.[0] ||
-                  row.revision?.data?.opportunities?.[0]}
-              </p>
-            </div>
-            <div className="card-bottom">
-              <span>
-                <LinkIcon size={14} />
-                {row.revision?.evidence?.length || 0} оснований
-              </span>
-              <strong>
-                Разобраться <ArrowRight size={16} />
-              </strong>
-            </div>
-          </button>
-        ))}
-      </div>
-      {items.length > 10 && (
-        <div className="pagination">
-          <Button
-            kind="secondary"
-            disabled={!page}
-            onClick={() => setPage(page - 1)}
-          >
-            Назад
-          </Button>
-          <span>
-            {page + 1} / {Math.ceil(items.length / 10)}
-          </span>
-          <Button
-            kind="secondary"
-            disabled={(page + 1) * 10 >= items.length}
-            onClick={() => setPage(page + 1)}
-          >
-            Далее
-          </Button>
-        </div>
-      )}
-    </>
-  );
-}
-function InsightDetail({
-  detail,
-  base,
-  action,
-  showSource,
-  writable,
-}: {
-  detail: Row;
-  base: string;
-  action: Action;
-  showSource: (x: Row) => void;
-  writable: boolean;
-}) {
-  const revisions = useQuery({
-    queryKey: ["revisions", detail.id],
-    queryFn: () => api(base + `/insights/${detail.id}/revisions`),
-  });
-  const [revisionId, setRevisionId] = useState(detail.revision?.id);
-  const selectedRevision =
-    revisions.data?.items.find((r: Row) => r.id === revisionId) ||
-    detail.revision;
-  const d = selectedRevision?.data,
-    [chat, setChat] = useState("");
-  return (
-    <div className="detail-grid">
-      <article>
-        <span className={"severity " + detail.severity}>
-          {detail.potentialSeverity ? "Требует проверки" : "Важное событие"}
-        </span>
-        <h2>{d?.title || detail.title}</h2>
-        {detail.contextChanged && (
-          <p className="notice">
-            Контекст бизнеса изменился после этой оценки. Для новой оценки
-            запустите переанализ периода.
-          </p>
-        )}
-        {detail.lifecycle === "disputed" && (
-          <p className="notice">
-            Сведения о событии оспариваются или уточнены источником.
-          </p>
-        )}
-        {revisions.data?.items.length > 0 && (
-          <Field label="Версия оценки">
-            <select
-              value={revisionId}
-              onChange={(e) => setRevisionId(e.target.value)}
-            >
-              {revisions.data.items.map((r: Row, i: number) => (
-                <option key={r.id} value={r.id}>
-                  {date(r.createdAt)} · {i === 0 ? "последняя" : "предыдущая"}
-                </option>
-              ))}
-            </select>
-          </Field>
-        )}
-        {d?.changeSummary && <p className="muted">{d.changeSummary}</p>}
-        <p>{d?.summary}</p>
-        {[
-          ["Почему это важно вам", d?.why],
-          ["Горизонт влияния", d?.horizon],
-          ["Уверенность и основания", d?.confidenceReason],
-        ].map(([label, v]) => (
-          <section key={label}>
-            <h3>{label}</h3>
-            <p>{v}</p>
-          </section>
-        ))}
-        {[
-          ["Риски", d?.risks],
-          ["Возможности", d?.opportunities],
-          ["Что можно сделать", d?.actions],
-          ["Что пока неизвестно", d?.unknowns],
-        ].map(
-          ([label, items]) =>
-            items?.length > 0 && (
-              <section key={label}>
-                <h3>{label}</h3>
-                <ul>
-                  {items.map((s: string) => (
-                    <li key={s}>{s}</li>
-                  ))}
-                </ul>
-              </section>
-            ),
-        )}
-        <section>
-          <h3>Источники и основания</h3>
-          {selectedRevision?.evidence?.map((ref: Row, i: number) => (
-            <button
-              className="evidence"
-              key={ref.id}
-              onClick={() => showSource(ref)}
-            >
-              <span>{i + 1}</span>
-              <div>
-                <strong>
-                  {ref.title ||
-                    (ref.kind === "external"
-                      ? "Публикация"
-                      : ref.kind === "company_feature"
-                        ? "Факт профиля"
-                        : "Документ компании")}
-                </strong>
-                <small>
-                  {ref.publishedAt ? date(ref.publishedAt) : "Дата неизвестна"}{" "}
-                  ·{" "}
-                  {ref.availability === "available"
-                    ? "Доступен"
-                    : "Ограниченная доступность"}
-                </small>
-              </div>
-              <ArrowUpRight size={17} />
-            </button>
-          ))}
-        </section>
-        {writable && (
-          <Field label="Рабочий статус команды">
-            <select
-              defaultValue={detail.workStatus}
-              onChange={(e) =>
-                void action(() =>
-                  api(base + `/insights/${detail.id}/work-status`, "PATCH", {
-                    status: e.target.value,
-                  }),
-                )
-              }
-            >
-              {[
-                ["open", "Открыт"],
-                ["in_progress", "В работе"],
-                ["resolved", "Решён"],
-                ["dismissed", "Отклонён"],
-              ].map(([v, l]) => (
-                <option key={v} value={v}>
-                  {l}
-                </option>
-              ))}
-            </select>
-          </Field>
-        )}
-        <div className="form-actions">
-          <span>Полезный инсайт?</span>
-          <Button
-            kind="secondary"
-            onClick={() =>
-              void action(() =>
-                api(base + `/insights/${detail.id}/feedback`, "POST", {
-                  useful: true,
-                }),
-              )
-            }
-          >
-            Да
-          </Button>
-          <Button
-            kind="secondary"
-            onClick={() =>
-              void action(() =>
-                api(base + `/insights/${detail.id}/feedback`, "POST", {
-                  useful: false,
-                }),
-              )
-            }
-          >
-            Нет
-          </Button>
-        </div>
-      </article>
-      <aside className="detail-chat">
-        <h3>
-          <MessagesSquare size={18} /> Обсудить с агентом
-        </h3>
-        <p className="muted">
-          Личная переписка с опорой на основания этого инсайда.
-        </p>
-        {chat ? (
-          <ChatPanel
-            base={base}
-            chatId={chat}
-            action={action}
-            showSource={showSource}
-          />
-        ) : (
-          <>
-            <Empty icon={<MessagesSquare />} title="От факта к вашему решению">
-              Уточните влияние, проверьте допущения или обсудите следующий шаг.
-            </Empty>
-            <Button
-              onClick={() =>
-                void action(async () => {
-                  const c = await api(base + "/chats", "POST", {
-                    scopeId: detail.scopeId,
-                    insightId: detail.id,
-                    title: detail.title,
-                  });
-                  setChat(c.id);
-                })
-              }
-            >
-              Начать обсуждение <ArrowRight size={16} />
-            </Button>
-          </>
-        )}
-      </aside>
     </div>
   );
 }

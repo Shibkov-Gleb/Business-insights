@@ -1,10 +1,10 @@
 import express from "express";
-import { randomUUID } from "node:crypto";
+import { randomUUID, createHash } from "node:crypto";
 import cookieParser from "cookie-parser";
 import { MulterError } from "multer";
 import { ZodError } from "zod";
 import { db } from "@context/db";
-import { publicConfig } from "@context/config";
+import { publicConfig, config } from "@context/config";
 import { HttpError, redis, session } from "./core.ts";
 import { auth } from "./auth.ts";
 import { organizations, invitations } from "./organizations.ts";
@@ -20,6 +20,19 @@ export const app = express();
 app.disable("x-powered-by");
 app.use((req, res, next) => {
   req.requestId = randomUUID();
+  const started = Date.now();
+  res.on("finish", () => {
+    if (!req.path.startsWith("/api/v1/health"))
+      console.log(
+        JSON.stringify({
+          requestId: req.requestId,
+          method: req.method,
+          path: req.path,
+          status: res.statusCode,
+          durationMs: Date.now() - started,
+        }),
+      );
+  });
   res.setHeader("X-Request-Id", req.requestId);
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "same-origin");
@@ -31,7 +44,18 @@ app.get("/api/v1/health/live", (_req, res) => res.json({ ok: true }));
 app.get("/api/v1/health/ready", async (_req, res) => {
   await db.$queryRaw`SELECT 1`;
   await redis.ping();
-  res.json({ ok: true });
+  const workerKey = `context:worker:${config.APP_MODE}:${createHash("sha256").update(new URL(config.DATABASE_URL).pathname).digest("hex").slice(0, 12)}`;
+  const heartbeatAt = await redis.get(workerKey);
+  const stalledRuns = await db.insightRun.count({
+    where: {
+      status: { in: ["queued", "running", "cancel_requested"] },
+      acceptedAt: { lt: new Date(Date.now() - config.RUN_MAX_MS) },
+    },
+  });
+  res.json({
+    ok: true,
+    worker: { online: !!heartbeatAt, heartbeatAt, stalledRuns },
+  });
 });
 app.use("/api/v1", session);
 app.get("/api/v1/config/public", (_req, res) => res.json(publicConfig()));

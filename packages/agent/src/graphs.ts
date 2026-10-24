@@ -313,9 +313,9 @@ export async function analysisGraph(runId: string) {
           )
             continue;
           const stored = await db.sourceDocument.upsert({
-            where: { canonicalUrl: url },
+            where: { canonicalUrl: canonicalUrl(loaded.url) },
             create: {
-              canonicalUrl: url,
+              canonicalUrl: canonicalUrl(loaded.url),
               title: loaded.title,
               publisher: loaded.publisher,
               language: loaded.language,
@@ -332,6 +332,15 @@ export async function analysisGraph(runId: string) {
             },
             update: {
               title: loaded.title,
+              publisher: loaded.publisher,
+              language: loaded.language,
+              publishedAt: loaded.publishedAt
+                ? new Date(loaded.publishedAt)
+                : null,
+              provenance: json({
+                synthetic: !!loaded.synthetic,
+                snippetOnly: loaded.status !== "available",
+              }),
               text: loaded.text,
               checksum: digest(loaded.text),
               status: loaded.status,
@@ -339,7 +348,11 @@ export async function analysisGraph(runId: string) {
             },
           });
           const captured = await captureSource(run, loaded);
-          sources.push({ ...loaded, id: stored.id, sourceSnapshotId: captured.id });
+          sources.push({
+            ...loaded,
+            id: stored.id,
+            sourceSnapshotId: captured.id,
+          });
         }
         return { sources, gaps, budget };
       }),

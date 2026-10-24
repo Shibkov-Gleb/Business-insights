@@ -1,6 +1,7 @@
 "use client";
 import { useState, type FormEvent } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useLiveJob } from "./live-job";
 import {
   Plus,
   FileText,
@@ -11,7 +12,12 @@ import {
   Users,
   Check,
 } from "lucide-react";
-import { stages, stageLabels, contextLabels, stageQuestions } from "@context/contracts";
+import {
+  stages,
+  stageLabels,
+  contextLabels,
+  stageQuestions,
+} from "@context/contracts";
 import {
   api,
   Button,
@@ -210,7 +216,6 @@ function Profile({ base, scoped, org, scope, writable, action }: Props) {
   const proposals = useQuery({
     queryKey: ["proposals", endpoint],
     queryFn: () => api((common ? base : scoped) + "/profile-proposals"),
-    refetchInterval: 5000,
   });
   const canEdit =
     writable && (!common || ["owner", "admin"].includes(org.membership.role));
@@ -441,7 +446,12 @@ function Documents({ base, scope, writable, action }: Props) {
   const q = useQuery({
     queryKey: ["documents", base],
     queryFn: () => api(base + "/documents"),
-    refetchInterval: 3000,
+    refetchInterval: (query) =>
+      query.state.data?.items?.some((d: Row) =>
+        ["uploaded", "processing"].includes(d.status),
+      )
+        ? 3000
+        : false,
   });
   return (
     <>
@@ -551,7 +561,9 @@ function Competitors({ scoped, writable, action }: Props) {
   const q = useQuery({
     queryKey: ["competitors", scoped],
     queryFn: () => api(scoped + "/competitors"),
-    refetchInterval: 3000,
+  });
+  useLiveJob(q.data?.activeJobId || undefined, () => {
+    void q.refetch();
   });
   return (
     <>
@@ -715,12 +727,43 @@ function Competitors({ scoped, writable, action }: Props) {
   );
 }
 function Sources({ scoped, scope, writable, action }: Props) {
+  const config = useQuery({
+    queryKey: ["config"],
+    queryFn: () => api("/config/public"),
+  });
   return (
     <>
       <Heading
         title="Источники и поиск"
         description="Управляйте темами поиска и доступными источниками."
       />
+      <div className="panel integration-panel">
+        <h3>Интеграции и лимиты</h3>
+        <p>
+          Режим:{" "}
+          {config.data?.mode === "demo"
+            ? "Demo · синтетические данные"
+            : "Live"}
+          . LLM: {config.data?.integration?.provider || "не настроен"} /{" "}
+          {config.data?.integration?.model || "модель не выбрана"}.
+        </p>
+        <p>
+          Поиск: Brave + RSS. Готовность:{" "}
+          {config.data?.ready?.analysis
+            ? "можно запускать"
+            : "добавьте ключи в .env на сервере"}
+          .
+        </p>
+        <p className="muted">
+          На запуск: до {config.data?.integration?.limits?.search} поисков,{" "}
+          {config.data?.integration?.limits?.pages} страниц,{" "}
+          {config.data?.integration?.limits?.llm} вызовов модели. Стоимость{" "}
+          {config.data?.integration?.costKnown
+            ? "оценивается по заданным тарифам"
+            : "неизвестна: тарифы не заданы"}
+          . Запуски только по вашему запросу.
+        </p>
+      </div>
       <form
         key={scope?.id}
         className="panel"

@@ -15,14 +15,26 @@ import {
 export const competitors = Router({ mergeParams: true });
 competitors.get("/competitors", async (req, res) => {
   await access(authenticated(req), id(req, "orgId"), id(req, "scopeId"));
-  res.json(
-    list(
+  res.json({
+    ...list(
       await db.competitor.findMany({
         where: { orgId: id(req, "orgId"), scopeId: id(req, "scopeId") },
         orderBy: { id: "asc" },
       }),
     ),
-  );
+    activeJobId:
+      (
+        await db.insightRun.findFirst({
+          where: {
+            orgId: id(req, "orgId"),
+            scopeId: id(req, "scopeId"),
+            kind: "competitors",
+            status: { in: ["queued", "running"] },
+          },
+          select: { id: true },
+        })
+      )?.id || null,
+  });
 });
 competitors.post("/competitors", async (req, res) => {
   const orgId = id(req, "orgId"),
