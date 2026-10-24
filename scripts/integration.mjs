@@ -15,6 +15,10 @@ const env = {
   ...process.env,
   DATABASE_URL: url.toString(),
   APP_MODE: "demo",
+  PUBLIC_APP_URL: "http://localhost:3000",
+  RUN_MAX_SEARCH: "12",
+  RUN_MAX_PAGES: "40",
+  RUN_MAX_LLM: "16",
   STORAGE_ROOT: ".cache/" + name,
 };
 const run = (args) =>
@@ -38,9 +42,12 @@ try {
   await run([
     "node_modules/vitest/vitest.mjs",
     "run",
-    "tests/integration",
+    "tests/integration/corporate.test.ts",
+    "tests/integration/corporate-flow.test.ts",
     "--no-file-parallelism",
   ]);
+  // Legacy restart tests own their replacement worker and stop it in afterAll.
+  await run(["node_modules/vitest/vitest.mjs", "run", "tests/integration/workflows.test.ts", "--no-file-parallelism"]);
 } catch (e) {
   console.error(e.message);
   process.exitCode = 1;

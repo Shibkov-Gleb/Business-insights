@@ -18,6 +18,7 @@ import {
   profile,
   token,
   newSession,
+  scopeWhere,
 } from "./core.ts";
 import { config } from "@context/config";
 export const organizations = Router();
@@ -90,11 +91,13 @@ organizations.patch("/:orgId", async (req, res) => {
 organizations.get("/:orgId/scopes", async (req, res) => {
   const orgId = id(req, "orgId"),
     m = await access(authenticated(req), orgId);
+  const allowed = await scopeWhere(authenticated(req), orgId);
   res.json(
     list(
       await db.analysisScope.findMany({
         where: {
           orgId,
+          ...("scopeId" in allowed && allowed.scopeId ? { id: allowed.scopeId } : {}),
           ...(!m.allScopes && !["owner", "admin"].includes(m.role)
             ? { id: { in: m.scopeIds } }
             : {}),

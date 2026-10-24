@@ -19,6 +19,8 @@ import { liveLLM, newBudget } from "../../../packages/agent/src/providers.ts";
 import { z } from "zod";
 import { researchGraph } from "../../../packages/agent/src/research.ts";
 import { estimateCost } from "../../../packages/agent/src/cost.ts";
+import { corporateGraph, corporateChatGraph } from "../../../packages/agent/src/corporate.ts";
+import { rubString } from "../../../packages/agent/src/hackathon-budget.ts";
 const url = new URL(config.REDIS_URL),
   connection = {
     host: url.hostname,
@@ -46,7 +48,10 @@ export async function processRun(runId: string) {
     });
     await event(runId, "progress", { status: "running" });
     let budget: unknown = {};
-    if (run.kind === "research") {
+    if (run.kind === "corporate" || run.kind === "corporate_chat") {
+      const result = run.kind === "corporate" ? await corporateGraph(runId) : await corporateChatGraph(runId);
+      budget = result.budget;
+    } else if (run.kind === "research") {
       const result = await researchGraph(runId);
       budget = result.budget;
     } else if (run.kind === "analysis") {
@@ -360,7 +365,8 @@ export async function processRun(runId: string) {
       outputTokens?: number;
       startedAt?: number;
     };
-    const cost = estimateCost(
+    const reservations = run.kind.startsWith("corporate") ? await db.budgetReservation.findMany({ where: { runId } }) : [];
+    const cost = run.kind.startsWith("corporate") ? { currency: "RUB", amount: rubString(reservations.reduce((s, r) => s + (r.actual || 0n), 0n)), reserved: rubString(reservations.filter(r => ["reserved", "unknown"].includes(r.status)).reduce((s, r) => s + r.estimated, 0n)), estimated: false, unknownOutcomes: reservations.some(r => r.status === "unknown"), demo: config.APP_MODE === "demo" } : estimateCost(
       usage.inputTokens || 0,
       usage.outputTokens || 0,
       config.TOKEN_PRICE_INPUT,

@@ -65,7 +65,7 @@ export async function assertRun(runId: string) {
     (!m.allScopes &&
       !["owner", "admin"].includes(m.role) &&
       !m.scopeIds.includes(run.scopeId)) ||
-    (run.kind !== "chat" && m.role === "reader")
+    (!["chat", "corporate_chat"].includes(run.kind) && m.role === "reader")
   )
     throw new Error("ACCESS_REVOKED");
   if (run.kind === "document") {

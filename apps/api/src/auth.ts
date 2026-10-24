@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 import { db } from "@context/db";
 import { config } from "@context/config";
 import { credentials } from "@context/contracts";
-import { authenticated, fail, hash, limit, newSession, token } from "./core.ts";
+import { authenticated, fail, hash, limit, newSession, token, sessionCookie } from "./core.ts";
 export const auth = Router();
 auth.post("/demo", async (req, res) => {
   if (config.APP_MODE !== "demo") fail(404, "NOT_FOUND", "Объект не найден");
@@ -126,7 +126,7 @@ auth.get("/me", async (req, res) => {
 auth.post("/logout", async (req, res) => {
   if (req.sessionId)
     await db.session.deleteMany({ where: { id: req.sessionId } });
-  res.clearCookie("context_session", { path: "/" });
+  res.clearCookie(sessionCookie, { path: "/" });
   res.json({ ok: true });
 });
 auth.post("/forgot-password", async (req, res) => {

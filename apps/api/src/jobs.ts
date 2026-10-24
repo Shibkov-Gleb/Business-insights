@@ -4,6 +4,7 @@ import { db, json } from "@context/db";
 import { publicConfig } from "@context/config";
 import { runInput } from "@context/contracts";
 import { enqueue, event, sha } from "../../../packages/db/src/jobs.ts";
+import { companyAccess } from "./corporate.ts";
 import {
   access,
   authenticated,
@@ -187,6 +188,12 @@ export async function authorizedJob(userId: string, jobId: string) {
   const run = await db.insightRun.findUnique({ where: { id: jobId } });
   if (!run) fail(404, "NOT_FOUND", "Задание не найдено");
   await access(userId, run!.orgId, run!.scopeId);
+  if (run!.kind.startsWith("corporate")) {
+    const company = await db.corporateCompany.findUnique({ where: { scopeId: run!.scopeId } });
+    if (!company) fail(404, "NOT_FOUND", "Задание недоступно");
+    await companyAccess(userId, company!.id);
+    if (run!.kind === "corporate_chat" && run!.userId !== userId) fail(404, "NOT_FOUND", "Диалог приватен");
+  }
   if (run!.kind === "chat") {
     const chat = await db.chatThread.findUnique({
       where: { id: run!.resourceId! },

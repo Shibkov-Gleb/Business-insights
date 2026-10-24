@@ -16,6 +16,7 @@ import { chats } from "./chats.ts";
 import { deletion } from "./deletion.ts";
 import { openapi } from "../../../packages/contracts/src/openapi.ts";
 import { research } from "./research.ts";
+import { corporate } from "./corporate.ts";
 export const app = express();
 app.disable("x-powered-by");
 app.use((req, res, next) => {
@@ -72,6 +73,7 @@ app.use("/api/v1/organizations/:orgId/insights", insights);
 app.use("/api/v1/organizations/:orgId/evidence", evidence);
 app.use("/api/v1/organizations/:orgId/chats", chats);
 app.use("/api/v1/jobs", jobs);
+app.use("/api/v1/bank", corporate);
 export function finishRoutes() {
   app.use((_req, _res, next) =>
     next(new HttpError(404, "NOT_FOUND", "Объект не найден")),

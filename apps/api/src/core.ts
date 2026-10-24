@@ -13,6 +13,7 @@ export const redis = new Redis(config.REDIS_URL, {
   maxRetriesPerRequest: null,
 });
 export const token = () => randomBytes(32).toString("hex");
+export const sessionCookie = config.APP_VARIANT === "alfa" ? "context_alfa_session" : "context_session";
 export const hash = (s: string | Buffer) =>
   createHash("sha256").update(s).digest("hex");
 export class HttpError extends Error {
@@ -48,7 +49,7 @@ export function authenticated(req: Request) {
 export async function session(req: Request, res: Response, next: NextFunction) {
   req.requestId ||= randomUUID();
   res.setHeader("X-Request-Id", req.requestId);
-  const raw = req.cookies?.context_session;
+  const raw = req.cookies?.[sessionCookie];
   const found =
     typeof raw === "string"
       ? await db.session.findUnique({ where: { id: hash(raw) } })
@@ -88,7 +89,7 @@ export async function newSession(req: Request, res: Response, userId?: string) {
       expiresAt: new Date(Date.now() + 7 * 86400000),
     },
   });
-  res.cookie("context_session", raw, {
+  res.cookie(sessionCookie, raw, {
     httpOnly: true,
     sameSite: "lax",
     secure: config.PUBLIC_APP_URL.startsWith("https:"),
@@ -118,6 +119,13 @@ export async function access(
   });
   if (!m) fail(404, "NOT_FOUND", "Объект не найден");
   if (scopeId) {
+    if (config.APP_VARIANT === "alfa") {
+      const company = await db.corporateCompany.findUnique({ where: { scopeId } });
+      if (company) {
+        const grant = await db.companyGrant.findUnique({ where: { userId_companyId: { userId, companyId: company.id } } });
+        if (!grant || (write && !grant.canEdit)) fail(404, "NOT_FOUND", "Объект не найден");
+      }
+    }
     const s = await db.analysisScope.findFirst({
       where: { id: scopeId, orgId },
     });
@@ -138,6 +146,12 @@ export async function access(
 }
 export async function scopeWhere(userId: string, orgId: string) {
   const m = await access(userId, orgId);
+  if (config.APP_VARIANT === "alfa") {
+    const grants = await db.companyGrant.findMany({ where: { userId }, select: { companyId: true } });
+    const companies = await db.corporateCompany.findMany({ where: { orgId, id: { in: grants.map(g => g.companyId) } }, select: { scopeId: true } });
+    const corporateCount = await db.corporateCompany.count({ where: { orgId } });
+    if (corporateCount) return { orgId, scopeId: { in: companies.map(c => c.scopeId!).filter(Boolean) } };
+  }
   return ["owner", "admin"].includes(m.role) || m.allScopes
     ? { orgId }
     : { orgId, scopeId: { in: m.scopeIds } };

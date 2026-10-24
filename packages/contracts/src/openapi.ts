@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { companyContextSchema, corporateContextUpdate, corporatePreferences, corporateRunInput, corporateNewsInput, corporateInsightSchema, corporateEvidence, corporateCompanyItem, corporateRunSchema, corporateChatSchema, corporateFeedbackSchema, corporateTraceSchema, bankMaterialSchema, bankPageSchema, dailyBudgetSchema, importReportSchema, hackathonIntegrationSchema, expertFeedbackInput } from "./corporate.ts";
 import {
   credentials,
   organizationInput,
@@ -25,6 +26,22 @@ import {
 const base = "/organizations/{orgId}",
   scope = base + "/scopes/{scopeId}";
 const routes: [string, string, z.ZodType?][] = [
+  ["get", "/bank/companies"], ["get", "/bank/groups"],
+  ["get", "/bank/companies/{companyId}/context"],
+  ["patch", "/bank/companies/{companyId}/context", corporateContextUpdate],
+  ["get", "/bank/companies/{companyId}/context/versions"],
+  ["patch", "/bank/companies/{companyId}/preferences", corporatePreferences],
+  ["get", "/bank/companies/{companyId}/feed"],
+  ["get", "/bank/companies/{companyId}/insights/{insightId}"],
+  ["post", "/bank/companies/{companyId}/news", corporateNewsInput], ["get", "/bank/companies/{companyId}/news"],
+  ["post", "/bank/companies/{companyId}/runs", corporateRunInput], ["get", "/bank/companies/{companyId}/runs"],
+  ["post", "/bank/companies/{companyId}/runs/{runId}/cancel"], ["get", "/bank/companies/{companyId}/runs/{runId}/trace"],
+  ["get", "/bank/companies/{companyId}/evidence"],
+  ["get", "/bank/companies/{companyId}/chats"], ["post", "/bank/companies/{companyId}/chats", z.object({ question: z.string().min(3).max(6000), insightId: z.uuid().optional(), role: corporatePreferences.shape.role.optional() })],
+  ["post", "/bank/companies/{companyId}/feedback", expertFeedbackInput], ["get", "/bank/companies/{companyId}/feedback"],
+  ["patch", "/bank/companies/{companyId}/feedback/{feedbackId}", z.object({ expertNote: z.string().min(3).max(5000), reviewStatus: z.enum(["open", "reviewed"]) })],
+  ["get", "/bank/integration"], ["get", "/bank/imports"], ["get", "/bank/materials"], ["post", "/bank/materials/import"],
+  ["get", "/bank/materials/{materialId}/pages/{page}"], ["get", "/bank/materials/{materialId}/original"],
   ["post", scope + "/research-runs", researchInput],
   ["get", scope + "/research-runs"],
   ["get", scope + "/research-runs/{runId}"],
@@ -140,14 +157,14 @@ export function openapi() {
     const mutation = method !== "get";
     const accepted =
       method === "post" &&
-      /research-runs$|insight-runs$|competitor-searches$|messages$|documents$|retry$/.test(
+      /research-runs$|insight-runs$|competitor-searches$|messages$|documents$|retry$|\/bank\/companies\/[^/]+\/(runs|chats)$/.test(
         path,
       );
     const params = [...path.matchAll(/\{([^}]+)\}/g)].map((m) => ({
       name: m[1],
       in: "path",
       required: true,
-      schema: { type: "string", format: "uuid" },
+      schema: m[1] === "page" ? { type: "integer", minimum: 1 } : { type: "string", format: "uuid" },
     }));
     const created =
       method === "post" &&
@@ -322,9 +339,26 @@ export function openapi() {
         "application/json": { schema: { $ref: "#/components/schemas/Error" } },
       };
   }
+  const bankResponses: Record<string, z.ZodType> = {
+    "/bank/companies": z.object({ items: z.array(corporateCompanyItem), nextCursor: z.string().nullable() }),
+    "/bank/companies/{companyId}/context": companyContextSchema,
+    "/bank/companies/{companyId}/feed": z.object({ items: z.array(corporateInsightSchema), nextCursor: z.string().nullable(), role: z.string(), interests: z.array(z.string()) }),
+    "/bank/companies/{companyId}/insights/{insightId}": corporateInsightSchema,
+    "/bank/companies/{companyId}/runs": z.object({ items: z.array(corporateRunSchema), nextCursor: z.string().nullable() }),
+    "/bank/companies/{companyId}/runs/{runId}/trace": z.object({ run: corporateRunSchema, items: z.array(corporateTraceSchema) }),
+    "/bank/companies/{companyId}/chats": z.object({ items: z.array(corporateChatSchema), nextCursor: z.string().nullable() }),
+    "/bank/companies/{companyId}/feedback": z.object({ items: z.array(corporateFeedbackSchema), nextCursor: z.string().nullable() }),
+    "/bank/materials": z.object({ items: z.array(bankMaterialSchema), nextCursor: z.string().nullable(), missing: z.array(z.string()) }),
+    "/bank/materials/{materialId}/pages/{page}": bankPageSchema,
+    "/bank/imports": z.object({ items: z.array(importReportSchema), nextCursor: z.string().nullable() }),
+    "/bank/integration": hackathonIntegrationSchema,
+  };
+  for (const [path, dto] of Object.entries(bankResponses)) paths[path].get.responses["200"].content = { "application/json": { schema: schema(dto) } };
+  paths["/bank/materials/{materialId}/original"].get.responses["200"].content = { "application/pdf": { schema: { type: "string", format: "binary" } } };
+  paths["/bank/materials/import"].post.requestBody = { required: true, content: { "multipart/form-data": { schema: { type: "object", required: ["file", "title"], properties: { file: { type: "string", format: "binary", description: "PDF до 100 MiB; только администратор" }, title: { type: "string" }, publishedAt: { type: "string", format: "date-time" }, dateConfirmed: { type: "string", enum: ["true", "false"] } } } } } };
   return {
     openapi: "3.1.0",
-    info: { title: "Контекст REST API", version: "1.1.0" },
+    info: { title: "Контекст · Альфа Хак REST API", version: "alfa-2026-dev" },
     servers: [{ url: "/api/v1" }],
     paths,
     components: {
@@ -332,6 +366,7 @@ export function openapi() {
         session: { type: "apiKey", in: "cookie", name: "context_session" },
       },
       schemas: {
+        CorporateContext: schema(companyContextSchema), CorporateInsight: schema(corporateInsightSchema), CorporateEvidence: schema(corporateEvidence), BankMaterial: schema(bankMaterialSchema), BankPage: schema(bankPageSchema), DailyBudget: schema(dailyBudgetSchema), DatasetImport: schema(importReportSchema), CorporateTrace: schema(corporateTraceSchema),
         SourceSnapshot: schema(sourceSnapshotDto),
         Competitor: schema(competitorDto),
         CompetitorSnapshot: schema(snapshotDto),
