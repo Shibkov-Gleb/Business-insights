@@ -81,18 +81,19 @@ export class HttpLLM implements LLMProvider {
       throw new Error("LLM_NOT_READY");
     const payload = JSON.stringify(data);
     const schemaJson = z.toJSONSchema(schema);
+    const outputLimit = config.LLM_MAX_OUTPUT_TOKENS;
     if (providerProfile() === "gemini") delete schemaJson.$schema;
     // A conservative byte bound also covers Cyrillic and unusual Unicode. Reserve
     // space for instructions, the JSON schema, repair text and the output budget.
     const inputBound =
       Buffer.byteLength(payload + task + JSON.stringify(schemaJson), "utf8") +
       1600;
-    if (inputBound > config.LLM_CONTEXT_LIMIT - 2000)
+    if (inputBound > config.LLM_CONTEXT_LIMIT - outputLimit)
       throw new Error("CONTEXT_LIMIT");
     for (let attempt = 0; attempt < 2; attempt++) {
       if (
         budget.llm >= (budget.limits?.llm ?? config.RUN_MAX_LLM) ||
-        budget.inputTokens + budget.outputTokens + inputBound + 2000 >
+        budget.inputTokens + budget.outputTokens + inputBound + outputLimit >
           (budget.limits?.tokens ?? config.RUN_MAX_TOKENS) ||
         Date.now() - budget.startedAt > config.RUN_MAX_MS
       )
@@ -111,7 +112,10 @@ export class HttpLLM implements LLMProvider {
           body: JSON.stringify({
             model: config.LLM_MODEL_ID,
             temperature: 0,
-            max_tokens: 2000,
+            max_tokens: outputLimit,
+            ...(providerProfile() === "gemini"
+              ? { reasoning_effort: config.LLM_REASONING_EFFORT }
+              : {}),
             ...(this.structuredSupported
               ? {
                   response_format: {
@@ -172,9 +176,12 @@ export class HttpLLM implements LLMProvider {
           if (signal?.aborted) throw error;
           // Unknown responses may have consumed tokens. Reserve their upper bound.
           budget.inputTokens += inputBound;
-          budget.outputTokens += 2000;
+          budget.outputTokens += outputLimit;
           if (
-            budget.inputTokens + budget.outputTokens + inputBound + 2000 >
+            budget.inputTokens +
+              budget.outputTokens +
+              inputBound +
+              outputLimit >
             (budget.limits?.tokens ?? config.RUN_MAX_TOKENS)
           )
             throw new Error("BUDGET_EXHAUSTED");
@@ -203,7 +210,7 @@ export class HttpLLM implements LLMProvider {
       if (!parsedBody.success) throw new Error("INVALID_LLM_OUTPUT");
       const body = parsedBody.data;
       budget.inputTokens += body.usage?.prompt_tokens || inputBound;
-      budget.outputTokens += body.usage?.completion_tokens || 2000;
+      budget.outputTokens += body.usage?.completion_tokens || outputLimit;
       try {
         return schema.parse(
           JSON.parse(

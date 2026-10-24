@@ -60,6 +60,8 @@ it("Gemini schema is sent without dialect metadata and still validated locally",
     ).rejects.toThrow("INVALID_LLM_OUTPUT");
     const body = JSON.parse(String(fetch.mock.calls[0][1]?.body));
     expect(body.response_format.json_schema.schema.$schema).toBeUndefined();
+    expect(body.reasoning_effort).toBe(config.LLM_REASONING_EFFORT);
+    expect(body.max_tokens).toBe(config.LLM_MAX_OUTPUT_TOKENS);
     expect(body.response_format.json_schema.schema.properties.ok.type).toBe(
       "boolean",
     );

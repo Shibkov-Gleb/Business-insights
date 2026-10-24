@@ -12,12 +12,13 @@ if (
   );
 } else {
   const budget = newBudget({ llm: 2, tokens: 6000 });
-  await new HttpLLM().structured(
+  const answer = await new HttpLLM().structured(
     z.object({ ok: z.boolean() }),
     "Верни ok=true для проверки контракта.",
     {},
     budget,
   );
+  if (!answer.ok) throw new Error("LLM_SMOKE_ASSERTION_FAILED");
   const to = new Date().toISOString(),
     from = new Date(Date.now() - 86400000).toISOString();
   const results = await new BraveSearch().search(

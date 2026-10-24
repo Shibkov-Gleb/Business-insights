@@ -2,6 +2,8 @@
 
 Demo и live запускайте отдельными Compose project names и volumes. Имя по умолчанию `context-${APP_MODE}`. Queue namespace включает режим и hash имени БД. Для одинаковых имён БД в разных инстансах используйте отдельный Redis, как в стандартном Compose.
 
+Если требуется **переключить существующий локальный экземпляр с сохранением данных**, закрепите его прежнее имя через `COMPOSE_PROJECT_NAME=context-demo` в `.env` и `-p context-demo` в командах. Затем измените APP_MODE: смена режима сама по себе не должна создавать другой project/volume. Перед переключением дождитесь отсутствия активных заданий и сохраните pg_dump + file archive. `docker compose -p context-demo --profile development up -d --build --wait` сохраняет volumes и локальный Mailpit; в live demo seed не запускается. Исторические синтетические данные остаются историей, новые задания используют реальные адаптеры. Профиль development здесь нужен только для локальной почты, не для demo-ответов.
+
 `docker compose --profile demo up --build` ждёт PostgreSQL health и migration job. Live не вызывает demo seed. Redis использует AOF. API, Redis и PostgreSQL не имеют опубликованных портов в основном Compose; `compose.dev.yaml` открывает БД/Redis только на loopback. Mailpit доступен только demo/development profile.
 
 Секреты — через `.env` или secret manager платформы. Для live задайте уникальные SESSION_SECRET/POSTGRES_PASSWORD, внешний SMTP, LLM model/base URL/key и Brave key. Не используйте `context_local_only` для реального размещения. Настройте HTTPS перед ingress и PUBLIC_APP_URL; сессионная cookie должна быть Secure. Не включайте external tracing без отдельного решения о передаче данных.
