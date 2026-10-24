@@ -5,6 +5,7 @@ import { createHash } from "node:crypto";
 import ipaddr from "ipaddr.js";
 import { load } from "cheerio";
 import Parser from "rss-parser";
+import { z } from "zod";
 import { config } from "@context/config";
 export const digest = (text: string) =>
   createHash("sha256").update(text).digest("hex");
@@ -40,6 +41,7 @@ export function validateUrl(raw: string, blocked: string[] = []) {
 }
 export type RetrievedSource = {
   id?: string;
+  sourceSnapshotId?: string;
   url: string;
   title: string;
   text: string;
@@ -176,32 +178,32 @@ export async function extractPage(
 export interface SearchProvider {
   search(
     query: string,
-    from: string,
-    to: string,
+    from?: string,
+    to?: string,
     signal?: AbortSignal,
   ): Promise<RetrievedSource[]>;
 }
 export class BraveSearch implements SearchProvider {
-  async search(query: string, from: string, to: string, signal?: AbortSignal) {
+  async search(query: string, from?: string, to?: string, signal?: AbortSignal) {
     if (!config.BRAVE_SEARCH_API_KEY) throw new Error("SEARCH_NOT_READY");
     const url = new URL("https://api.search.brave.com/res/v1/web/search");
     url.search = new URLSearchParams({
       q: query,
       count: "10",
-      freshness: from.slice(0, 10) + "to" + to.slice(0, 10),
+      ...(from && to ? { freshness: from.slice(0, 10) + "to" + to.slice(0, 10) } : {}),
     }).toString();
     const response = await fetch(url, {
       headers: { "X-Subscription-Token": config.BRAVE_SEARCH_API_KEY },
-      signal,
+      signal: AbortSignal.any([AbortSignal.timeout(20000), ...(signal ? [signal] : [])]),
     });
     if (!response.ok) throw new Error("SEARCH_PROVIDER_ERROR");
-    const body = (await response.json()) as any;
-    return (body.web?.results || []).map((x: any) => ({
+    const body = z.object({ web: z.object({ results: z.array(z.object({ url: z.url(), title: z.string(), description: z.string().nullable().optional(), page_age: z.string().nullable().optional(), language: z.string().optional() })) }).nullable().optional() }).parse(await response.json());
+    return (body.web?.results || []).map((x) => ({
       url: x.url,
       title: x.title,
       text: x.description || "",
       publisher: new URL(x.url).hostname,
-      language: "unknown",
+      language: x.language || "unknown",
       publishedAt:
         x.page_age && !isNaN(Date.parse(x.page_age))
           ? new Date(x.page_age).toISOString()

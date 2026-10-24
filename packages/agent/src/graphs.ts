@@ -20,6 +20,7 @@ import { liveLLM, newBudget, type Budget } from "./providers.ts";
 import { demoSources, demoAssessment } from "./demo.ts";
 import { event } from "../../db/src/jobs.ts";
 import { publicTopics } from "./planning.ts";
+import { captureSource } from "./snapshots.ts";
 export const checkpointer = PostgresSaver.fromConnString(config.DATABASE_URL);
 export type Candidate = {
   key: string;
@@ -337,7 +338,8 @@ export async function analysisGraph(runId: string) {
               fetchedAt: new Date(),
             },
           });
-          sources.push({ ...loaded, id: stored.id });
+          const captured = await captureSource(run, loaded);
+          sources.push({ ...loaded, id: stored.id, sourceSnapshotId: captured.id });
         }
         return { sources, gaps, budget };
       }),
@@ -453,6 +455,7 @@ export async function analysisGraph(runId: string) {
             ].map((item) => ({
               id: item.id!,
               sourceId: item.id!,
+              sourceSnapshotId: item.sourceSnapshotId,
               quote: item.text.slice(0, 1500),
               url: item.url,
               title: item.title,
@@ -753,8 +756,8 @@ export async function competitorsGraph(runId: string) {
       return {
         sources: await new BraveSearch().search(
           terms + " competitors alternatives",
-          run.windowFrom.toISOString(),
-          run.windowTo.toISOString(),
+          undefined,
+          undefined,
         ),
         budget,
       };

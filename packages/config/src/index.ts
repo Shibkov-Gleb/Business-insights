@@ -15,6 +15,7 @@ const schema = z.object({
   LLM_BASE_URL: z.url().default("https://api.openai.com/v1"),
   LLM_API_KEY: z.string().default(""),
   LLM_MODEL_ID: z.string().default(""),
+  LLM_PROVIDER: z.enum(["auto", "gemini", "openai-compatible"]).default("auto"),
   LLM_CONTEXT_LIMIT: z.coerce.number().positive().default(32000),
   BRAVE_SEARCH_API_KEY: z.string().default(""),
   RUN_MAX_SEARCH: z.coerce.number().int().positive().default(12),
@@ -65,6 +66,7 @@ export const config = readConfig();
 export const publicConfig = () => ({
   mode: config.APP_MODE,
   locale: "ru",
+  integration: { provider: config.LLM_PROVIDER === "auto" ? (config.LLM_BASE_URL.includes("generativelanguage.googleapis.com") ? "gemini" : "openai-compatible") : config.LLM_PROVIDER, model: config.LLM_MODEL_ID || null, search: "Brave + RSS", limits: { search: config.RUN_MAX_SEARCH, pages: config.RUN_MAX_PAGES, llm: config.RUN_MAX_LLM, tokens: config.RUN_MAX_TOKENS }, costKnown: !!(config.TOKEN_PRICE_INPUT && config.TOKEN_PRICE_OUTPUT) },
   ready: {
     analysis:
       config.APP_MODE === "demo" ||

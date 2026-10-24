@@ -16,6 +16,7 @@ import { digest } from "../../../packages/agent/src/sources.ts";
 import { event } from "../../../packages/db/src/jobs.ts";
 import { liveLLM, newBudget } from "../../../packages/agent/src/providers.ts";
 import { z } from "zod";
+import { researchGraph } from "../../../packages/agent/src/research.ts";
 import { estimateCost } from "../../../packages/agent/src/cost.ts";
 const url = new URL(config.REDIS_URL),
   connection = {
@@ -44,7 +45,10 @@ export async function processRun(runId: string) {
     });
     await event(runId, "progress", { status: "running" });
     let budget: unknown = {};
-    if (run.kind === "analysis") {
+    if (run.kind === "research") {
+      const result = await researchGraph(runId);
+      budget = result.budget;
+    } else if (run.kind === "analysis") {
       const result = await analysisGraph(runId);
       await assertRun(runId);
       const partial = result.gaps.length > 0;
@@ -466,6 +470,8 @@ const timer = setInterval(
   () => void dispatch().catch(() => console.error("Outbox dispatch failed")),
   2000,
 );
+const heartbeatKey = `context:worker:${config.APP_MODE}:${digest(new URL(config.DATABASE_URL).pathname).slice(0, 12)}`;
+const heartbeat = setInterval(() => { void queue.client.then(client => client.set(heartbeatKey, new Date().toISOString(), "EX", 20)).catch(() => console.error(JSON.stringify({ code: "HEARTBEAT_FAILED" }))); }, 5000);
 await dispatch();
 async function cleanup() {
   const before = new Date(Date.now() - config.RETENTION_DAYS * 86400000);
@@ -484,6 +490,7 @@ const retention = setInterval(
 );
 console.log("Worker ready · " + config.APP_MODE);
 async function shutdown() {
+  clearInterval(heartbeat);
   clearInterval(timer);
   clearInterval(retention);
   await worker.close();
