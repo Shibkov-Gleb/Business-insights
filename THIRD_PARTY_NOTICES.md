@@ -20,6 +20,7 @@
 | Nodemailer, Mailpit | SMTP и локальная почта | MIT |
 | Vitest, Supertest, Playwright | Проверки | MIT / Apache-2.0 |
 | Nginx | Same-origin ingress | BSD-2-Clause |
+| Golos Text | Локальный кириллический variable font | SIL Open Font License 1.1; полный текст в apps/web/public/fonts/OFL-GolosText.txt |
 
 ## Внешние сервисы и модели
 
