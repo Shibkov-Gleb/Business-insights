@@ -1,4 +1,5 @@
 import { z } from "zod";
+export * from "./research.ts";
 export const stages = [
   "idea",
   "validation",
@@ -60,6 +61,7 @@ export const evidenceSchema = z.object({
   id: z.string(),
   kind: z.enum(["external", "company_document", "company_feature"]),
   sourceId: z.string(),
+  sourceSnapshotId: z.string().optional(),
   locator: z
     .object({
       page: z.number().optional(),

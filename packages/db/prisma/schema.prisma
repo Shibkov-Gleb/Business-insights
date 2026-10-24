@@ -260,10 +260,80 @@ model Decision {
  orgId String @db.Uuid
  scopeId String @db.Uuid
  userId String @db.Uuid
- threadId String @db.Uuid
+ threadId String? @db.Uuid
+ briefId String? @unique @db.Uuid
  text String
  assertion String @default("hypothesis")
  createdAt DateTime @default(now()) @db.Timestamptz
+}
+
+model SourceSnapshot {
+ id String @id @default(uuid()) @db.Uuid
+ canonicalUrl String
+ title String
+ text String
+ checksum String
+ publishedAt DateTime? @db.Timestamptz
+ observedAt DateTime @default(now()) @db.Timestamptz
+ status String
+ @@index([canonicalUrl,checksum])
+}
+model RunSource {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ runId String @db.Uuid
+ sourceSnapshotId String @db.Uuid
+ @@unique([runId,sourceSnapshotId])
+ @@index([orgId,scopeId,sourceSnapshotId])
+}
+model CompetitorWatchSource {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ competitorId String @db.Uuid
+ url String
+ category String
+ version Int @default(1)
+ @@unique([competitorId,url])
+}
+model CompetitorSnapshot {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ competitorId String @db.Uuid
+ runId String @db.Uuid
+ facts Json
+ gaps Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([runId,competitorId])
+ @@index([orgId,scopeId,competitorId,createdAt])
+}
+model CompetitorChange {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ competitorId String @db.Uuid
+ runId String @db.Uuid
+ field String
+ before Json
+ after Json
+ beforeSnapshotId String @db.Uuid
+ afterSnapshotId String @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([runId,competitorId,field])
+ @@index([orgId,scopeId,createdAt])
+}
+model ResearchBrief {
+ id String @id @default(uuid()) @db.Uuid
+ orgId String @db.Uuid
+ scopeId String @db.Uuid
+ runId String @unique @db.Uuid
+ title String
+ content Json
+ evidence Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([orgId,scopeId,createdAt])
 }
 model AuditRecord {
  id String @id @default(uuid()) @db.Uuid
