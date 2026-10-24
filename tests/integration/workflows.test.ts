@@ -1,4 +1,4 @@
-import { beforeAll, afterAll, describe, it, expect } from "vitest";
+import { beforeAll, afterAll, describe, it, expect, vi } from "vitest";
 import request from "supertest";
 import argon2 from "argon2";
 import { randomUUID } from "node:crypto";
@@ -19,6 +19,7 @@ import { Queue } from "bullmq";
 import { spawn, type ChildProcess } from "node:child_process";
 import { config } from "@context/config";
 import { digest } from "../../packages/agent/src/sources.ts";
+import { researchGraph } from "../../packages/agent/src/research.ts";
 let replacement: ChildProcess | undefined;
 const origin = "http://localhost:3000";
 finishRoutes();
@@ -564,7 +565,13 @@ describe("Полные сценарии с PostgreSQL и Redis", () => {
       });
       expect(before).toBeGreaterThan(0);
       const prior = await queue.getJob(accepted.jobId);
-      if (prior) await prior.remove();
+      if (prior) {
+        await vi.waitFor(
+          async () => expect(await prior.getState()).toBe("completed"),
+          { timeout: 15000 },
+        );
+        await prior.remove();
+      }
       await queue.add("run", {}, { jobId: accepted.jobId });
       await new Promise((r) => setTimeout(r, 1000));
       expect(
@@ -662,48 +669,296 @@ describe("Полные сценарии с PostgreSQL и Redis", () => {
   }, 40000);
   it("research: baseline, snapshot access, manual facts, comparison, change and decision", async () => {
     const path = `/organizations/${orgId}/scopes/${scopeId}`;
-    const a = await post(owner, path + "/competitors", { name: "Research A", domain: "research-a.example.test" });
-    const b = await post(owner, path + "/competitors", { name: "Research B", domain: "research-b.example.test" });
+    const a = await post(owner, path + "/competitors", {
+      name: "Research A",
+      domain: "research-a.example.test",
+    });
+    const b = await post(owner, path + "/competitors", {
+      name: "Research B",
+      domain: "research-b.example.test",
+    });
     const competitorIds = [a.body.id, b.body.id];
-    const before = await db.analysisScope.findUniqueOrThrow({ where: { id: scopeId } });
+    const before = await db.analysisScope.findUniqueOrThrow({
+      where: { id: scopeId },
+    });
     const first = await post(owner, path + "/research-runs", { competitorIds });
     expect(first.status).toBe(202);
     expect((await waitJob(owner, first.body.jobId)).status).toBe("succeeded");
-    const dossier = (await owner.agent.get("/api/v1" + path + `/competitors/${a.body.id}/dossier`)).body;
+    const dossier = (
+      await owner.agent.get(
+        "/api/v1" + path + `/competitors/${a.body.id}/dossier`,
+      )
+    ).body;
     expect(dossier.snapshots).toHaveLength(1);
     expect(dossier.changes).toHaveLength(0);
     const snapshotId = dossier.snapshots[0].facts[0].sourceSnapshotId;
-    expect((await owner.agent.get("/api/v1" + path + `/source-snapshots/${snapshotId}`)).status).toBe(200);
-    expect((await stranger.agent.get("/api/v1" + path + `/source-snapshots/${snapshotId}`)).status).toBe(404);
-    expect((await reader.agent.get(`/api/v1/organizations/${orgId}/scopes/${otherScope}/source-snapshots/${snapshotId}`)).status).toBe(404);
-    expect((await post(reader, path + "/research-runs", { competitorIds })).status).toBe(403);
-    expect((await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, { expectedVersion: dossier.competitor.revision, fields: { pricing: "Уточнено лично" } })).status).toBe(200);
-    expect((await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, { expectedVersion: dossier.competitor.revision, fields: {} })).status).toBe(409);
-    const second = await post(owner, path + "/research-runs", { competitorIds });
+    expect(
+      (
+        await owner.agent.get(
+          "/api/v1" + path + `/source-snapshots/${snapshotId}`,
+        )
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        await stranger.agent.get(
+          "/api/v1" + path + `/source-snapshots/${snapshotId}`,
+        )
+      ).status,
+    ).toBe(404);
+    expect(
+      (
+        await reader.agent.get(
+          `/api/v1/organizations/${orgId}/scopes/${otherScope}/source-snapshots/${snapshotId}`,
+        )
+      ).status,
+    ).toBe(404);
+    expect(
+      (await post(reader, path + "/research-runs", { competitorIds })).status,
+    ).toBe(403);
+    expect(
+      (
+        await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, {
+          expectedVersion: dossier.competitor.revision,
+          fields: { pricing: "Уточнено лично" },
+        })
+      ).status,
+    ).toBe(200);
+    expect(
+      (
+        await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, {
+          expectedVersion: dossier.competitor.revision,
+          fields: {},
+        })
+      ).status,
+    ).toBe(409);
+    const second = await post(owner, path + "/research-runs", {
+      competitorIds,
+    });
     expect((await waitJob(owner, second.body.jobId)).status).toBe("succeeded");
-    expect(await db.competitorChange.count({ where: { competitorId: a.body.id } })).toBe(0);
-    expect((await post(owner, path + `/competitors/${a.body.id}/watch-sources`, { url: "https://research-a.example.test/pricing?scenario=updated", category: "pricing" })).status).toBe(201);
+    expect(
+      await db.competitorChange.count({ where: { competitorId: a.body.id } }),
+    ).toBe(0);
+    expect(
+      (
+        await post(owner, path + `/competitors/${a.body.id}/watch-sources`, {
+          url: "https://research-a.example.test/pricing?scenario=updated",
+          category: "pricing",
+        })
+      ).status,
+    ).toBe(201);
     const third = await post(owner, path + "/research-runs", { competitorIds });
     expect((await waitJob(owner, third.body.jobId)).status).toBe("succeeded");
-    const changes = await db.competitorChange.findMany({ where: { competitorId: a.body.id } });
+    const changes = await db.competitorChange.findMany({
+      where: { competitorId: a.body.id },
+    });
     expect(changes).toHaveLength(1);
     expect((changes[0].before as { value: string }).value).toContain("2900");
     expect((changes[0].after as { value: string }).value).toContain("3900");
-    const comparison = await owner.agent.get("/api/v1" + path + `/competitor-comparison?ids=${competitorIds.join(",")}`);
+    const comparison = await owner.agent.get(
+      "/api/v1" +
+        path +
+        `/competitor-comparison?ids=${competitorIds.join(",")}`,
+    );
     expect(comparison.status).toBe(200);
-    expect(comparison.body.competitors.find((c: { competitor: { id: string } }) => c.competitor.id === a.body.id).manual.pricing).toBe("Уточнено лично");
-    const brief = await db.researchBrief.findUniqueOrThrow({ where: { runId: third.body.jobId } });
-    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, {})).status).toBe(422);
-    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, { confirm: true })).status).toBe(201);
-    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, { confirm: true })).status).toBe(201);
+    expect(
+      comparison.body.competitors.find(
+        (c: { competitor: { id: string } }) => c.competitor.id === a.body.id,
+      ).manual.pricing,
+    ).toBe("Уточнено лично");
+    const brief = await db.researchBrief.findUniqueOrThrow({
+      where: { runId: third.body.jobId },
+    });
+    expect(
+      (await post(owner, path + `/research-briefs/${brief.id}/decision`, {}))
+        .status,
+    ).toBe(422);
+    expect(
+      (
+        await post(owner, path + `/research-briefs/${brief.id}/decision`, {
+          confirm: true,
+        })
+      ).status,
+    ).toBe(201);
+    expect(
+      (
+        await post(owner, path + `/research-briefs/${brief.id}/decision`, {
+          confirm: true,
+        })
+      ).status,
+    ).toBe(201);
     expect(await db.decision.count({ where: { briefId: brief.id } })).toBe(1);
-    const exported = await owner.agent.get("/api/v1" + path + `/research-briefs/${brief.id}/export`);
+    const exported = await owner.agent.get(
+      "/api/v1" + path + `/research-briefs/${brief.id}/export`,
+    );
     expect(exported.status).toBe(200);
     expect(exported.text).toContain("## Источники");
-    const after = await db.analysisScope.findUniqueOrThrow({ where: { id: scopeId } });
+    const after = await db.analysisScope.findUniqueOrThrow({
+      where: { id: scopeId },
+    });
     expect(after.cursorAt).toEqual(before.cursorAt);
     expect(after.cursorVersion).toBe(before.cursorVersion);
   }, 60000);
+  it("research resumes after worker restart without re-extraction or duplicate publication", async () => {
+    const u = new URL(config.REDIS_URL);
+    const queue = new Queue(
+      "context-demo-" +
+        digest(new URL(config.DATABASE_URL).pathname).slice(0, 12),
+      { connection: { host: u.hostname, port: Number(u.port) } },
+    );
+    await queue.pause();
+    try {
+      const competitor = await db.competitor.findFirstOrThrow({
+        where: { scopeId, decision: "confirmed", monitoring: "active" },
+      });
+      const path = `/organizations/${orgId}/scopes/${scopeId}`;
+      const key = randomUUID();
+      const input = { competitorIds: [competitor.id], includeMarket: false };
+      const accepted = await post(owner, path + "/research-runs", input, key);
+      expect(accepted.status).toBe(202);
+      const id = accepted.body.jobId;
+      expect(
+        (await post(owner, path + "/research-runs", input, key)).body.jobId,
+      ).toBe(id);
+      await db.insightRun.update({
+        where: { id },
+        data: { status: "running" },
+      });
+      await researchGraph(id, { interruptBefore: ["persist"] });
+      expect(await db.researchBrief.count({ where: { runId: id } })).toBe(0);
+      expect(
+        await db.runSource.count({ where: { runId: id } }),
+      ).toBeGreaterThan(0);
+      if (!replacement?.pid) throw new Error("Recovery worker missing");
+      replacement.kill("SIGTERM");
+      replacement = spawn(
+        process.execPath,
+        ["--import", "tsx", "apps/worker/src/index.ts"],
+        { env: process.env, stdio: "inherit" },
+      );
+      await queue.resume();
+      expect((await waitJob(owner, id)).status).toBe("succeeded");
+      const job = await queue.getJob(id);
+      if (job) {
+        await vi.waitFor(
+          async () => expect(await job.getState()).toBe("completed"),
+          { timeout: 15000 },
+        );
+        await job.remove();
+      }
+      await queue.add("run", {}, { jobId: id });
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      expect(await db.researchBrief.count({ where: { runId: id } })).toBe(1);
+      expect(await db.competitorSnapshot.count({ where: { runId: id } })).toBe(
+        1,
+      );
+      const events = await db.runEvent.findMany({
+        where: { runId: id, type: "progress" },
+      });
+      expect(
+        events.filter((e) => (e.data as { node: string }).node === "extract"),
+      ).toHaveLength(1);
+      const brief = await db.researchBrief.findUniqueOrThrow({
+        where: { runId: id },
+      });
+      expect(
+        (
+          await stranger.agent.get(
+            `/api/v1${path}/research-briefs/${brief.id}/export`,
+          )
+        ).status,
+      ).toBe(404);
+    } finally {
+      await queue.resume();
+      await queue.close();
+    }
+  }, 60000);
+  it("feed pagination filters unpublished runs before LIMIT and keeps a stable cursor", async () => {
+    const scope = await post(owner, `/organizations/${orgId}/scopes`, {
+      name: "Pagination fixture",
+    });
+    const sid = scope.body.id;
+    const run = await db.insightRun.create({
+      data: {
+        orgId,
+        scopeId: sid,
+        userId: owner.userId,
+        status: "succeeded",
+        windowFrom: new Date(),
+        windowTo: new Date(),
+        snapshot: {},
+      },
+    });
+    const failed = await db.insightRun.create({
+      data: {
+        orgId,
+        scopeId: sid,
+        userId: owner.userId,
+        status: "failed",
+        windowFrom: new Date(),
+        windowTo: new Date(),
+        snapshot: {},
+      },
+    });
+    for (let n = 0; n < 30; n++) {
+      const row = await db.insight.create({
+        data: {
+          orgId,
+          scopeId: sid,
+          eventKey: `page-${n}`,
+          title: `Signal ${n}`,
+          severity: n % 2 ? "critical" : "high",
+          confidence: "high",
+        },
+      });
+      const revision = await db.insightRevision.create({
+        data: {
+          orgId,
+          scopeId: sid,
+          insightId: row.id,
+          runId: n % 3 ? run.id : failed.id,
+          fingerprint: String(n),
+          profileVersionId: "fixture",
+          data: {},
+          evidence: [],
+        },
+      });
+      await db.insight.update({
+        where: { id: row.id },
+        data: { latestRevisionId: revision.id },
+      });
+    }
+    let cursor: string | null = null;
+    const all: string[] = [];
+    do {
+      const page = await owner.agent.get(
+        `/api/v1/organizations/${orgId}/insights?scopeId=${sid}&limit=7${cursor ? "&cursor=" + cursor : ""}`,
+      );
+      expect(page.status).toBe(200);
+      all.push(...page.body.items.map((row: { id: string }) => row.id));
+      cursor = page.body.nextCursor;
+    } while (cursor);
+    expect(all).toHaveLength(20);
+    expect(new Set(all).size).toBe(20);
+    const revisions = vi.spyOn(db.insightRevision, "findMany");
+    const reads = vi.spyOn(db.readState, "findMany");
+    try {
+      for (const size of [2, 20]) {
+        revisions.mockClear();
+        reads.mockClear();
+        const response = await owner.agent.get(
+          `/api/v1/organizations/${orgId}/insights?scopeId=${sid}&limit=${size}`,
+        );
+        expect(response.status).toBe(200);
+        expect(response.body.items).toHaveLength(size);
+        expect(revisions).toHaveBeenCalledTimes(1);
+        expect(reads).toHaveBeenCalledTimes(1);
+      }
+    } finally {
+      revisions.mockRestore();
+      reads.mockRestore();
+    }
+  });
   it("reset завершает сессии и токен нельзя использовать повторно", async () => {
     const raw = token();
     await db.authToken.create({

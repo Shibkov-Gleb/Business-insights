@@ -8,7 +8,19 @@ import {
   competitorInput,
   evidenceSchema,
   assessmentSchema,
-  researchInput, watchInput, manualFactsInput,
+  researchInput,
+  watchInput,
+  manualFactsInput,
+  sourceSnapshotDto,
+  snapshotDto,
+  changeDto,
+  briefDto,
+  dossierDto,
+  researchRunDto,
+  overviewDto,
+  comparisonDto,
+  competitorDto,
+  factSchema,
 } from "./index.ts";
 const base = "/organizations/{orgId}",
   scope = base + "/scopes/{scopeId}";
@@ -21,14 +33,26 @@ const routes: [string, string, z.ZodType?][] = [
   ["get", scope + "/competitor-comparison"],
   ["get", scope + "/competitors/{competitorId}/dossier"],
   ["post", scope + "/competitors/{competitorId}/watch-sources", watchInput],
-  ["delete", scope + "/competitors/{competitorId}/watch-sources/{watchId}", z.object({ expectedVersion: z.number().int().positive() })],
-  ["patch", scope + "/competitors/{competitorId}/manual-facts", manualFactsInput],
+  [
+    "delete",
+    scope + "/competitors/{competitorId}/watch-sources/{watchId}",
+    z.object({ expectedVersion: z.number().int().positive() }),
+  ],
+  [
+    "patch",
+    scope + "/competitors/{competitorId}/manual-facts",
+    manualFactsInput,
+  ],
   ["get", scope + "/source-snapshots/{snapshotId}"],
   ["get", scope + "/research-briefs"],
   ["post", scope + "/research-briefs", z.object({ runId: z.uuid() })],
   ["get", scope + "/research-briefs/{briefId}"],
   ["get", scope + "/research-briefs/{briefId}/export"],
-  ["post", scope + "/research-briefs/{briefId}/decision", z.object({ confirm: z.literal(true) })],
+  [
+    "post",
+    scope + "/research-briefs/{briefId}/decision",
+    z.object({ confirm: z.literal(true) }),
+  ],
   ["get", scope + "/research-decisions"],
   ["get", "/auth/csrf"],
   ["post", "/auth/register", credentials],
@@ -127,12 +151,12 @@ export function openapi() {
     }));
     const created =
       method === "post" &&
-      /(?:^\/organizations$|\/auth\/register$|\/scopes$|\/invitations$|\/profile-proposals$|\/competitors$|\/chats$|\/decisions$)/.test(
+      /(?:^\/organizations$|\/auth\/register$|\/scopes$|\/invitations$|\/profile-proposals$|\/competitors$|\/chats$|\/decisions$|\/watch-sources$|\/decision$)/.test(
         path,
       );
     const isList =
       method === "get" &&
-      /\/(?:organizations|scopes|members|invitations|documents|chunks|competitors|insight-runs|insights|revisions|chats|previews|profile-proposals)$/.test(
+      /\/(?:organizations|scopes|members|invitations|documents|chunks|competitors|research-runs|insight-runs|insights|revisions|chats|previews|profile-proposals)$/.test(
         path,
       );
     paths[path] ??= {};
@@ -247,6 +271,52 @@ export function openapi() {
           schema: { type: "string", format: "binary" },
         },
       };
+    if (method === "get" && path.endsWith("/export"))
+      paths[path][method].responses["200"].content = {
+        "text/markdown": { schema: { type: "string" } },
+      };
+    const responseDto =
+      method === "get"
+        ? path.endsWith("/market-overview")
+          ? overviewDto
+          : path.endsWith("/competitor-comparison")
+            ? comparisonDto
+            : path.endsWith("/dossier")
+              ? dossierDto
+              : path.endsWith("/source-snapshots/{snapshotId}")
+                ? sourceSnapshotDto
+                : path.endsWith("/research-briefs/{briefId}")
+                  ? briefDto
+                  : path.endsWith("/research-briefs")
+                    ? z.object({ items: z.array(briefDto) })
+                    : path.endsWith("/research-runs/{runId}")
+                      ? researchRunDto
+                      : path.endsWith("/research-runs")
+                        ? z.object({
+                            items: z.array(researchRunDto),
+                            nextCursor: z.string().nullable(),
+                          })
+                        : null
+        : null;
+    if (responseDto)
+      paths[path][method].responses["200"].content = {
+        "application/json": { schema: schema(responseDto) },
+      };
+    if (path.endsWith("/market-overview"))
+      paths[path][method].parameters.push({
+        name: "days",
+        in: "query",
+        schema: { type: "integer", default: 30, minimum: 1, maximum: 365 },
+      });
+    if (path.endsWith("/competitor-comparison"))
+      paths[path][method].parameters.push({
+        name: "ids",
+        in: "query",
+        required: true,
+        description:
+          "2–5 уникальных UUID подтверждённых конкурентов, через запятую",
+        schema: { type: "string" },
+      });
     for (const status of ["401", "403", "404", "409", "422", "429", "503"])
       paths[path][method].responses[status].content = {
         "application/json": { schema: { $ref: "#/components/schemas/Error" } },
@@ -254,7 +324,7 @@ export function openapi() {
   }
   return {
     openapi: "3.1.0",
-    info: { title: "Контекст REST API", version: "0.1.0" },
+    info: { title: "Контекст REST API", version: "1.1.0" },
     servers: [{ url: "/api/v1" }],
     paths,
     components: {
@@ -262,6 +332,15 @@ export function openapi() {
         session: { type: "apiKey", in: "cookie", name: "context_session" },
       },
       schemas: {
+        SourceSnapshot: schema(sourceSnapshotDto),
+        Competitor: schema(competitorDto),
+        CompetitorSnapshot: schema(snapshotDto),
+        CompetitorChange: schema(changeDto),
+        ResearchFact: schema(factSchema),
+        ResearchBrief: schema(briefDto),
+        ResearchRun: schema(researchRunDto),
+        MarketOverview: schema(overviewDto),
+        CompetitorComparison: schema(comparisonDto),
         EvidenceRef: schema(evidenceSchema),
         Assessment: schema(assessmentSchema),
         JobAccepted: schema(

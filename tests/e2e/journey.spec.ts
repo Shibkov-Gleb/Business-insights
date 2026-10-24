@@ -7,7 +7,14 @@ test("demo: инсайт, источник, чат и адаптивная на�
   page,
 }, info) => {
   await page.goto("/");
+  await page.screenshot({
+    path: `.cache/login-${info.project.name}.png`,
+    animations: "disabled",
+  });
   await page.getByRole("button", { name: "Войти в demo" }).click();
+  if (info.project.name === "mobile")
+    await page.getByRole("button", { name: "Открыть меню" }).click();
+  await page.getByRole("button", { name: "Инсайды", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Важное для вашего бизнеса." }),
   ).toBeVisible();
@@ -23,9 +30,18 @@ test("demo: инсайт, источник, чат и адаптивная на�
     fullPage: true,
   });
   await page.locator(".insight-card").first().click();
+  await expect(page).toHaveURL(/[?&]insight=[a-f0-9-]+/);
+  const insightUrl = page.url();
+  await page.reload();
+  await expect(page).toHaveURL(insightUrl);
   await expect(
     page.getByRole("heading", { name: "Почему это важно вам" }),
   ).toBeVisible();
+  await page.screenshot({
+    path: `.cache/insight-${info.project.name}.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
   await page.locator(".evidence").first().click();
   await expect(
     page.getByText("Синтетический источник", { exact: true }),
@@ -45,7 +61,7 @@ test("demo: инсайт, источник, чат и адаптивная на�
       exact: false,
     }),
   ).toBeVisible({ timeout: 60000 });
-  await page.getByRole("button", { name: "Закрыть", exact: true }).click();
+  await page.getByRole("button", { name: "← К ленте", exact: true }).click();
   if (info.project.name === "mobile")
     await page.getByRole("button", { name: "Открыть меню" }).click();
   await page.getByRole("button", { name: "Документы", exact: true }).click();
@@ -114,7 +130,7 @@ test("регистрация, подтверждение email, идея с тр
     .getByRole("button", { name: "Открыть проект", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Важное для вашего бизнеса." }),
+    page.getByRole("heading", { name: /Рынок меняется/ }),
   ).toBeVisible();
   if (info.project.name === "mobile")
     await page.getByRole("button", { name: "Открыть меню" }).click();
@@ -152,7 +168,7 @@ test("документ, подтверждение, конкурент, отка
   await page.goto("/");
   await page.getByRole("button", { name: "Войти в demo" }).click();
   await expect(
-    page.getByRole("heading", { name: "Важное для вашего бизнеса." }),
+    page.getByRole("heading", { name: /Рынок меняется/ }),
   ).toBeVisible();
   const org = await page
     .getByLabel("Организация", { exact: true })
@@ -177,13 +193,11 @@ test("документ, подтверждение, конкурент, отка
   }
   await navigate("Документы");
   const name = "synthetic-" + randomUUID().slice(0, 8) + ".md";
-  await page
-    .locator("input[type=file]")
-    .setInputFiles({
-      name,
-      mimeType: "text/markdown",
-      buffer: await readFile("tests/fixtures/synthetic.md"),
-    });
+  await page.locator("input[type=file]").setInputFiles({
+    name,
+    mimeType: "text/markdown",
+    buffer: await readFile("tests/fixtures/synthetic.md"),
+  });
   const row = page.locator(".list-row").filter({ hasText: name });
   await expect(row.getByText("Готов", { exact: true })).toBeVisible({
     timeout: 60000,

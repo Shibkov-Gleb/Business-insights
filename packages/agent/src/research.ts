@@ -24,6 +24,7 @@ import {
   factChanges,
   sourceConflicts,
   verifyFacts,
+  groundedOpportunities,
 } from "./research-domain.ts";
 
 type CompetitorPlan = {
@@ -105,7 +106,10 @@ function demoFacts(source: Source): ResearchFact[] {
         : null,
   }));
 }
-export async function researchGraph(runId: string) {
+export async function researchGraph(
+  runId: string,
+  options: { interruptBefore?: "persist"[] } = {},
+) {
   const run = await assertRun(runId),
     input = run.snapshot as unknown as Input;
   const signal = AbortSignal.timeout(config.RUN_MAX_MS);
@@ -365,7 +369,9 @@ export async function researchGraph(runId: string) {
         const fallback: BriefContent = {
           observation: s.changes.length
             ? `Обнаружено содержательных изменений: ${s.changes.length}. Сравните прежние и новые условия.`
-            : "Исследование зафиксировало доступные предложения. Новых подтверждённых изменений не обнаружено.",
+            : s.sources.length
+              ? "Исследование зафиксировало доступные предложения. Новых подтверждённых изменений не обнаружено."
+              : "Источники недоступны. Данных для выводов об изменениях рынка недостаточно.",
           implication:
             "Досье показывает публичные заявления компаний, а не доказательство их результатов. Сопоставьте предложения с задачей своего клиента.",
           response:
@@ -410,10 +416,9 @@ export async function researchGraph(runId: string) {
             budget,
             signal,
           );
-          brief.opportunities = brief.opportunities.filter((o) =>
-            o.sourceSnapshotIds.every((id) =>
-              s.sources.some((x) => x.id === id),
-            ),
+          brief.opportunities = groundedOpportunities(
+            brief.opportunities,
+            s.sources.map((x) => x.id),
           );
           if (!input.includeMarket) brief.opportunities = [];
           return { brief, budget };
@@ -553,7 +558,7 @@ export async function researchGraph(runId: string) {
     .addEdge("verify", "compose_brief")
     .addEdge("compose_brief", "persist")
     .addEdge("persist", END)
-    .compile({ checkpointer });
+    .compile({ checkpointer, interruptBefore: options.interruptBefore });
   const state = await graph.getState({ configurable: { thread_id: runId } });
   if (state.values?.brief && !state.next?.length)
     return state.values as typeof State.State;

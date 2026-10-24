@@ -2,7 +2,11 @@ import { afterEach, beforeEach, it, expect, vi } from "vitest";
 import { z } from "zod";
 import { config } from "@context/config";
 import { HttpLLM, newBudget } from "../../packages/agent/src/providers.ts";
-import { providerProfile } from "../../packages/agent/src/providers.ts";
+import {
+  providerProfile,
+  providerError,
+} from "../../packages/agent/src/providers.ts";
+import { BraveSearch } from "../../packages/agent/src/sources.ts";
 const old = { key: config.LLM_API_KEY, model: config.LLM_MODEL_ID };
 beforeEach(() => {
   config.LLM_API_KEY = "synthetic-contract-key";
@@ -26,17 +30,97 @@ it("Gemini capability profile and ordinary 400 do not trigger schema fallback", 
   config.LLM_PROVIDER = "gemini";
   expect(providerProfile()).toBe("gemini");
   config.LLM_PROVIDER = previous;
-  const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("invalid argument", { status: 400 }));
-  await expect(new HttpLLM().structured(z.object({ ok: z.boolean() }), "task", {}, newBudget())).rejects.toThrow("LLM_INVALID_REQUEST");
+  const fetch = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(new Response("invalid argument", { status: 400 }));
+  await expect(
+    new HttpLLM().structured(
+      z.object({ ok: z.boolean() }),
+      "task",
+      {},
+      newBudget(),
+    ),
+  ).rejects.toThrow("LLM_INVALID_REQUEST");
   expect(fetch).toHaveBeenCalledTimes(1);
 });
+it("Gemini schema is sent without dialect metadata and still validated locally", async () => {
+  const previous = config.LLM_PROVIDER;
+  config.LLM_PROVIDER = "gemini";
+  try {
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(async () => response('{"ok":"not boolean"}'));
+    await expect(
+      new HttpLLM().structured(
+        z.object({ ok: z.boolean() }),
+        "task",
+        {},
+        newBudget(),
+      ),
+    ).rejects.toThrow("INVALID_LLM_OUTPUT");
+    const body = JSON.parse(String(fetch.mock.calls[0][1]?.body));
+    expect(body.response_format.json_schema.schema.$schema).toBeUndefined();
+    expect(body.response_format.json_schema.schema.properties.ok.type).toBe(
+      "boolean",
+    );
+  } finally {
+    config.LLM_PROVIDER = previous;
+  }
+});
+it("provider classification separates model, quota, access and temporary failures", () => {
+  expect(providerError(404, "model not found")).toBe("LLM_MODEL_UNAVAILABLE");
+  expect(providerError(429, "insufficient quota")).toBe("LLM_QUOTA");
+  expect(providerError(429, "rate limit")).toBe("LLM_RATE_LIMIT");
+  expect(providerError(403, "denied")).toBe("LLM_ACCESS_DENIED");
+});
+it("market player search omits freshness, news search supplies the date range", async () => {
+  const previous = config.BRAVE_SEARCH_API_KEY;
+  config.BRAVE_SEARCH_API_KEY = "synthetic-search-contract";
+  try {
+    const fetch = vi
+      .spyOn(globalThis, "fetch")
+      .mockImplementation(
+        async () => new Response(JSON.stringify({ web: { results: [] } })),
+      );
+    const search = new BraveSearch();
+    await search.search("public competitor pricing");
+    expect(
+      new URL(String(fetch.mock.calls[0][0])).searchParams.has("freshness"),
+    ).toBe(false);
+    await search.search(
+      "public market news",
+      "2026-09-24T00:00:00Z",
+      "2026-10-24T00:00:00Z",
+    );
+    expect(
+      new URL(String(fetch.mock.calls[1][0])).searchParams.get("freshness"),
+    ).toBe("2026-09-24to2026-10-24");
+  } finally {
+    config.BRAVE_SEARCH_API_KEY = previous;
+  }
+});
 it("401 is terminal, while 503 retries twice at most", async () => {
-  const fetch = vi.spyOn(globalThis, "fetch").mockResolvedValue(new Response("denied", { status: 401 }));
-  await expect(new HttpLLM().structured(z.object({ ok: z.boolean() }), "task", {}, newBudget())).rejects.toThrow("LLM_ACCESS_DENIED");
+  const fetch = vi
+    .spyOn(globalThis, "fetch")
+    .mockResolvedValue(new Response("denied", { status: 401 }));
+  await expect(
+    new HttpLLM().structured(
+      z.object({ ok: z.boolean() }),
+      "task",
+      {},
+      newBudget(),
+    ),
+  ).rejects.toThrow("LLM_ACCESS_DENIED");
   expect(fetch).toHaveBeenCalledTimes(1);
-  fetch.mockReset().mockImplementation(async () => new Response("unavailable", { status: 503 }));
+  fetch
+    .mockReset()
+    .mockImplementation(
+      async () => new Response("unavailable", { status: 503 }),
+    );
   const b = newBudget();
-  await expect(new HttpLLM().structured(z.object({ ok: z.boolean() }), "task", {}, b)).rejects.toThrow("LLM_UNAVAILABLE");
+  await expect(
+    new HttpLLM().structured(z.object({ ok: z.boolean() }), "task", {}, b),
+  ).rejects.toThrow("LLM_UNAVAILABLE");
   expect(fetch).toHaveBeenCalledTimes(3);
   expect(b.llm).toBe(3);
 });
@@ -85,7 +169,9 @@ it("live contract: структурированный ответ проверя�
 it("live contract: unsupported structured output переключается на проверяемый JSON", async () => {
   const fetch = vi
     .spyOn(globalThis, "fetch")
-    .mockResolvedValueOnce(new Response("response_format json_schema unsupported", { status: 400 }))
+    .mockResolvedValueOnce(
+      new Response("response_format json_schema unsupported", { status: 400 }),
+    )
     .mockResolvedValueOnce(response('{"answer":"ok"}'));
   expect(
     await new HttpLLM().structured(

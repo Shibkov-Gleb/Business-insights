@@ -41,6 +41,12 @@ Worker обрабатывает SIGTERM: прекращает диспетчер
 
 Health: `/api/v1/health/live`, `/api/v1/health/ready`. В диагностике отслеживайте failed/partial runs, возраст недоставленного outbox, время задач и превышения лимитов. Приложение не создаёт новые анализы автоматически по расписанию.
 
+В 1.1 readiness дополнительно возвращает `worker.online`, `heartbeatAt` и `stalledRuns`. Heartbeat обновляется раз в 5 секунд, истекает через 20; stalled означает незавершённую задачу старше `RUN_MAX_MS`, а не доказанный сбой. При ненулевом счётчике проверьте worker logs, Redis и историю запуска; доступна явная отмена. `ok` относится к API/БД/Redis и не маскирует отдельный статус worker. Журналы содержат requestId или runId, этап, durationMs и код ошибки без тела документов, query string и ключей.
+
+Миграции 1.1 добавляют снимки, связи доступа, досье, изменения, записки и индексы; старые evidence остаются валидны, отсутствующая история страниц не восстанавливается. Перед обновлением существующего экземпляра сделайте pg_dump и backup файлов по инструкции выше. `docker compose --profile demo up -d --build --wait` применяет новые миграции до запуска сервисов, volumes не удаляет. Для проверки чистого запуска используйте отдельный project, APP_PORT=3003, MAILPIT_PORT=8028 и PUBLIC_APP_URL=http://localhost:3003. Smoke принимает SMOKE_URL; before/after проверяет также snapshot checksum, ручные факты и решение по записке.
+
+Ошибки LLM: LLM_ACCESS_DENIED, LLM_MODEL_UNAVAILABLE, LLM_QUOTA, LLM_RATE_LIMIT, LLM_UNAVAILABLE, LLM_TIMEOUT, LLM_SCHEMA_UNSUPPORTED, LLM_INVALID_REQUEST, INVALID_LLM_OUTPUT. Повторяются только временные сбои, максимум два повтора в общем бюджете. Fallback structured output включается только при распознанной несовместимости схемы; локальная Zod-валидация обязательна. Отмена/отзыв прав очищает checkpoints. Исследование не меняет cursor новостей.
+
 Nginx access log содержит метод, путь без query, статус и время. Его upstream error log отключён, чтобы URL с одноразовыми токенами не попадали в журнал; ошибки приложения диагностируются по requestId. Не включайте стандартный combined log с полным request URI для auth-ссылок.
 
 `FILE_MAX_BYTES`, `FILE_MAX_COUNT`, `FILE_TOTAL_BYTES` управляют upload limits. При повышении размера файла согласуйте `client_max_body_size` в Nginx. На первом холодном старте дождитесь health checks API/web; разовый 502 во время restart не означает потерю данных. Ingress по умолчанию слушает только 127.0.0.1.

@@ -105,6 +105,34 @@ if (process.argv[2] === "before") {
     text: "Какие предположения проверить?",
   });
   await wait(msg.jobId);
+  const researchPath = path + "/scopes/" + scope.id;
+  const competitor = await api(researchPath + "/competitors", "POST", {
+    name: "Compose research",
+    domain: "compose.example.test",
+  });
+  const research = await api(researchPath + "/research-runs", "POST", {
+    competitorIds: [competitor.id],
+  });
+  await wait(research.jobId);
+  const dossier = await api(
+    researchPath + "/competitors/" + competitor.id + "/dossier",
+  );
+  const sourceId = dossier.snapshots[0].facts[0].sourceSnapshotId;
+  const source = await api(researchPath + "/source-snapshots/" + sourceId);
+  await api(
+    researchPath + "/competitors/" + competitor.id + "/manual-facts",
+    "PATCH",
+    {
+      expectedVersion: dossier.competitor.revision,
+      fields: { pricing: "Проверено при приёмке" },
+    },
+  );
+  const overview = await api(researchPath + "/market-overview");
+  await api(
+    researchPath + "/research-briefs/" + overview.briefs[0].id + "/decision",
+    "POST",
+    { confirm: true },
+  );
   const proof = {
     orgId: org.id,
     scopeId: scope.id,
@@ -112,11 +140,16 @@ if (process.argv[2] === "before") {
     runId: run.jobId,
     chatId: chat.id,
     insightIds: feed.items.map((i) => i.id),
+    researchId: research.jobId,
+    competitorId: competitor.id,
+    sourceId,
+    sourceChecksum: source.checksum,
+    briefId: overview.briefs[0].id,
   };
   await mkdir(".cache", { recursive: true });
   await writeFile(".cache/compose-proof.json", JSON.stringify(proof));
   console.log(
-    "BEFORE: five document formats, analysis, sources and chat persisted in fresh Compose volumes.",
+    "BEFORE: five document formats, analysis, chat, research, immutable source, manual facts and decision persisted in fresh Compose volumes.",
   );
 } else {
   const proof = JSON.parse(await readFile(".cache/compose-proof.json", "utf8")),
@@ -140,7 +173,21 @@ if (process.argv[2] === "before") {
   const chat = await api(path + "/chats/" + proof.chatId);
   if (chat.messages.length !== 2 || chat.messages[1].status !== "complete")
     throw new Error("Chat lost");
+  const researchPath = path + "/scopes/" + proof.scopeId;
+  const source = await api(
+    researchPath + "/source-snapshots/" + proof.sourceId,
+  );
+  if (source.checksum !== proof.sourceChecksum)
+    throw new Error("Snapshot changed");
+  const dossier = await api(
+    researchPath + "/competitors/" + proof.competitorId + "/dossier",
+  );
+  if (dossier.competitor.data.manualFacts.pricing !== "Проверено при приёмке")
+    throw new Error("Manual fact lost");
+  const decisions = await api(researchPath + "/research-decisions");
+  if (!decisions.items.some((d) => d.briefId === proof.briefId))
+    throw new Error("Research decision lost");
   console.log(
-    "AFTER: document checksums, run, insight identities and full chat survived restart.",
+    "AFTER: document checksums, insights, chat, immutable source, manual facts and research decision survived restart.",
   );
 }

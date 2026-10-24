@@ -29,3 +29,11 @@ API создаёт InsightRun и Outbox одной транзакцией с adv
 SafePageFetcher проверяет каждый redirect и все DNS-адреса, фиксирует выбранный публичный IP для соединения, ограничивает время и размер. HTML не исполняется. HTTP 401/403 и paywall не обходятся. Сжатые ответы, несмотря на `Accept-Encoding: identity`, отклоняются.
 
 SSE читает сохранённые события с монотонным ID. Reconnect и polling не создают задания. Финальный текст хранится в таблицах приложения. Удаление документа убирает chunks и checkpoints; история сохраняется, но не служит основанием для нового ответа при утрате источника.
+
+В 1.1 отдельный LangGraph: context → plan → retrieve → extract → compare → verify → compose_brief → persist. Он использует те же outbox, PostgreSQL checkpoints, отмену, лимиты и события, но не меняет новостной cursor. Поиск компаний не отправляет freshness; поиск изменений может использовать окно. Публичные темы и приватный контекст разделены. Факты проходят Zod и проверку точной нормализованной цитаты в указанном snapshot; рекомендации хранятся отдельно и имеют проверяемые ссылки.
+
+React разбит на модули market, insight, chat, settings, shared и live-job. `/workspace/{org}/{scope}/{section}` и query-параметры сохраняют выбранное состояние при reload/Back/Forward. История не опрашивается в простое. EventSource обслуживает активный job, polling служит временным fallback и останавливается на terminal event/snapshot. Ключ mutation сохраняется при сетевом сбое для безопасного повтора той же операции.
+
+Gemini остаётся за совместимым HTTP-адаптером. Обычный HTTP 400 не отключает structured output. Возможности схемы, локальная проверка и лимиты адаптера не зависят от доверия к содержимому ответа. Контрактные тесты используют подменённый HTTP, live не вызван.
+
+Первичные справочные материалы: [Brave freshness](https://api-dashboard.search.brave.com/api-reference/web/search/get), [Gemini structured output](https://ai.google.dev/gemini-api/docs/structured-output), [W3C animation from interactions](https://www.w3.org/WAI/WCAG21/Understanding/animation-from-interactions). Последняя проверка документации: 24 октября 2026. Freshness относится к возрасту страницы, включая last modified; это не доказательство даты события. Reduced motion отключает необязательное движение.

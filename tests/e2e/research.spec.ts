@@ -26,6 +26,11 @@ test("market: research, comparison, dossier, evidence, brief, routes and motion"
     page.getByRole("dialog", { name: "Сравнение предложений" }),
   ).toBeVisible();
   await expect(page.getByText("Ваш продукт", { exact: true })).toBeVisible();
+  await page.screenshot({
+    path: `.cache/comparison-${info.project.name}.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
   await page
     .getByRole("button", { name: "Проверить цитату" })
     .filter({ visible: true })
@@ -48,6 +53,11 @@ test("market: research, comparison, dossier, evidence, brief, routes and motion"
   await expect(
     page.getByRole("heading", { name: "Тарифы и условия", exact: true }),
   ).toBeVisible();
+  await page.screenshot({
+    path: `.cache/dossier-${info.project.name}.png`,
+    fullPage: true,
+    animations: "disabled",
+  });
   await page.keyboard.press("Escape");
   await page.goBack();
   await expect(page).toHaveURL(dossierUrl);
