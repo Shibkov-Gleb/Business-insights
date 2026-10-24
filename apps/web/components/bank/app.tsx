@@ -317,11 +317,11 @@ function BankWorkspace() {
         expectedVersion: company.version,
         newsIds,
         search: newsIds.length === 0,
+        perspective: role,
       },
     );
     setActiveJob(accepted.jobId);
     setAddNews(false);
-    router.push(`/bank/${companyId}/feed${query}`);
     refresh();
   }
   async function add(e: FormEvent<HTMLFormElement>) {
@@ -695,6 +695,7 @@ function BankWorkspace() {
                       </details>
                       <BankFeed
                         companyId={companyId}
+                        version={company.version}
                         role={role}
                         days={days}
                         category={category}

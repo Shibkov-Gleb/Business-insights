@@ -1,0 +1,53 @@
+{
+  "passed": true,
+  "before": {
+    "counts": {
+      "DatasetImport": "4",
+      "CorporateCompany": "200069",
+      "CompanyVariant": "85525",
+      "PersonCompanyLink": "12514",
+      "PaymentEdge": "1380589",
+      "CompanyGrant": "37",
+      "BankMaterial": "9",
+      "BankPage": "64",
+      "CorporateNews": "13",
+      "CorporateInsight": "5",
+      "CorporateInsightRevision": "5",
+      "CorporateChat": "1",
+      "CorporateFeedback": "1"
+    },
+    "payments": {
+      "amount": "55992525586000.125000",
+      "count": "24515900"
+    },
+    "bankOriginals": 9,
+    "bankFilesHash": "7880f6bd23f661e8c89be48855ee602fafc7f75e8037fe565422f947d775b168",
+    "recordHash": "c2bb766de3cc3cca0c498c133241d53b2f7e72004f3834a77112ff495919eaf6",
+    "stateHash": "fea566021975fe2e3394d1aa794d068c2989b9d379acf80db2732e869992cc73"
+  },
+  "after": {
+    "counts": {
+      "DatasetImport": "4",
+      "CorporateCompany": "200069",
+      "CompanyVariant": "85525",
+      "PersonCompanyLink": "12514",
+      "PaymentEdge": "1380589",
+      "CompanyGrant": "37",
+      "BankMaterial": "9",
+      "BankPage": "64",
+      "CorporateNews": "13",
+      "CorporateInsight": "5",
+      "CorporateInsightRevision": "5",
+      "CorporateChat": "1",
+      "CorporateFeedback": "1"
+    },
+    "payments": {
+      "amount": "55992525586000.125000",
+      "count": "24515900"
+    },
+    "bankOriginals": 9,
+    "bankFilesHash": "7880f6bd23f661e8c89be48855ee602fafc7f75e8037fe565422f947d775b168",
+    "recordHash": "c2bb766de3cc3cca0c498c133241d53b2f7e72004f3834a77112ff495919eaf6",
+    "stateHash": "fea566021975fe2e3394d1aa794d068c2989b9d379acf80db2732e869992cc73"
+  }
+}

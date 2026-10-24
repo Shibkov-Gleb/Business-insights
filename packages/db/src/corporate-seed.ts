@@ -14,6 +14,8 @@ const samples = [
   { externalId: "synthetic-logistics", name: "Меридиан Логистика · синтетический", groupId: "DEMO-LOGISTICS", revenue: "19200000000", industry: "Деятельность автомобильного грузового транспорта", okved: "49.41", debt: "1.0", trade: "1.0", region: "Москва" },
 ];
 const imported = await db.corporateCompany.findMany({ where: { datasetId: { not: null }, unknown: false, conflicts: { isEmpty: true } }, orderBy: { revenue: "desc" }, take: 8 });
+const conflicted = await db.corporateCompany.findFirst({ where: { datasetId: { not: null }, conflicts: { isEmpty: false } } });
+if (conflicted) imported.push(conflicted);
 const all = [];
 for (const [i, sample] of samples.entries()) {
   const fields = { MAINOKVED_CODE: sample.okved, MAINOKVED_NAME: sample.industry, REVENUE_COMPANY: sample.revenue, REGION: sample.region, CITY: sample.region, CL_PRODUCT_LOA_MARK: sample.debt, FTS_FLAG: sample.trade, CL_PRODUCT_RKO_MARK: "1.0", CL_PRODUCT_DEP_MARK: i === 1 ? "1.0" : "0.0", CL_PRODUCT_GAR_MARK: "1.0", CL_PRODUCT_LEA_MARK: "0.0", CL_PRODUCT_ZPP_MARK: "1.0", ECO_MARK_LABEL: "Оптимизация", AMOUNT_WORKERS_FNS_GRADATION: "1001–5000", COMPANY_AGE_YEARS_GRADATION: "Более 10 лет" };

@@ -14,7 +14,14 @@ import {
   type CorporateEvidence,
   type WorkRole,
 } from "@context/contracts";
-import { bankApi, pageOf, acceptedSchema, dateRu, channelLabels } from "./api";
+import {
+  bankApi,
+  pageOf,
+  acceptedSchema,
+  dateRu,
+  channelLabels,
+  useBankPages,
+} from "./api";
 import { ContextEdit } from "./context-edit";
 export function BankContext({
   companyId,
@@ -220,11 +227,11 @@ export function BankChat({
 }) {
   const [question, setQuestion] = useState(""),
     [error, setError] = useState("");
-  const chats = useQuery({
-    queryKey: ["corporate-chats", companyId],
-    queryFn: () =>
-      bankApi(pageOf(corporateChatSchema), `/companies/${companyId}/chats`),
-  });
+  const chats = useBankPages(
+    corporateChatSchema,
+    `/companies/${companyId}/chats`,
+    ["corporate-chats", companyId],
+  );
   async function send() {
     setError("");
     try {
@@ -248,6 +255,15 @@ export function BankChat({
         доступ к другим компаниям он не открывает.
       </p>
       <div className="bank-chat-history">
+        {chats.hasNextPage && (
+          <button
+            className="bank-button light"
+            disabled={chats.isFetchingNextPage}
+            onClick={() => void chats.fetchNextPage()}
+          >
+            Ранние сообщения
+          </button>
+        )}
         {chats.data?.items
           .slice()
           .reverse()
@@ -324,11 +340,11 @@ export function BankHistory({
   companyId: string;
   showTrace: (id: string) => void;
 }) {
-  const runs = useQuery({
-    queryKey: ["corporate-runs", companyId],
-    queryFn: () =>
-      bankApi(pageOf(corporateRunSchema), `/companies/${companyId}/runs`),
-  });
+  const runs = useBankPages(
+    corporateRunSchema,
+    `/companies/${companyId}/runs`,
+    ["corporate-runs", companyId, "history"],
+  );
   return (
     <div className="bank-history">
       {runs.data?.items.map((r) => (
@@ -358,6 +374,15 @@ export function BankHistory({
           Исследований пока нет. Запуск происходит только по вашему действию.
         </p>
       )}
+      {runs.hasNextPage && (
+        <button
+          className="bank-button light"
+          disabled={runs.isFetchingNextPage}
+          onClick={() => void runs.fetchNextPage()}
+        >
+          Ещё исследования
+        </button>
+      )}
     </div>
   );
 }
@@ -381,6 +406,29 @@ export function BankTrace({
   });
   return (
     <div className="bank-trace">
+      {trace.data && (
+        <>
+          <p>
+            Статус: {trace.data.run.status}.{" "}
+            {trace.data.run.error
+              ? `Причина остановки: ${trace.data.run.error}`
+              : ""}
+          </p>
+          <details>
+            <summary>Затраты, лимиты и покрытие запуска</summary>
+            <pre>
+              {JSON.stringify(
+                {
+                  budget: trace.data.run.budget,
+                  coverage: trace.data.run.coverage,
+                },
+                null,
+                2,
+              )}
+            </pre>
+          </details>
+        </>
+      )}
       <p>
         Показаны вызовы инструментов, проверяемые результаты и версии.
         Внутренние рассуждения модели не сохраняются.
@@ -399,14 +447,11 @@ export function BankTrace({
 }
 export function BankFeedback({ companyId }: { companyId: string }) {
   const [error, setError] = useState("");
-  const reviews = useQuery({
-    queryKey: ["corporate-feedback", companyId],
-    queryFn: () =>
-      bankApi(
-        pageOf(corporateFeedbackSchema),
-        `/companies/${companyId}/feedback`,
-      ),
-  });
+  const reviews = useBankPages(
+    corporateFeedbackSchema,
+    `/companies/${companyId}/feedback`,
+    ["corporate-feedback", companyId],
+  );
   return (
     <div>
       <p className="bank-intro">
@@ -457,6 +502,15 @@ export function BankFeedback({ companyId }: { companyId: string }) {
           Открытых отзывов пока нет. В материале выберите «На экспертный
           разбор».
         </p>
+      )}
+      {reviews.hasNextPage && (
+        <button
+          className="bank-button light"
+          disabled={reviews.isFetchingNextPage}
+          onClick={() => void reviews.fetchNextPage()}
+        >
+          Ещё отзывы
+        </button>
       )}
       {(error || reviews.error) && (
         <p role="alert">{error || reviews.error?.message}</p>

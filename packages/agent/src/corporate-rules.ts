@@ -33,8 +33,17 @@ export function personalScore(
     a.relevance * 100 +
     a.impact * 20 +
     a.urgency * 5 +
-    a.channels.filter((x) => roleChannels[role].includes(x)).length * 18 +
-    a.channels.filter((x) => interests.includes(x)).length * 12
+    (a.relevance >= 3
+      ? (a.channels.includes(
+          roleChannels[role][0] as (typeof a.channels)[number],
+        )
+          ? 120
+          : 0) +
+        a.channels.filter((x) => roleChannels[role].slice(1).includes(x))
+          .length *
+          30 +
+        a.channels.filter((x) => interests.includes(x)).length * 12
+      : 0)
   );
 }
 // Public vocabulary is deliberately assembled from non-sensitive categorical fields only.
@@ -179,7 +188,7 @@ export function deterministicAssessment(
                   ? 4
                   : 2
                 : 3;
-  return {
+  const assessment: CorporateAssessment = {
     title,
     what: text.slice(0, 450),
     why: rate
@@ -239,4 +248,21 @@ export function deterministicAssessment(
     confidence: matching && relevance >= 4 ? "medium" : "low",
     category: relevance >= 4 ? "risk" : "background",
   };
+  if (matching) {
+    const constraint = /предложен|мощност|постав/i.test(matching.quote)
+      ? "ограничений предложения"
+      : /охлажден|замедлен|слаб/i.test(matching.quote)
+        ? "охлаждения спроса"
+        : rate
+          ? "жёстких денежно-кредитных условий"
+          : "изменения экономической активности";
+    assessment.why += ` Банковский материал добавляет сценарий ${constraint}; его применимость к компании требует проверки.`;
+    assessment.consequences.push(
+      `С учётом датированного банковского тезиса AI предлагает проверить чувствительность оборотного капитала и планов компании к сценарию ${constraint}.`,
+    );
+    assessment.checks.push(
+      `Сопоставить фактические договоры и планы со сценарием ${constraint} из указанного банковского обзора, сохранив его дату и ограничения.`,
+    );
+  }
+  return assessment;
 }

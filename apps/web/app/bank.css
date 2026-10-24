@@ -1023,6 +1023,8 @@
   font-size: 13px;
 }
 .bank-skip {
+  opacity: 0;
+  pointer-events: none;
   position: fixed;
   left: 250px;
   top: -100px;
@@ -1032,7 +1034,19 @@
   z-index: 100;
 }
 .bank-skip:focus {
+  opacity: 1;
+  pointer-events: auto;
   top: 10px;
+}
+.bank-reading > label select {
+  display: block;
+  width: 100%;
+  max-width: 32rem;
+  margin: 8px 0 20px;
+  padding: 10px;
+  border: 1px solid var(--bank-line);
+  background: var(--bank-paper);
+  color: var(--bank-ink);
 }
 .bank-login {
   min-height: 100vh;
@@ -1165,15 +1179,18 @@
 }
 .bank-context-edit form {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin: 20px 0;
 }
 .bank-context-edit label {
+  min-width: 0;
   display: block;
   font-size: 11px;
 }
 .bank-context-edit select {
+  min-width: 0;
+  max-width: 100%;
   display: block;
   width: 100%;
   padding: 13px;

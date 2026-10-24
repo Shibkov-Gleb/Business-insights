@@ -1,7 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { companyContextSchema, type CompanyContext } from "@context/contracts";
+import {
+  companyContextSchema,
+  corporateFieldLabels,
+  type CompanyContext,
+} from "@context/contracts";
 import { bankApi } from "./api";
 export function ContextEdit({ context }: { context: CompanyContext }) {
   const cache = useQueryClient(),
@@ -50,13 +54,12 @@ export function ContextEdit({ context }: { context: CompanyContext }) {
         <label>
           Признак
           <select name="field">
-            <option value="CL_PRODUCT_LOA_MARK">
-              Кредиты (1.0 — есть, 0.0 — нет)
-            </option>
-            <option value="FTS_FLAG">Признак ВЭД (1.0 / 0.0)</option>
-            <option value="MAINOKVED_NAME">Основная деятельность</option>
-            <option value="REGION">Регион регистрации</option>
-            <option value="REVENUE_COMPANY">Выручка в исходных единицах</option>
+            {Object.entries(corporateFieldLabels).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+                {context.conflicts.includes(key) ? " · конфликт вариантов" : ""}
+              </option>
+            ))}
           </select>
         </label>
         <label>

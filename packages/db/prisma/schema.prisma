@@ -113,6 +113,7 @@ model CorporateNews {
  createdBy String @db.Uuid
  synthetic Boolean @default(false)
  createdAt DateTime @default(now()) @db.Timestamptz
+ insights CorporateInsight[]
  @@unique([companyId, sha256])
  @@index([companyId, publishedAt])
 }
@@ -121,15 +122,36 @@ model CorporateInsight {
  companyId String @db.Uuid
  runId String @db.Uuid
  newsId String @db.Uuid
+ news CorporateNews @relation(fields: [newsId], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "insight_news")
  contextVersion Int
  data Json
  evidence Json
  score Int
  channels String[]
  synthetic Boolean @default(false)
+ analysisKey String @default("legacy")
+ latestRevisionId String? @db.Uuid
  createdAt DateTime @default(now()) @db.Timestamptz
  @@unique([companyId, newsId, contextVersion])
  @@index([companyId, createdAt, id])
+}
+model CorporateInsightRevision {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ insightId String @db.Uuid
+ runId String @db.Uuid
+ fingerprint String
+ analysisKey String
+ contextVersion Int
+ data Json
+ evidence Json
+ score Int
+ channels String[]
+ synthetic Boolean
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([insightId, fingerprint])
+ @@index([companyId, createdAt])
+ @@index([insightId, createdAt, id])
 }
 model CorporateTrace {
  id String @id @default(uuid()) @db.Uuid

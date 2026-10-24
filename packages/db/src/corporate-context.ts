@@ -1,31 +1,12 @@
 import { db } from "./index.ts";
 import {
   companyContextSchema,
+  corporateFieldLabels,
   type CompanyContext,
   type CorporateFact,
 } from "@context/contracts";
 import { z } from "zod";
-const labels: Record<string, string> = {
-  MAINOKVED_CODE: "ОКВЭД",
-  MAINOKVED_NAME: "Основная деятельность",
-  REVENUE_COMPANY: "Выручка",
-  REGION: "Регион регистрации",
-  CITY: "Город регистрации",
-  ECO_MARK_LABEL: "Стадия из набора",
-  COMPANY_AGE_YEARS_GRADATION: "Возраст",
-  AMOUNT_WORKERS_FNS_GRADATION: "Сотрудники (ФНС)",
-  AMOUNT_WORKERS_SPARK_GRADATION: "Сотрудники (СПАРК)",
-  FTS_FLAG: "Признак ВЭД",
-  FTS_COUNTRY_NAME: "Страны из набора",
-  CL_PRODUCT_RKO_MARK: "РКО",
-  CL_PRODUCT_GAR_MARK: "Гарантии",
-  CL_PRODUCT_LOA_MARK: "Кредиты",
-  CL_PRODUCT_LEA_MARK: "Лизинг",
-  CL_PRODUCT_DEP_MARK: "Депозиты",
-  CL_PRODUCT_ZPP_MARK: "Зарплатный проект",
-  FACTORING_MARK: "Факторинг",
-  NEGATIVEMARK: "Исходный признак NEGATIVEMARK",
-};
+const labels = corporateFieldLabels;
 export const companyFieldLabels = labels;
 export async function companyContext(
   companyId: string,
@@ -106,12 +87,12 @@ export async function companyContext(
       SELECT beneficiary counterparty,'outgoing' direction,sum(amount) amount,sum(count) cnt FROM "PaymentEdge" WHERE payer=${company.externalId} AND beneficiary<>payer GROUP BY beneficiary
       UNION ALL SELECT payer,'incoming',sum(amount),sum(count) FROM "PaymentEdge" WHERE beneficiary=${company.externalId} AND beneficiary<>payer GROUP BY payer
     ), ranked AS (SELECT *, (amount / nullif(sum(amount) OVER (PARTITION BY direction),0))::float share,row_number() OVER(PARTITION BY direction ORDER BY amount DESC,counterparty) rn FROM edges)
-    SELECT r.counterparty,r.direction,r.amount::text,r.cnt::text count,coalesce(r.share,0) share,coalesce(c.unknown,true) "unknownCompany" FROM ranked r LEFT JOIN "CorporateCompany" c ON c."externalId"=r.counterparty WHERE rn<=5 ORDER BY direction,amount DESC`;
+    SELECT r.counterparty,r.direction,r.amount::text,r.cnt::text count,coalesce(r.share,0) share,coalesce(c.unknown,true) "unknownCompany" FROM ranked r LEFT JOIN "CorporateCompany" c ON c."externalId"=r.counterparty WHERE rn<=5 ORDER BY r.direction,r.amount DESC`;
   const position =
     company.datasetId && company.revenue
       ? await db.$queryRaw<
           { rank: number; total: number; share: string | null }[]
-        >`SELECT (1+(SELECT count(*) FROM "CorporateCompany" WHERE "datasetId"=${company.datasetId}::uuid AND revenue>${company.revenue}))::int rank,count(*)::int total,(${company.revenue}::numeric/nullif(sum(revenue),0))::text share FROM "CorporateCompany" WHERE "datasetId"=${company.datasetId}::uuid AND NOT unknown`
+        >`SELECT (1+(SELECT count(*) FROM "CorporateCompany" WHERE "datasetId"=${company.datasetId}::uuid AND revenue>${company.revenue}))::int rank,count(*)::int total,(${company.revenue}::numeric/nullif(sum(revenue),0))::text share FROM "CorporateCompany" WHERE "datasetId"=${company.datasetId}::uuid AND NOT unknown AND revenue IS NOT NULL`
       : [];
   for (const direction of ["incoming", "outgoing"] as const) {
     const largest = edges.find((x) => x.direction === direction);
@@ -192,7 +173,12 @@ export async function companyContext(
     relatedPersonCount,
     version: company.version,
     synthetic: company.synthetic,
-    facts,
+    facts: facts.sort((a, b) => {
+      const order = Object.keys(labels),
+        left = order.indexOf(a.key),
+        right = order.indexOf(b.key);
+      return (left < 0 ? 999 : left) - (right < 0 ? 999 : right);
+    }),
     conflicts: company.conflicts.filter((k) => !overrides[k]),
     unknowns,
     dependencies: edges,

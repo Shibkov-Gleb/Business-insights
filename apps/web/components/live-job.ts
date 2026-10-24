@@ -2,6 +2,11 @@
 import { useEffect, useRef, useState } from "react";
 export const nodeLabels: Record<string, string> = {
   context: "Контекст бизнеса",
+  interpret: "Интерпретация для компании",
+  refine: "Уточнение запроса и оснований",
+  bank_ocr: "Распознавание банковского материала",
+  chat_context: "Контекст и основания ответа",
+  chat_answer: "Подготовка ответа помощника",
   plan: "План исследования",
   retrieve: "Поиск и источники",
   extract: "Извлечение фактов",

@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import {
   corporateInsightSchema,
+  corporateRevisionSchema,
   type CorporateEvidence,
 } from "@context/contracts";
-import { bankApi, dateRu, channelLabels } from "./api";
+import { bankApi, dateRu, channelLabels, useBankPages } from "./api";
 export function BankInsight({
   companyId,
   insightId,
@@ -20,12 +22,20 @@ export function BankInsight({
   source: (e: CorporateEvidence) => void;
   run: (id: string) => void;
 }) {
+  const router = useRouter(),
+    params = useSearchParams(),
+    revision = params.get("revision");
+  const versions = useBankPages(
+    corporateRevisionSchema,
+    `/companies/${companyId}/insights/${insightId}/revisions`,
+    ["corporate-revisions", companyId, insightId],
+  );
   const item = useQuery({
-    queryKey: ["corporate-insight", companyId, insightId],
+    queryKey: ["corporate-insight", companyId, insightId, revision],
     queryFn: () =>
       bankApi(
         corporateInsightSchema,
-        `/companies/${companyId}/insights/${insightId}`,
+        `/companies/${companyId}/insights/${insightId}${revision ? "?revision=" + revision : ""}`,
       ),
   });
   if (!item.data)
@@ -59,6 +69,37 @@ export function BankInsight({
         {dateRu(i.createdAt)}
       </p>
       <h1>{a.title}</h1>
+      {versions.data && versions.data.items.length > 0 && (
+        <label>
+          Версия анализа{" "}
+          <select
+            aria-label="Версия анализа"
+            value={revision || ""}
+            onChange={(e) => {
+              const next = new URLSearchParams(params.toString());
+              if (e.target.value) next.set("revision", e.target.value);
+              else next.delete("revision");
+              router.push(`/bank/${companyId}/insights/${insightId}?${next}`);
+            }}
+          >
+            <option value="">Последняя</option>
+            {versions.data.items.map((v, n) => (
+              <option key={v.id} value={v.id}>
+                {dateRu(v.createdAt)} · контекст {v.contextVersion} ·{" "}
+                {n === 0 ? "текущая" : "история"}
+              </option>
+            ))}
+          </select>
+          {versions.hasNextPage && (
+            <button
+              className="bank-link"
+              onClick={() => void versions.fetchNextPage()}
+            >
+              Ещё версии
+            </button>
+          )}
+        </label>
+      )}
       <div className="bank-reading-label">
         {i.synthetic ? "ДЕМОНСТРАЦИОННЫЙ АНАЛИЗ" : "ВЫВОДЫ AI"} · это
         аналитический помощник, не позиция банка

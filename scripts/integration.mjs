@@ -44,6 +44,7 @@ try {
     "run",
     "tests/integration/corporate.test.ts",
     "tests/integration/corporate-flow.test.ts",
+    "tests/integration/hackathon-provider.test.ts",
     "--no-file-parallelism",
   ]);
   // Legacy restart tests own their replacement worker and stop it in afterAll.

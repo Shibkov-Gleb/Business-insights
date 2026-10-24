@@ -19,6 +19,7 @@ import {
   corporateQueries,
   bankQueryForNews,
   eventFingerprint,
+  personalScore,
   deterministicAssessment,
   verifyCorporateAssessment,
 } from "./corporate-rules.ts";
@@ -26,6 +27,7 @@ import { bankSearch, normalizeQuote } from "./bank-corpus.ts";
 import { BraveSearch, extractPage, digest, readRss } from "./sources.ts";
 import { hackStructured } from "./hackathon-llm.ts";
 import { event } from "../../db/src/jobs.ts";
+import { corporateAnalysisKey } from "./corporate-version.ts";
 type News = {
   id: string;
   title: string;
@@ -147,6 +149,19 @@ export async function corporateGraph(
     input = corporateRunInput.parse(
       (initial.run.snapshot as Record<string, unknown>).input,
     );
+  const analysisKey =
+    (initial.run.snapshot as { analysisKey?: string }).analysisKey ||
+    (await corporateAnalysisKey());
+  if (!(initial.run.snapshot as { analysisKey?: string }).analysisKey)
+    await db.insightRun.update({
+      where: { id: runId },
+      data: {
+        snapshot: json({
+          ...(initial.run.snapshot as Record<string, unknown>),
+          analysisKey,
+        }),
+      },
+    });
   const guard = () => assertCorporateRun(runId);
   const graph = new StateGraph(State)
     .addNode("context", async () => {
@@ -157,7 +172,9 @@ export async function corporateGraph(
       );
       await trace(runId, "context", "versioned_company_context", start, {
         companyId: context.id,
+        perspective: input.perspective || "company_common",
         version: context.version,
+        analysisKey,
         featureKeys: context.facts.map((x) => x.key),
         datasetIds: [...new Set(context.facts.map((x) => x.evidence.sourceId))],
         unknowns: context.unknowns,
@@ -208,11 +225,13 @@ export async function corporateGraph(
             budget.searches++;
             try {
               found.push(
-                ...(await new BraveSearch().search(
-                  q,
-                  initial.run.windowFrom.toISOString(),
-                  initial.run.windowTo.toISOString(),
-                )),
+                ...(
+                  await new BraveSearch().search(
+                    q,
+                    initial.run.windowFrom.toISOString(),
+                    initial.run.windowTo.toISOString(),
+                  )
+                ).map((hit) => ({ ...hit, publishedAt: null })),
               );
             } catch {
               gaps.push("Поиск Brave недоступен");
@@ -272,6 +291,16 @@ export async function corporateGraph(
       const rows = await db.corporateNews.findMany({
         where: {
           companyId: initial.company.id,
+          ...(!input.newsIds.length
+            ? {
+                insights: {
+                  none: {
+                    contextVersion: s.businessContext.version,
+                    analysisKey,
+                  },
+                },
+              }
+            : {}),
           ...(input.newsIds.length
             ? { id: { in: input.newsIds } }
             : config.APP_MODE === "live"
@@ -307,10 +336,16 @@ export async function corporateGraph(
           : Math.max(1, Math.min(4, Math.floor((config.RUN_MAX_LLM - 3) / 2)));
       const ranked = [...rows].sort(
         (a, b) =>
-          deterministicAssessment(s.businessContext, b.title, b.text, [])
-            .relevance -
-            deterministicAssessment(s.businessContext, a.title, a.text, [])
-              .relevance || a.id.localeCompare(b.id),
+          personalScore(
+            deterministicAssessment(s.businessContext, b.title, b.text, []),
+            input.perspective || "owner",
+            [],
+          ) -
+            personalScore(
+              deterministicAssessment(s.businessContext, a.title, a.text, []),
+              input.perspective || "owner",
+              [],
+            ) || a.id.localeCompare(b.id),
       );
       if (ranked.length > newsLimit)
         gaps.push(
@@ -437,7 +472,20 @@ export async function corporateGraph(
                     text:
                       s.extracted?.[news.id]?.quote || news.text.slice(0, 2000),
                   },
-                  evidence,
+                  evidence: evidence.filter(
+                    (e) =>
+                      e.kind !== "bank" ||
+                      (e.confidence === "verified" && !e.historical),
+                  ),
+                  bankGaps: bank
+                    .filter((e) => e.confidence !== "verified" || e.historical)
+                    .map((e) => ({
+                      title: e.title,
+                      page: e.page,
+                      reason: e.historical
+                        ? "historical"
+                        : "ocr_or_date_unverified",
+                    })),
                   priorErrors:
                     s.candidates?.find((c) => c.news.id === news.id)?.errors ||
                     [],
@@ -446,6 +494,10 @@ export async function corporateGraph(
                 runId,
                 guard,
               );
+        if (!data.bankView && !data.unknowns.some((x) => /позици/i.test(x)))
+          data.unknowns.push(
+            "Подходящая актуальная проверенная позиция банка не найдена",
+          );
         candidates.push({
           news,
           data: corporateAssessment.parse(data),
@@ -556,6 +608,8 @@ export async function corporateGraph(
     .addNode("persist", async (s) => {
       const start = Date.now();
       await guard();
+      if (analysisKey !== (await corporateAnalysisKey()))
+        throw new Error("BANK_CONTEXT_CHANGED");
       await db.$transaction(async (tx) => {
         await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${initial.company.id}))`;
         const current = await tx.insightRun.findUniqueOrThrow({
@@ -576,8 +630,20 @@ export async function corporateGraph(
         });
         if (company.version !== s.businessContext.version)
           throw new Error("CONTEXT_VERSION_CONFLICT");
-        for (const c of s.candidates.filter((c) => !c.errors.length))
-          await tx.corporateInsight.upsert({
+        for (const c of s.candidates.filter((c) => !c.errors.length)) {
+          const values = {
+            companyId: company.id,
+            runId,
+            contextVersion: s.businessContext.version,
+            analysisKey,
+            data: json(c.data),
+            evidence: json(c.evidence),
+            score:
+              c.data.relevance * 100 + c.data.impact * 20 + c.data.urgency * 5,
+            channels: c.data.channels,
+            synthetic: config.APP_MODE === "demo" || c.news.synthetic,
+          };
+          const insight = await tx.corporateInsight.upsert({
             where: {
               companyId_newsId_contextVersion: {
                 companyId: company.id,
@@ -585,22 +651,38 @@ export async function corporateGraph(
                 contextVersion: s.businessContext.version,
               },
             },
-            create: {
-              companyId: company.id,
-              runId,
-              newsId: c.news.id,
-              contextVersion: s.businessContext.version,
-              data: json(c.data),
-              evidence: json(c.evidence),
-              score:
-                c.data.relevance * 100 +
-                c.data.impact * 20 +
-                c.data.urgency * 5,
-              channels: c.data.channels,
-              synthetic: config.APP_MODE === "demo" || c.news.synthetic,
-            },
+            create: { ...values, newsId: c.news.id },
             update: {},
           });
+          const fingerprint = digest(
+            JSON.stringify([
+              analysisKey,
+              company.id,
+              c.news.id,
+              s.businessContext.version,
+            ]),
+          );
+          const revision = await tx.corporateInsightRevision.upsert({
+            where: {
+              insightId_fingerprint: { insightId: insight.id, fingerprint },
+            },
+            create: { ...values, insightId: insight.id, fingerprint },
+            update: {},
+          });
+          await tx.corporateInsight.update({
+            where: { id: insight.id },
+            data: {
+              runId: revision.runId,
+              analysisKey,
+              data: revision.data as typeof values.data,
+              evidence: revision.evidence as typeof values.evidence,
+              score: revision.score,
+              channels: revision.channels,
+              synthetic: revision.synthetic,
+              latestRevisionId: revision.id,
+            },
+          });
+        }
         const rejected = s.candidates
           .filter((c) => c.errors.length)
           .map((c) => ({ newsId: c.news.id, errors: c.errors }));
@@ -653,6 +735,7 @@ export async function corporateGraph(
   });
 }
 export async function corporateChatGraph(runId: string) {
+  await event(runId, "progress", { node: "chat_context" });
   const { run, company } = await assertCorporateRun(runId),
     chat = await db.corporateChat.findUniqueOrThrow({
       where: { id: run.resourceId! },
@@ -667,7 +750,13 @@ export async function corporateChatGraph(runId: string) {
     ? z
         .array((await import("@context/contracts")).corporateEvidence)
         .parse(insight.evidence)
-    : await bankSearch(chat.question);
+        .filter(
+          (e) =>
+            e.kind !== "bank" || (e.confidence === "verified" && !e.historical),
+        )
+    : (await bankSearch(chat.question)).filter(
+        (e) => e.confidence === "verified" && !e.historical,
+      );
   await exactEvidence(evidence);
   const prior = await db.corporateChat.findMany({
     where: {
@@ -679,6 +768,7 @@ export async function corporateChatGraph(runId: string) {
     orderBy: { createdAt: "desc" },
     take: 5,
   });
+  await event(runId, "progress", { node: "chat_answer" });
   const result =
     config.APP_MODE === "demo"
       ? {

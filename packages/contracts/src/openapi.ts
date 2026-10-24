@@ -6,6 +6,7 @@ import {
   corporateRunInput,
   corporateNewsInput,
   corporateInsightSchema,
+  corporateRevisionSchema,
   corporateEvidence,
   corporateCompanyItem,
   corporateRunSchema,
@@ -53,6 +54,7 @@ const routes: [string, string, z.ZodType?][] = [
   ["patch", "/bank/companies/{companyId}/preferences", corporatePreferences],
   ["get", "/bank/companies/{companyId}/feed"],
   ["get", "/bank/companies/{companyId}/insights/{insightId}"],
+  ["get", "/bank/companies/{companyId}/insights/{insightId}/revisions"],
   ["post", "/bank/companies/{companyId}/news", corporateNewsInput],
   ["get", "/bank/companies/{companyId}/news"],
   ["post", "/bank/companies/{companyId}/runs", corporateRunInput],
@@ -399,6 +401,10 @@ export function openapi() {
       interests: z.array(z.string()),
     }),
     "/bank/companies/{companyId}/insights/{insightId}": corporateInsightSchema,
+    "/bank/companies/{companyId}/insights/{insightId}/revisions": z.object({
+      items: z.array(corporateRevisionSchema),
+      nextCursor: z.string().nullable(),
+    }),
     "/bank/companies/{companyId}/runs": z.object({
       items: z.array(corporateRunSchema),
       nextCursor: z.string().nullable(),
@@ -465,6 +471,14 @@ export function openapi() {
   );
   paths["/bank/materials/{materialId}/original"].get.responses["200"].content =
     { "application/pdf": { schema: { type: "string", format: "binary" } } };
+  paths["/bank/companies/{companyId}/insights/{insightId}"].get.parameters.push(
+    {
+      name: "revision",
+      in: "query",
+      schema: { type: "string", format: "uuid" },
+      description: "Неизменяемая историческая версия; по умолчанию последняя",
+    },
+  );
   paths["/bank/materials/import"].post.requestBody = {
     required: true,
     content: {

@@ -1,4 +1,29 @@
 import { z } from "zod";
+export const corporateFieldLabels: Record<string, string> = {
+  MAINOKVED_CODE: "ОКВЭД",
+  MAINOKVED_NAME: "Основная деятельность",
+  REVENUE_COMPANY: "Выручка в исходных единицах",
+  REGION: "Регион регистрации",
+  CITY: "Город регистрации",
+  ECO_MARK_LABEL: "Стадия из набора",
+  COMPANY_AGE_YEARS_GRADATION: "Возраст",
+  AMOUNT_WORKERS_FNS_GRADATION: "Сотрудники (ФНС)",
+  AMOUNT_WORKERS_SPARK_GRADATION: "Сотрудники (СПАРК)",
+  FTS_FLAG: "Признак ВЭД (1.0 / 0.0)",
+  FTS_COUNTRY_NAME: "Страны из набора",
+  CL_PRODUCT_RKO_MARK: "РКО (1.0 / 0.0)",
+  CL_PRODUCT_GAR_MARK: "Гарантии (1.0 / 0.0)",
+  CL_PRODUCT_LOA_MARK: "Кредиты (1.0 / 0.0)",
+  CL_PRODUCT_LEA_MARK: "Лизинг (1.0 / 0.0)",
+  CL_PRODUCT_DEP_MARK: "Депозиты (1.0 / 0.0)",
+  CL_PRODUCT_ZPP_MARK: "Зарплатный проект (1.0 / 0.0)",
+  FACTORING_MARK: "Факторинг (1.0 / 0.0)",
+  NEGATIVEMARK: "Признак ключевого собственника из набора, не кредитный риск",
+  GROUP_ID: "Группа из набора (не права доступа)",
+  OKFS_NAME: "Форма собственности",
+  ORG_TYPE: "Тип организации",
+  CL_TYPE: "Клиентский статус из набора",
+};
 export const workRoles = [
   "owner",
   "ceo",
@@ -104,6 +129,8 @@ export const corporateAssessment = z.object({
   category: z.enum(["risk", "opportunity", "mixed", "background"]),
 });
 export const corporateInsightSchema = z.object({
+  revisionId: z.uuid().nullable().optional(),
+  contextVersion: z.number().int().positive().default(1),
   id: z.uuid(),
   companyId: z.uuid(),
   runId: z.uuid(),
@@ -113,11 +140,19 @@ export const corporateInsightSchema = z.object({
   evidence: z.array(corporateEvidence),
   synthetic: z.boolean(),
 });
+export const corporateRevisionSchema = z.object({
+  id: z.uuid(),
+  runId: z.uuid(),
+  contextVersion: z.number().int(),
+  analysisKey: z.string(),
+  createdAt: z.string(),
+});
 export const corporatePreferences = z.object({
   role: z.enum(workRoles),
   interests: z.array(z.enum(impactChannels)).max(7).default([]),
 });
 export const corporateRunInput = z.object({
+  perspective: z.enum(workRoles).optional(),
   expectedVersion: z.number().int().positive(),
   from: z.iso.datetime().optional(),
   to: z.iso.datetime().optional(),

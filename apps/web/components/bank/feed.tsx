@@ -5,12 +5,14 @@ import { corporateInsightSchema, type WorkRole } from "@context/contracts";
 import { bankApi, pageOf, channelLabels, dateRu } from "./api";
 export function BankFeed({
   companyId,
+  version,
   role,
   days,
   category,
   query,
 }: {
   companyId: string;
+  version: number;
   role: WorkRole;
   days: string;
   category: string;
@@ -94,6 +96,7 @@ export function BankFeed({
             </Link>
             <p>{item.data.why}</p>
             <div className="bank-signal-footer">
+              {item.contextVersion !== version && <span>Оценка по предыдущему контексту v{item.contextVersion}. Обновите исследование.</span>}
               <span>
                 {item.data.bankView
                   ? "Есть банковский тезис с цитатой"

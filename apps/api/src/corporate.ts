@@ -28,6 +28,7 @@ import {
 } from "../../../packages/db/src/corporate-context.ts";
 import { enqueue, event } from "../../../packages/db/src/jobs.ts";
 import { dailyBudget } from "../../../packages/agent/src/hackathon-budget.ts";
+import { corporateAnalysisKey } from "../../../packages/agent/src/corporate-version.ts";
 import { roleChannels } from "../../../packages/agent/src/corporate-rules.ts";
 import {
   digest,
@@ -299,7 +300,11 @@ corporate.patch("/companies/:companyId/context", async (req, res) => {
     }
     await tx.corporateCompany.update({
       where: { id: companyId },
-      data: { fields: json(fields), version: { increment: 1 } },
+      data: {
+        fields: json(fields),
+        version: { increment: 1 },
+        ...(input.fields.GROUP_ID ? { groupId: input.fields.GROUP_ID } : {}),
+      },
     });
   });
   res.json(await companyContext(companyId, userId));
@@ -355,10 +360,9 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
     .enum(["all", "risk", "opportunity", "mixed", "background"])
     .default("all")
     .parse(req.query.category);
-  const from = new Date(Date.now() - period * 86400000),
-    signature = digest(
-      JSON.stringify([companyId, role, grant.interests, period, category]),
-    );
+  const signature = digest(
+    JSON.stringify([companyId, role, grant.interests, period, category]),
+  );
   const cursor = req.query.cursor
     ? z
         .object({
@@ -366,6 +370,7 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
           createdAt: z.iso.datetime(),
           id: z.uuid(),
           signature: z.string(),
+          asOf: z.iso.datetime(),
         })
         .parse(cursorDecode(req.query.cursor))
     : null;
@@ -376,6 +381,7 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
       "Фильтры изменились; начните с первой страницы",
     );
   type FeedRow = {
+    contextVersion: number;
     id: string;
     companyId: string;
     runId: string;
@@ -385,10 +391,17 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
     score: number;
     synthetic: boolean;
   };
-  const rows = await db.$queryRaw<FeedRow[]>(Prisma.sql`WITH ranked AS (
-    SELECT i.*, (i.score + 18*(SELECT count(*) FROM unnest(i.channels) x WHERE x=ANY(${roleValues}::text[])) + 12*(SELECT count(*) FROM unnest(i.channels) x WHERE x=ANY(${grant.interests}::text[])))::int personal_score
-    FROM "CorporateInsight" i WHERE i."companyId"=${companyId}::uuid AND i."createdAt">=${from} ${category !== "all" ? Prisma.sql`AND i.data->>'category'=${category}` : Prisma.empty}
-  ) SELECT id,"companyId","runId",data,evidence,"createdAt",personal_score score,synthetic FROM ranked
+  const asOf = cursor ? new Date(cursor.asOf) : new Date(),
+    stableFrom = new Date(asOf.getTime() - period * 86400000);
+  const rows = await db.$queryRaw<FeedRow[]>(Prisma.sql`WITH revisions AS (
+    SELECT DISTINCT ON ("insightId") * FROM "CorporateInsightRevision" WHERE "companyId"=${companyId}::uuid AND "createdAt"<=${asOf} ORDER BY "insightId","createdAt" DESC,id DESC
+  ), latest AS (
+    SELECT DISTINCT ON (i."newsId") i.id,i."companyId",i."newsId",i."contextVersion",r."runId",r.data,r.evidence,r.score,r.channels,r.synthetic,r."createdAt"
+    FROM "CorporateInsight" i JOIN revisions r ON r."insightId"=i.id WHERE i."companyId"=${companyId}::uuid ORDER BY i."newsId",i."contextVersion" DESC,r."createdAt" DESC,i.id DESC
+  ), ranked AS (
+    SELECT i.*, (i.score + CASE WHEN (i.data->>'relevance')::int>=3 THEN 120*CASE WHEN ${roleValues[0]}=ANY(i.channels) THEN 1 ELSE 0 END + 30*(SELECT count(*) FROM unnest(i.channels) x WHERE x=ANY(${roleValues.slice(1)}::text[])) + 12*(SELECT count(*) FROM unnest(i.channels) x WHERE x=ANY(${grant.interests}::text[])) ELSE 0 END)::int personal_score
+    FROM latest i WHERE i."createdAt">=${stableFrom} ${category !== "all" ? Prisma.sql`AND i.data->>'category'=${category}` : Prisma.empty}
+  ) SELECT id,"companyId","runId","contextVersion",data,evidence,"createdAt",personal_score score,synthetic FROM ranked
   WHERE true ${cursor ? Prisma.sql`AND (personal_score, "createdAt",id)<(${cursor.score},${new Date(cursor.createdAt)},${cursor.id}::uuid)` : Prisma.empty}
   ORDER BY personal_score DESC,"createdAt" DESC,id DESC LIMIT ${take + 1}`);
   const items = rows.slice(0, take).map((x) => ({
@@ -404,6 +417,7 @@ corporate.get("/companies/:companyId/feed", async (req, res) => {
       rows.length > take && last
         ? cursorEncode({
             score: last.score,
+            asOf: asOf.toISOString(),
             createdAt: last.createdAt,
             id: last.id,
             signature,
@@ -420,8 +434,43 @@ corporate.get("/companies/:companyId/insights/:insightId", async (req, res) => {
     where: { id: id(req, "insightId"), companyId },
   });
   if (!insight) fail(404, "NOT_FOUND", "Материал не найден");
-  res.json(insight);
+  const revisionId = req.query.revision
+    ? z.uuid().parse(req.query.revision)
+    : insight!.latestRevisionId;
+  const revision = revisionId
+    ? await db.corporateInsightRevision.findFirst({
+        where: { id: revisionId, insightId: insight!.id, companyId },
+      })
+    : null;
+  if (req.query.revision && !revision)
+    fail(404, "NOT_FOUND", "Версия не найдена");
+  res.json(
+    revision
+      ? { ...insight, ...revision, id: insight!.id, revisionId: revision.id }
+      : insight,
+  );
 });
+corporate.get(
+  "/companies/:companyId/insights/:insightId/revisions",
+  async (req, res) => {
+    const companyId = id(req, "companyId");
+    await companyAccess(authenticated(req), companyId);
+    const page = timePage(req);
+    const rows = await db.corporateInsightRevision.findMany({
+      where: { companyId, insightId: id(req, "insightId"), ...page.after },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: page.take + 1,
+      select: {
+        id: true,
+        runId: true,
+        contextVersion: true,
+        analysisKey: true,
+        createdAt: true,
+      },
+    });
+    res.json(timeList(rows, page.take, (x) => x.createdAt));
+  },
+);
 corporate.post("/companies/:companyId/news", async (req, res) => {
   const userId = authenticated(req),
     companyId = id(req, "companyId");
@@ -527,6 +576,7 @@ corporate.post("/companies/:companyId/runs", async (req, res) => {
       key: key(req),
       snapshot: {
         context: await companyContext(companyId, userId),
+        analysisKey: await corporateAnalysisKey(),
         input,
         requestId: req.requestId,
       },

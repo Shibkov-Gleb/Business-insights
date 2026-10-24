@@ -1,0 +1,5708 @@
+[
+  {
+    "id": "dev-metal-credit-01",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-02",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-03",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-04",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-05",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "ceo",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-06",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-07",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-08",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-09",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "ceo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-credit-10",
+    "split": "development",
+    "profile": "dev-metal-credit",
+    "context": {
+      "id": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+      "name": "dev-metal-credit",
+      "externalId": "synthetic-dev-metal-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "2cda62aa-476f-571d-8fb4-37f873c457b8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-01",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "accountant",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-02",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "accountant",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-03",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "accountant",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-04",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "accountant",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-05",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "accountant",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-06",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "accountant",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-07",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "accountant",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-08",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "accountant",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-09",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "accountant",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-cash-10",
+    "split": "development",
+    "profile": "dev-food-cash",
+    "context": {
+      "id": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+      "name": "dev-food-cash",
+      "externalId": "synthetic-dev-food-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "a99502c7-d8af-5673-9641-3e9d15f3ee4f",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-01",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "owner",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-02",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-03",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-04",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-05",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "owner",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-06",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-07",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-08",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "owner",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-09",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "owner",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-metal-cash-10",
+    "split": "development",
+    "profile": "dev-metal-cash",
+    "context": {
+      "id": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+      "name": "dev-metal-cash",
+      "externalId": "synthetic-dev-metal-cash",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "187b47fe-2e46-5a52-94f2-921ede551dd8",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-01",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-02",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "executive",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-03",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-04",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "executive",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-05",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-06",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-07",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-08",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-09",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "executive",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "dev-food-credit-10",
+    "split": "development",
+    "profile": "dev-food-credit",
+    "context": {
+      "id": "30699742-514c-5a65-8118-63e25872cd77",
+      "name": "dev-food-credit",
+      "externalId": "synthetic-dev-food-credit",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "30699742-514c-5a65-8118-63e25872cd77",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-01",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-02",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "cfo",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-03",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-04",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-05",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "cfo",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-06",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-07",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-08",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-09",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "cfo",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-metal-10",
+    "split": "heldout",
+    "profile": "held-metal",
+    "context": {
+      "id": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+      "name": "held-metal",
+      "externalId": "synthetic-held-metal",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство стали",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "Производство стали",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "1.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "95606bd9-1460-5a6e-99d1-5e0cbae2efeb",
+            "quote": "0.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [
+        {
+          "counterparty": "synthetic-supplier",
+          "direction": "outgoing",
+          "amount": "900.000000",
+          "count": "100",
+          "share": 0.9,
+          "unknownCompany": true
+        }
+      ],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-01",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "treasurer",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:0",
+        "kind": "bank",
+        "sourceId": "2f734715-c310-56fe-a4c0-c07376c44ffa",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-02",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия валютных расчётов",
+      "text": "Синтетическое событие: валютные расчёты и логистика могут замедлиться. Конкретные маршруты и валюты неизвестны.",
+      "identity": "fx"
+    },
+    "role": "treasurer",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:1",
+        "kind": "bank",
+        "sourceId": "e5c153ac-af5f-542c-8a31-369d1f51e414",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-03",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Налоговая отчётность",
+      "text": "Синтетическое событие: налоговая отчётность меняется. Применимость и сроки следует сверить с нормативным источником.",
+      "identity": "tax"
+    },
+    "role": "treasurer",
+    "relevant": true,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-04",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на сталь и прокат",
+      "text": "Синтетическое событие: отрасль стали и проката пересматривает производственные планы на фоне изменения заказов.",
+      "identity": "steel"
+    },
+    "role": "treasurer",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:3",
+        "kind": "bank",
+        "sourceId": "67a874a2-11f4-5280-9645-1378335a4450",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2021-04-15T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": true
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-05",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Спрос на пищевые продукты",
+      "text": "Синтетическое событие: пищевые предприятия сообщают о переменах спроса на продовольственные товары.",
+      "identity": "food"
+    },
+    "role": "treasurer",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:4",
+        "kind": "bank",
+        "sourceId": "4c15ed3b-d820-595f-a3c3-e4212778bbad",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "ocr_uncertain",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-06",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Условия расчётов контрагентов",
+      "text": "Синтетическое событие: поставщик меняет порядок платежей. Влияние зависит от концентрации доступных связей.",
+      "identity": "payments"
+    },
+    "role": "treasurer",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-07",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Экономическая активность",
+      "text": "Синтетическое событие: экономика растёт неравномерно, динамика ВВП различается по секторам. Нужна оценка применимости.",
+      "identity": "macro"
+    },
+    "role": "treasurer",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:6",
+        "kind": "bank",
+        "sourceId": "c95784d4-cd47-5dfa-b721-8ec5dc2d350c",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-08",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Ожидания деловой активности",
+      "text": "Синтетическое событие: прогноз предприятий по расширению меняется. Это ожидание, а не подтверждённый итог.",
+      "identity": "forecast"
+    },
+    "role": "treasurer",
+    "relevant": true,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:7",
+        "kind": "bank",
+        "sourceId": "9edf10f5-6f5a-58fb-a979-9a0cafd5f371",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-09",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Денежно-кредитные условия — дубликат",
+      "text": "Синтетическое событие: ключевая ставка без изменений. Новые кредиты требуют проверки условий рефинансирования.",
+      "identity": "rate"
+    },
+    "role": "treasurer",
+    "relevant": false,
+    "bank": {
+      "text": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+      "evidence": {
+        "id": "bank:test:8",
+        "kind": "bank",
+        "sourceId": "9dfbf9d9-e24e-5541-9844-093ec2b49c68",
+        "quote": "Деловая активность определяется состоянием спроса и ограничениями предложения.",
+        "page": 1,
+        "publishedAt": "2026-09-11T00:00:00Z",
+        "title": "Синтетический банковский документ для теста, не публикация Альфа-Банка",
+        "confidence": "verified",
+        "historical": false
+      }
+    },
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  },
+  {
+    "id": "held-food-10",
+    "split": "heldout",
+    "profile": "held-food",
+    "context": {
+      "id": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+      "name": "held-food",
+      "externalId": "synthetic-held-food",
+      "groupId": null,
+      "version": 1,
+      "synthetic": true,
+      "facts": [
+        {
+          "key": "MAINOKVED_NAME",
+          "value": "Производство пищевых продуктов",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:MAINOKVED_NAME",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "Производство пищевых продуктов",
+            "title": "Синтетический профиль / MAINOKVED_NAME",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "CL_PRODUCT_LOA_MARK",
+          "value": "0.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:CL_PRODUCT_LOA_MARK",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "0.0",
+            "title": "Синтетический профиль / CL_PRODUCT_LOA_MARK",
+            "confidence": "verified",
+            "historical": false
+          }
+        },
+        {
+          "key": "FTS_FLAG",
+          "value": "1.0",
+          "origin": "synthetic",
+          "confirmed": true,
+          "evidence": {
+            "id": "feature:FTS_FLAG",
+            "kind": "synthetic",
+            "sourceId": "ef9807a9-5ded-5d38-b89a-5019cffbc277",
+            "quote": "1.0",
+            "title": "Синтетический профиль / FTS_FLAG",
+            "confidence": "verified",
+            "historical": false
+          }
+        }
+      ],
+      "conflicts": [],
+      "unknowns": [
+        "Валюта, договорные ставки и период не предоставлены"
+      ],
+      "dependencies": [],
+      "datasetPosition": {
+        "revenueRank": null,
+        "companyCount": 0,
+        "datasetRevenueShare": null,
+        "realMarketShare": null
+      }
+    },
+    "event": {
+      "title": "Футбольный турнир",
+      "text": "Синтетическое событие: футбольный турнир завершился. Связь с деятельностью компании и её договорами не установлена.",
+      "identity": "noise"
+    },
+    "role": "employee",
+    "relevant": false,
+    "bank": null,
+    "labelNote": "Авторская разметка: непосредственная экспозиция, применимость отрасли и отсутствие подтверждения; не банковская экспертиза"
+  }
+]

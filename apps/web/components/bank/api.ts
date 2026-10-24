@@ -1,10 +1,36 @@
 import { z } from "zod";
 import { api } from "../shared";
+import { useInfiniteQuery } from "@tanstack/react-query";
 export const pageOf = <T extends z.ZodType>(item: T) =>
   z.object({
     items: z.array(item),
     nextCursor: z.string().nullable().optional(),
   });
+export function useBankPages<T>(
+  item: z.ZodType<T>,
+  path: string,
+  queryKey: readonly string[],
+) {
+  const result = useInfiniteQuery({
+    queryKey,
+    initialPageParam: "",
+    queryFn: ({ pageParam }) =>
+      bankApi(
+        z.object({ items: z.array(item), nextCursor: z.string().nullable() }),
+        path +
+          (path.includes("?") ? "&" : "?") +
+          "limit=30" +
+          (pageParam ? "&cursor=" + encodeURIComponent(pageParam) : ""),
+      ),
+    getNextPageParam: (page) => page.nextCursor || undefined,
+  });
+  return {
+    ...result,
+    data: result.data
+      ? { items: result.data.pages.flatMap((page) => page.items) }
+      : undefined,
+  };
+}
 export async function bankApi<T>(
   schema: z.ZodType<T>,
   path: string,
