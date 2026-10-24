@@ -1,5 +1,6 @@
-FROM node:22.19.0-bookworm-slim
+FROM node:22.19.0-bookworm-slim AS ocr
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates poppler-utils tesseract-ocr tesseract-ocr-rus tesseract-ocr-eng && rm -rf /var/lib/apt/lists/*
+FROM ocr AS app
 RUN npm install -g pnpm@11.25.0
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
