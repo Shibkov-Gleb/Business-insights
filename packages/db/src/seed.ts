@@ -94,6 +94,12 @@ for (const name of ["Продукт", "Закупки"])
     }))
   )
     await db.analysisScope.create({ data: { orgId: projects[2].id, name } });
+for (const project of projects) {
+  const scope = await db.analysisScope.findFirstOrThrow({ where: { orgId: project.id, isDefault: true } });
+  for (const [name, domain] of [["Орбита · demo", "orbita.example.test"], ["Контур команды · demo", "team-contour.example.test"], ["Пульс · demo", "pulse.example.test"]]) {
+    await db.competitor.upsert({ where: { scopeId_identity: { scopeId: scope.id, identity: domain } }, update: {}, create: { orgId: project.id, scopeId: scope.id, identity: domain, name, data: json({ domain, type: "direct", reason: "Синтетический пример для знакомства с рыночной разведкой", sources: [] }), decision: "confirmed", monitoring: "active", fingerprint: "demo-research-v1" } });
+  }
+}
 console.log(
   "Demo: три синтетических проекта. Аккаунты и демонстрационный пароль описаны в README.",
 );

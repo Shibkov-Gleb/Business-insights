@@ -33,6 +33,9 @@ import {
 import { stageLabels } from "@context/contracts";
 import { setDisplayTimezone } from "../components/shared";
 import { Auth } from "../components/auth";
+import { MarketWorkspace } from "../components/market";
+import { useWorkspaceRoute } from "../components/workspace-route";
+import { useLiveJob } from "../components/live-job";
 import { ChatPanel, ChatWorkspace } from "../components/chat";
 import { Settings, Wizard, RunHistory } from "../components/settings";
 import {
@@ -59,6 +62,15 @@ export default function Page() {
 }
 function Application() {
   const qc = useQueryClient();
+  const { route, navigate } = useWorkspaceRoute();
+  const { org: orgId, scope: scopeId, tab, filter } = route;
+  const aggregate = route.aggregate === "1";
+  const setOrg = (org: string) => navigate({ org, scope: "", insight: "", competitor: "" });
+  const setScope = (scope: string) => navigate({ scope, insight: "", competitor: "" });
+  const setTab = (tab: string) => navigate({ tab, insight: "", competitor: "" });
+  const setFilter = (filter: string) => navigate({ filter });
+  const setAggregate = (value: boolean) => navigate({ aggregate: value ? "1" : "" });
+  const setDetail = (value: Row | null) => navigate({ insight: value?.id || "", tab: "insights" });
   const config = useQuery({
     queryKey: ["config"],
     queryFn: () => api("/config/public"),
@@ -68,15 +80,9 @@ function Application() {
     if (me.data?.timezone) setDisplayTimezone(me.data.timezone);
   }, [me.data?.timezone]);
   const [error, setError] = useState(""),
-    [orgId, setOrg] = useState(""),
-    [scopeId, setScope] = useState(""),
-    [tab, setTab] = useState("insights"),
     [menu, setMenu] = useState(false),
     [creating, setCreating] = useState(false),
-    [detail, setDetail] = useState<Row | null>(null),
-    [source, setSource] = useState<Row | null>(null),
-    [filter, setFilter] = useState("main"),
-    [aggregate, setAggregate] = useState(false);
+    [source, setSource] = useState<Row | null>(null);
   useEffect(() => {
     if (!menu || window.innerWidth > 760) return;
     const previous = document.activeElement as HTMLElement | null;
@@ -126,29 +132,32 @@ function Application() {
   const scopeRows: Row[] = scopes.data?.items || [],
     chosen = scopeRows.some((s) => s.id === scopeId)
       ? scopeId
-      : scopeRows[0]?.id || "",
+      : scopeRows.find(s => s.isDefault)?.id || scopeRows[0]?.id || "",
     scope = scopeRows.find((s) => s.id === chosen);
   const base = `/organizations/${selected}`,
     scoped = `${base}/scopes/${chosen}`,
     writable = org?.membership?.role !== "reader";
+  useEffect(() => {
+    if (selected && chosen && (selected !== route.org || chosen !== route.scope)) navigate({ org: selected, scope: chosen }, true);
+  }, [selected, chosen, route.org, route.scope]);
+  const detailQuery = useQuery({ queryKey: ["insight-detail", selected, route.insight], queryFn: () => api(`${base}/insights/${route.insight}`), enabled: !!selected && !!route.insight });
+  const detail = route.insight ? detailQuery.data : null;
   const feed = useInfiniteQuery({
     initialPageParam: "",
     getNextPageParam: (last: Row) =>
-      last.items.length === 100 ? last.nextCursor : undefined,
+      last.nextCursor || undefined,
     queryKey: ["feed", selected, chosen, filter, aggregate],
     queryFn: ({ pageParam }) =>
       api(
         `${base}/insights?${aggregate ? "" : "scopeId=" + chosen + "&"}filter=${filter}&limit=100${pageParam ? "&cursor=" + pageParam : ""}`,
       ),
     enabled: !!chosen && tab === "insights",
-    refetchInterval: 5000,
   });
   const feedItems = feed.data?.pages.flatMap((page) => page.items) || [];
   const runs = useQuery({
     queryKey: ["runs", selected, chosen],
     queryFn: () => api(`${scoped}/insight-runs`),
     enabled: !!chosen,
-    refetchInterval: 3000,
   });
   const active = runs.data?.items?.find((r: Row) =>
       ["queued", "running", "cancel_requested"].includes(r.status),
@@ -165,7 +174,9 @@ function Application() {
   }
   async function showSource(ref: Row) {
     await action(async () => {
-      if (ref.kind === "external") {
+      if (ref.sourceSnapshotId) {
+        setSource(await api(`${base}/scopes/${detail?.scopeId || chosen}/source-snapshots/${ref.sourceSnapshotId}`));
+      } else if (ref.kind === "external") {
         const value = await api(`${base}/evidence/${ref.sourceId}`);
         setSource({
           ...value,
@@ -193,17 +204,7 @@ function Application() {
       }
     });
   }
-  useEffect(() => {
-    if (!active) return;
-    const stream = new EventSource(`/api/v1/jobs/${active.id}/events`);
-    const update = () => {
-      void qc.invalidateQueries();
-      stream.close();
-    };
-    stream.addEventListener("completed", update);
-    stream.addEventListener("failed", update);
-    return () => stream.close();
-  }, [active?.id, qc]);
+  useLiveJob(active?.id, () => { void qc.invalidateQueries(); });
   if (me.isLoading || config.isLoading) return <Loading />;
   if (!me.data)
     return (
@@ -237,6 +238,8 @@ function Application() {
         </button>
         <nav>
           {[
+            { key: "overview", label: "Обзор рынка", icon: Globe },
+            { key: "competitors", label: "Конкуренты", icon: Target },
             { key: "insights", label: "Инсайды", icon: Sparkles },
             { key: "chat", label: "Обсуждения", icon: MessagesSquare },
             { key: "history", label: "История анализов", icon: History },
@@ -259,7 +262,6 @@ function Application() {
           {[
             { key: "profile", label: "Профиль бизнеса", icon: Building2 },
             { key: "documents", label: "Документы", icon: FileText },
-            { key: "competitors", label: "Конкуренты", icon: Target },
             { key: "sources", label: "Источники", icon: Globe },
             { key: "team", label: "Команда", icon: Users },
           ].map((n) => (
@@ -361,7 +363,7 @@ function Application() {
             </a>
           </div>
         )}
-        <main className="content">
+        <main className="content" key={selected + chosen + tab}>
           <ErrorNote error={error} />
           {!org ? (
             <Empty
@@ -376,7 +378,9 @@ function Application() {
             </Empty>
           ) : (
             <>
-              {tab === "insights" && (
+              {(tab === "overview" || tab === "competitors") && chosen && <MarketWorkspace key={scoped + tab} scoped={scoped} stage={org.stage} writable={writable} action={action} view={tab} onCompetitors={() => setTab("competitors")} />}
+              {route.insight && <section className="insight-page"><Button kind="secondary" onClick={() => setDetail(null)}>← К ленте</Button><ErrorNote error={detailQuery.error} />{detailQuery.isLoading ? <Loading /> : detail && <InsightDetail detail={detail} base={base} action={action} showSource={showSource} writable={writable} />}</section>}
+              {tab === "insights" && !route.insight && (
                 <>
                   <div className="page-heading">
                     <div>
@@ -641,25 +645,10 @@ function Application() {
         }}
       />
       <Modal
-        open={!!detail}
-        onClose={() => setDetail(null)}
-        title="Разбор инсайда"
-        wide
-      >
-        {detail && (
-          <InsightDetail
-            detail={detail}
-            base={base}
-            action={action}
-            showSource={showSource}
-            writable={writable}
-          />
-        )}
-      </Modal>
-      <Modal
         open={!!source}
         onClose={() => setSource(null)}
         title="Основание вывода"
+        side
       >
         {source && (
           <div className="source-detail">

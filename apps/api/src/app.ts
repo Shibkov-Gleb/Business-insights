@@ -15,6 +15,7 @@ import { insights, evidence } from "./insights.ts";
 import { chats } from "./chats.ts";
 import { deletion } from "./deletion.ts";
 import { openapi } from "../../../packages/contracts/src/openapi.ts";
+import { research } from "./research.ts";
 export const app = express();
 app.disable("x-powered-by");
 app.use((req, res, next) => {
@@ -41,6 +42,7 @@ app.use("/api/v1/organizations", deletion);
 app.use("/api/v1/invitations", invitations);
 app.use("/api/v1/organizations/:orgId/scopes/:scopeId/insight-runs", runs);
 app.use("/api/v1/organizations/:orgId/scopes/:scopeId", competitors);
+app.use("/api/v1/organizations/:orgId/scopes/:scopeId", research);
 app.use("/api/v1/organizations/:orgId/documents", documents);
 app.use("/api/v1/organizations/:orgId/insights", insights);
 app.use("/api/v1/organizations/:orgId/evidence", evidence);

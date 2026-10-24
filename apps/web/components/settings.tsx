@@ -11,7 +11,7 @@ import {
   Users,
   Check,
 } from "lucide-react";
-import { stages, stageLabels } from "@context/contracts";
+import { stages, stageLabels, contextLabels, stageQuestions } from "@context/contracts";
 import {
   api,
   Button,
@@ -117,12 +117,8 @@ export function Wizard({
         ) : step === 1 ? (
           <>
             <p className="muted">Необязательные поля можно пропустить.</p>
-            {[
-              ["audience", "Аудитория"],
-              ["problem", "Проблема"],
-              ["goal", "Ближайшая цель"],
-              ["geography", "География рынка"],
-            ].map(([name, label]) => (
+            <p>{stageQuestions[draft?.stage || "mvp"]}</p>
+            {Object.entries(contextLabels).map(([name, label]) => (
               <Field key={name} label={label}>
                 <input name={name} placeholder="Пока неизвестно" />
               </Field>
@@ -219,6 +215,7 @@ function Profile({ base, scoped, org, scope, writable, action }: Props) {
   const canEdit =
     writable && (!common || ["owner", "admin"].includes(org.membership.role));
   const groups: [string, string[][]][] = [
+    ["Контекст рыночной разведки", Object.entries(contextLabels)],
     [
       "Продукт и аудитория",
       [

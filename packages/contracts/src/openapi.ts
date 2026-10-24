@@ -8,10 +8,28 @@ import {
   competitorInput,
   evidenceSchema,
   assessmentSchema,
+  researchInput, watchInput, manualFactsInput,
 } from "./index.ts";
 const base = "/organizations/{orgId}",
   scope = base + "/scopes/{scopeId}";
 const routes: [string, string, z.ZodType?][] = [
+  ["post", scope + "/research-runs", researchInput],
+  ["get", scope + "/research-runs"],
+  ["get", scope + "/research-runs/{runId}"],
+  ["post", scope + "/research-runs/{runId}/cancel"],
+  ["get", scope + "/market-overview"],
+  ["get", scope + "/competitor-comparison"],
+  ["get", scope + "/competitors/{competitorId}/dossier"],
+  ["post", scope + "/competitors/{competitorId}/watch-sources", watchInput],
+  ["delete", scope + "/competitors/{competitorId}/watch-sources/{watchId}", z.object({ expectedVersion: z.number().int().positive() })],
+  ["patch", scope + "/competitors/{competitorId}/manual-facts", manualFactsInput],
+  ["get", scope + "/source-snapshots/{snapshotId}"],
+  ["get", scope + "/research-briefs"],
+  ["post", scope + "/research-briefs", z.object({ runId: z.uuid() })],
+  ["get", scope + "/research-briefs/{briefId}"],
+  ["get", scope + "/research-briefs/{briefId}/export"],
+  ["post", scope + "/research-briefs/{briefId}/decision", z.object({ confirm: z.literal(true) })],
+  ["get", scope + "/research-decisions"],
   ["get", "/auth/csrf"],
   ["post", "/auth/register", credentials],
   ["post", "/auth/login", credentials],
@@ -98,7 +116,7 @@ export function openapi() {
     const mutation = method !== "get";
     const accepted =
       method === "post" &&
-      /insight-runs$|competitor-searches$|messages$|documents$|retry$/.test(
+      /research-runs$|insight-runs$|competitor-searches$|messages$|documents$|retry$/.test(
         path,
       );
     const params = [...path.matchAll(/\{([^}]+)\}/g)].map((m) => ({

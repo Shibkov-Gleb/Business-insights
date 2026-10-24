@@ -1,4 +1,5 @@
 import { Queue, Worker } from "bullmq";
+import { Redis } from "ioredis";
 import { config } from "@context/config";
 import { db, json } from "@context/db";
 import {
@@ -471,7 +472,8 @@ const timer = setInterval(
   2000,
 );
 const heartbeatKey = `context:worker:${config.APP_MODE}:${digest(new URL(config.DATABASE_URL).pathname).slice(0, 12)}`;
-const heartbeat = setInterval(() => { void queue.client.then(client => client.set(heartbeatKey, new Date().toISOString(), "EX", 20)).catch(() => console.error(JSON.stringify({ code: "HEARTBEAT_FAILED" }))); }, 5000);
+const heartbeatClient = new Redis(config.REDIS_URL);
+const heartbeat = setInterval(() => { void heartbeatClient.set(heartbeatKey, new Date().toISOString(), "EX", 20).catch(() => console.error(JSON.stringify({ code: "HEARTBEAT_FAILED" }))); }, 5000);
 await dispatch();
 async function cleanup() {
   const before = new Date(Date.now() - config.RETENTION_DAYS * 86400000);
@@ -491,6 +493,7 @@ const retention = setInterval(
 console.log("Worker ready · " + config.APP_MODE);
 async function shutdown() {
   clearInterval(heartbeat);
+  await heartbeatClient.quit();
   clearInterval(timer);
   clearInterval(retention);
   await worker.close();

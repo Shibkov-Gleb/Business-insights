@@ -5,17 +5,22 @@ import { Loader2, Sparkles, X } from "lucide-react";
 export type Row = Record<string, any>;
 export type Action = (fn: () => Promise<unknown>) => Promise<void>;
 let csrf = "";
+const pendingKeys = new Map<string, string>();
 let displayTimezone = "Europe/Moscow";
 export function setDisplayTimezone(timezone: string) {
   displayTimezone = timezone;
 }
 export async function api(path: string, method = "GET", body?: unknown) {
+  // Keep the same key after an uncertain network outcome; successful operations
+  // clear it, so an intentional subsequent research starts a new run.
+  const signature = method + path + (body instanceof FormData ? Array.from(body.entries()).map(([key, v]) => `${key}:${typeof v === "string" ? v : `${v.name}:${v.size}:${v.lastModified}`}`).join("|") : JSON.stringify(body));
   if (method !== "GET" && !csrf)
     csrf = (await (await fetch("/api/v1/auth/csrf")).json()).csrfToken;
   const headers: Record<string, string> = {};
   if (method !== "GET") {
     headers["X-CSRF-Token"] = csrf;
-    headers["Idempotency-Key"] = crypto.randomUUID();
+    if (!pendingKeys.has(signature)) pendingKeys.set(signature, crypto.randomUUID());
+    headers["Idempotency-Key"] = pendingKeys.get(signature)!;
   }
   if (body && !(body instanceof FormData))
     headers["Content-Type"] = "application/json";
@@ -26,12 +31,14 @@ export async function api(path: string, method = "GET", body?: unknown) {
     body:
       body instanceof FormData ? body : body ? JSON.stringify(body) : undefined,
   });
-  const data = await r.json();
+  const data = await r.json().catch(() => { throw new Error(`Сервер недоступен (${r.status}). Повторите запрос.`); });
   if (!r.ok) {
+    if (r.status < 500) pendingKeys.delete(signature);
     if (r.status === 403) csrf = "";
     throw new Error(data.error?.message || "Ошибка запроса");
   }
   if (data.csrfToken) csrf = data.csrfToken;
+  pendingKeys.delete(signature);
   return data;
 }
 export const date = (s?: string) =>
@@ -66,19 +73,21 @@ export function Modal({
   title,
   children,
   wide = false,
+  side = false,
 }: {
   open: boolean;
   onClose: () => void;
   title: string;
   children: ReactNode;
   wide?: boolean;
+  side?: boolean;
 }) {
   return (
     <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay" />
         <Dialog.Content
-          className={"modal " + (wide ? "wide" : "")}
+          className={"modal " + (wide ? "wide " : "") + (side ? "side-panel" : "")}
           aria-describedby={undefined}
         >
           <div className="modal-head">

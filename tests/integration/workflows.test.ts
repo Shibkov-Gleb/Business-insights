@@ -660,6 +660,50 @@ describe("Полные сценарии с PostgreSQL и Redis", () => {
       ).status,
     ).toBe(200);
   }, 40000);
+  it("research: baseline, snapshot access, manual facts, comparison, change and decision", async () => {
+    const path = `/organizations/${orgId}/scopes/${scopeId}`;
+    const a = await post(owner, path + "/competitors", { name: "Research A", domain: "research-a.example.test" });
+    const b = await post(owner, path + "/competitors", { name: "Research B", domain: "research-b.example.test" });
+    const competitorIds = [a.body.id, b.body.id];
+    const before = await db.analysisScope.findUniqueOrThrow({ where: { id: scopeId } });
+    const first = await post(owner, path + "/research-runs", { competitorIds });
+    expect(first.status).toBe(202);
+    expect((await waitJob(owner, first.body.jobId)).status).toBe("succeeded");
+    const dossier = (await owner.agent.get("/api/v1" + path + `/competitors/${a.body.id}/dossier`)).body;
+    expect(dossier.snapshots).toHaveLength(1);
+    expect(dossier.changes).toHaveLength(0);
+    const snapshotId = dossier.snapshots[0].facts[0].sourceSnapshotId;
+    expect((await owner.agent.get("/api/v1" + path + `/source-snapshots/${snapshotId}`)).status).toBe(200);
+    expect((await stranger.agent.get("/api/v1" + path + `/source-snapshots/${snapshotId}`)).status).toBe(404);
+    expect((await reader.agent.get(`/api/v1/organizations/${orgId}/scopes/${otherScope}/source-snapshots/${snapshotId}`)).status).toBe(404);
+    expect((await post(reader, path + "/research-runs", { competitorIds })).status).toBe(403);
+    expect((await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, { expectedVersion: dossier.competitor.revision, fields: { pricing: "Уточнено лично" } })).status).toBe(200);
+    expect((await patch(owner, path + `/competitors/${a.body.id}/manual-facts`, { expectedVersion: dossier.competitor.revision, fields: {} })).status).toBe(409);
+    const second = await post(owner, path + "/research-runs", { competitorIds });
+    expect((await waitJob(owner, second.body.jobId)).status).toBe("succeeded");
+    expect(await db.competitorChange.count({ where: { competitorId: a.body.id } })).toBe(0);
+    expect((await post(owner, path + `/competitors/${a.body.id}/watch-sources`, { url: "https://research-a.example.test/pricing?scenario=updated", category: "pricing" })).status).toBe(201);
+    const third = await post(owner, path + "/research-runs", { competitorIds });
+    expect((await waitJob(owner, third.body.jobId)).status).toBe("succeeded");
+    const changes = await db.competitorChange.findMany({ where: { competitorId: a.body.id } });
+    expect(changes).toHaveLength(1);
+    expect((changes[0].before as { value: string }).value).toContain("2900");
+    expect((changes[0].after as { value: string }).value).toContain("3900");
+    const comparison = await owner.agent.get("/api/v1" + path + `/competitor-comparison?ids=${competitorIds.join(",")}`);
+    expect(comparison.status).toBe(200);
+    expect(comparison.body.competitors.find((c: { competitor: { id: string } }) => c.competitor.id === a.body.id).manual.pricing).toBe("Уточнено лично");
+    const brief = await db.researchBrief.findUniqueOrThrow({ where: { runId: third.body.jobId } });
+    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, {})).status).toBe(422);
+    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, { confirm: true })).status).toBe(201);
+    expect((await post(owner, path + `/research-briefs/${brief.id}/decision`, { confirm: true })).status).toBe(201);
+    expect(await db.decision.count({ where: { briefId: brief.id } })).toBe(1);
+    const exported = await owner.agent.get("/api/v1" + path + `/research-briefs/${brief.id}/export`);
+    expect(exported.status).toBe(200);
+    expect(exported.text).toContain("## Источники");
+    const after = await db.analysisScope.findUniqueOrThrow({ where: { id: scopeId } });
+    expect(after.cursorAt).toEqual(before.cursorAt);
+    expect(after.cursorVersion).toBe(before.cursorVersion);
+  }, 60000);
   it("reset завершает сессии и токен нельзя использовать повторно", async () => {
     const raw = token();
     await db.authToken.create({
