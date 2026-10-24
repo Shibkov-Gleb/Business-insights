@@ -5,6 +5,191 @@ generator client {
 datasource db {
  provider = "postgresql"
 }
+model DatasetImport {
+ id String @id @default(uuid()) @db.Uuid
+ kind String
+ filename String
+ sha256 String @unique
+ status String @default("staging")
+ rows Int @default(0)
+ settings Json @default("{}")
+ report Json @default("{}")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model CorporateCompany {
+ id String @id @default(uuid()) @db.Uuid
+ externalId String @unique
+ name String
+ datasetId String? @db.Uuid
+ groupId String?
+ orgId String? @db.Uuid
+ scopeId String? @unique @db.Uuid
+ version Int @default(1)
+ synthetic Boolean @default(false)
+ unknown Boolean @default(false)
+ fields Json @default("{}")
+ conflicts String[] @default([])
+ revenue Decimal? @db.Decimal(30, 6)
+ sourceRow Int?
+ @@index([groupId])
+ @@index([datasetId, revenue])
+}
+model CompanyVariant {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ datasetId String @db.Uuid
+ sourceRow Int
+ fields Json
+ @@unique([datasetId, sourceRow])
+ @@index([companyId])
+}
+model PersonCompanyLink {
+ id BigInt @id @default(autoincrement())
+ datasetId String @db.Uuid
+ personId String
+ companyExternalId String
+ sourceRow Int
+ fields Json
+ @@unique([datasetId, sourceRow])
+ @@index([companyExternalId])
+ @@index([personId])
+}
+model PaymentEdge {
+ id BigInt @id @default(autoincrement())
+ datasetId String @db.Uuid
+ sourceRow Int
+ payer String
+ beneficiary String
+ amount Decimal @db.Decimal(38, 6)
+ count BigInt
+ @@unique([datasetId, sourceRow])
+ @@index([payer, amount])
+ @@index([beneficiary, amount])
+}
+model CompanyGrant {
+ id String @id @default(uuid()) @db.Uuid
+ userId String @db.Uuid
+ companyId String @db.Uuid
+ canEdit Boolean @default(false)
+ role String @default("employee")
+ interests String[] @default([])
+ @@unique([userId, companyId])
+ @@index([companyId])
+}
+model BankMaterial {
+ id String @id @default(uuid()) @db.Uuid
+ title String
+ filename String
+ sha256 String @unique
+ storageKey String
+ sourceUrl String?
+ publishedAt DateTime? @db.Timestamptz
+ dateStatus String @default("unknown")
+ status String @default("queued")
+ pages Int @default(0)
+ coverage Json @default("{}")
+ createdAt DateTime @default(now()) @db.Timestamptz
+}
+model BankPage {
+ id String @id @default(uuid()) @db.Uuid
+ materialId String @db.Uuid
+ page Int
+ text String
+ method String
+ quality Float
+ boxes Json @default("[]")
+ numericVerified Boolean @default(false)
+ @@unique([materialId, page])
+}
+model CorporateNews {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ title String
+ text String
+ url String?
+ sha256 String
+ publishedAt DateTime? @db.Timestamptz
+ origin String
+ createdBy String @db.Uuid
+ synthetic Boolean @default(false)
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([companyId, sha256])
+ @@index([companyId, publishedAt])
+}
+model CorporateInsight {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ runId String @db.Uuid
+ newsId String @db.Uuid
+ contextVersion Int
+ data Json
+ evidence Json
+ score Int
+ channels String[]
+ synthetic Boolean @default(false)
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@unique([companyId, newsId, contextVersion])
+ @@index([companyId, createdAt, id])
+}
+model CorporateTrace {
+ id String @id @default(uuid()) @db.Uuid
+ runId String @db.Uuid
+ stage String
+ tool String
+ status String
+ durationMs Int
+ data Json
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([runId, createdAt])
+}
+model CorporateChat {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ userId String @db.Uuid
+ insightId String? @db.Uuid
+ role String
+ question String
+ answer String?
+ evidence Json @default("[]")
+ runId String? @unique @db.Uuid
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([companyId, userId, createdAt])
+}
+model CorporateFeedback {
+ id String @id @default(uuid()) @db.Uuid
+ companyId String @db.Uuid
+ insightId String @db.Uuid
+ userId String @db.Uuid
+ verdict String
+ comment String
+ reviewStatus String @default("open")
+ expertNote String?
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([companyId, createdAt])
+}
+model DailyBudget {
+ id String @id
+ day String
+ keyHash String
+ cap BigInt
+ reserved BigInt @default(0)
+ spent BigInt @default(0)
+ @@unique([keyHash, day])
+}
+model BudgetReservation {
+ id String @id @default(uuid()) @db.Uuid
+ budgetId String
+ runId String @db.Uuid
+ model String
+ estimated BigInt
+ actual BigInt?
+ status String @default("reserved")
+ inputTokens Int?
+ outputTokens Int?
+ createdAt DateTime @default(now()) @db.Timestamptz
+ @@index([budgetId, status])
+ @@index([runId])
+}
 model User {
  id String @id @default(uuid()) @db.Uuid
  email String @unique

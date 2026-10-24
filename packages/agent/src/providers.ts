@@ -77,6 +77,7 @@ export class HttpLLM implements LLMProvider {
     budget: Budget,
     signal?: AbortSignal,
   ): Promise<T> {
+    if (config.APP_VARIANT === "alfa" && config.APP_MODE === "live") throw new Error("HACKATHON_ROUTER_REQUIRED");
     if (!config.LLM_API_KEY || !config.LLM_MODEL_ID)
       throw new Error("LLM_NOT_READY");
     const payload = JSON.stringify(data);

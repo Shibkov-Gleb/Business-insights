@@ -6,5 +6,7 @@ node_modules
 .next
 **/.next
 storage
+.hackathon
+.env.hackathon
 test-results
 playwright-report

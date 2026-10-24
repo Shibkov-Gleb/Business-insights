@@ -1,0 +1,18 @@
+CREATE INDEX bank_page_fts ON "BankPage" USING gin(to_tsvector('russian', text));
+CREATE INDEX bank_page_trgm ON "BankPage" USING gin(text gin_trgm_ops);
+ALTER TABLE "CorporateCompany" ADD CONSTRAINT corporate_org FOREIGN KEY ("orgId") REFERENCES "Organization"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateCompany" ADD CONSTRAINT corporate_scope FOREIGN KEY ("scopeId") REFERENCES "AnalysisScope"(id) ON DELETE CASCADE;
+ALTER TABLE "CompanyGrant" ADD CONSTRAINT grant_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "CompanyGrant" ADD CONSTRAINT grant_user FOREIGN KEY ("userId") REFERENCES "User"(id) ON DELETE CASCADE;
+ALTER TABLE "CompanyVariant" ADD CONSTRAINT variant_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "BankPage" ADD CONSTRAINT page_material FOREIGN KEY ("materialId") REFERENCES "BankMaterial"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateNews" ADD CONSTRAINT news_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateInsight" ADD CONSTRAINT insight_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateInsight" ADD CONSTRAINT insight_run FOREIGN KEY ("runId") REFERENCES "InsightRun"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateInsight" ADD CONSTRAINT insight_news FOREIGN KEY ("newsId") REFERENCES "CorporateNews"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateTrace" ADD CONSTRAINT trace_run FOREIGN KEY ("runId") REFERENCES "InsightRun"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateChat" ADD CONSTRAINT chat_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateFeedback" ADD CONSTRAINT feedback_company FOREIGN KEY ("companyId") REFERENCES "CorporateCompany"(id) ON DELETE CASCADE;
+ALTER TABLE "CorporateFeedback" ADD CONSTRAINT feedback_insight FOREIGN KEY ("insightId") REFERENCES "CorporateInsight"(id) ON DELETE CASCADE;
+ALTER TABLE "PaymentEdge" ADD CONSTRAINT payment_nonnegative CHECK(amount>=0 AND count>=0);
+ALTER TABLE "DailyBudget" ADD CONSTRAINT budget_nonnegative CHECK(cap>=0 AND reserved>=0 AND spent>=0);

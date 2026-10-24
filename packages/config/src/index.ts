@@ -1,7 +1,10 @@
 import "dotenv/config";
 import { z } from "zod";
+import { hackReadiness } from "./hackathon.ts";
+export * from "./hackathon.ts";
 const schema = z.object({
   APP_MODE: z.enum(["demo", "live"]).default("demo"),
+  APP_VARIANT: z.enum(["personal", "alfa"]).default("personal"),
   PUBLIC_APP_URL: z.url().default("http://localhost:3000"),
   DATABASE_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
@@ -73,6 +76,7 @@ export function readConfig(env: NodeJS.ProcessEnv = process.env) {
 }
 export const config = readConfig();
 export const publicConfig = () => ({
+  variant: config.APP_VARIANT,
   mode: config.APP_MODE,
   locale: "ru",
   integration: {
@@ -93,7 +97,7 @@ export const publicConfig = () => ({
     costKnown: !!(config.TOKEN_PRICE_INPUT && config.TOKEN_PRICE_OUTPUT),
   },
   ready: {
-    analysis:
+    analysis: config.APP_VARIANT === "alfa" ? config.APP_MODE === "demo" || hackReadiness().ready :
       config.APP_MODE === "demo" ||
       !!(
         config.LLM_API_KEY &&
@@ -102,4 +106,5 @@ export const publicConfig = () => ({
       ),
     mail: !!config.SMTP_HOST,
   },
+  ...(config.APP_VARIANT === "alfa" ? { hackathon: hackReadiness() } : {}),
 });

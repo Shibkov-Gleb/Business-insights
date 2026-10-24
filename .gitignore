@@ -13,3 +13,6 @@ packages/db/generated/
 *.tsbuildinfo
 .cache/
 backups/
+.hackathon/
+.env.hackathon
+!.env.hackathon.example

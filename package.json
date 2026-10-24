@@ -18,7 +18,11 @@
     "db:migrate": "prisma migrate deploy",
     "db:seed:demo": "tsx packages/db/src/seed.ts",
     "api": "tsx apps/api/src/index.ts",
-    "worker": "tsx apps/worker/src/index.ts"
+    "worker": "tsx apps/worker/src/index.ts",
+    "hackathon:up": "node scripts/hackathon-up.mjs",
+    "hackathon:import": "tsx scripts/hackathon-import.ts",
+    "hackathon:seed": "tsx packages/db/src/corporate-seed.ts",
+    "hackathon:evaluate": "tsx scripts/hackathon-evaluate.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "9.1.0",
@@ -35,6 +39,7 @@
     "bullmq": "6.4.0",
     "cheerio": "1.2.0",
     "cookie-parser": "1.4.7",
+    "csv-parse": "7.0.3",
     "dotenv": "17.2.3",
     "express": "5.3.0",
     "fast-xml-parser": "5.11.2",
@@ -45,6 +50,7 @@
     "nodemailer": "10.2.1",
     "pdfjs-dist": "6.4.299",
     "pg": "8.23.1",
+    "pg-copy-streams": "7.0.0",
     "rss-parser": "3.13.0",
     "yauzl": "3.4.0",
     "zod": "4.6.7"
@@ -58,6 +64,7 @@
     "@types/node": "22.19.0",
     "@types/nodemailer": "7.0.4",
     "@types/pg": "8.15.6",
+    "@types/pg-copy-streams": "1.2.5",
     "@types/supertest": "6.0.3",
     "@types/yauzl": "2.10.3",
     "concurrently": "9.2.1",

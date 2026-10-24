@@ -1,5 +1,6 @@
 import { z } from "zod";
 export * from "./research.ts";
+export * from "./corporate.ts";
 export const stages = [
   "idea",
   "validation",
