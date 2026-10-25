@@ -6,6 +6,19 @@ import type {
 } from "@context/contracts";
 import { normalizeQuote } from "./bank-corpus.ts";
 import { createHash } from "node:crypto";
+export function newsPassages(text: string) {
+  const passages = text
+    .slice(0, 16000)
+    .split(/(?<=[.!?])\s+(?=[А-ЯA-Z])/u)
+    .flatMap((s) =>
+      Array.from({ length: Math.ceil(s.length / 1800) }, (_, i) =>
+        s.slice(i * 1800, (i + 1) * 1800).trim(),
+      ),
+    )
+    .filter((s) => s.length >= 20);
+  if (!passages.length) throw new Error("NEWS_TEXT_TOO_SHORT");
+  return passages;
+}
 export const eventFingerprint = (text: string) =>
   createHash("sha256")
     .update(

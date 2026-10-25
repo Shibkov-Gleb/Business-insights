@@ -2,9 +2,15 @@ import { z } from "zod";
 import { hackConfig, hackModel, config } from "@context/config";
 import { db, json } from "@context/db";
 import { reserveBudget, settleBudget, tokenCost } from "./hackathon-budget.ts";
+import { reserveGatewayBudget, settleGatewayBudget } from "./gateway-budget.ts";
 const completion = z.object({
   choices: z
-    .array(z.object({ message: z.object({ content: z.string() }) }))
+    .array(
+      z.object({
+        finish_reason: z.string().nullable().optional(),
+        message: z.object({ content: z.string().nullable() }),
+      }),
+    )
     .min(1),
   usage: z.object({
     prompt_tokens: z.number().int().nonnegative(),
@@ -50,6 +56,7 @@ export async function hackStructured<T>(
   assertAccess: () => Promise<unknown>,
 ) {
   const route = hackModel(task); // The model allowlist and price check happen before any HTTP request.
+  const gatewayMode = hackConfig.HACKATHON_BILLING_MODE === "gateway";
   if (config.APP_VARIANT !== "alfa" || config.APP_MODE !== "live")
     throw new Error("HACKATHON_LIVE_ONLY");
   const content = JSON.stringify(input),
@@ -59,6 +66,7 @@ export async function hackStructured<T>(
       content + system + JSON.stringify(z.toJSONSchema(schema)),
       "utf8",
     ) + 4096;
+  let jsonFallback = false;
   for (let attempt = 0; attempt < 3; attempt++) {
     await assertAccess();
     const prior = await db.budgetReservation.aggregate({
@@ -75,17 +83,23 @@ export async function hackStructured<T>(
         config.RUN_MAX_TOKENS
     )
       throw new Error("RUN_BUDGET_EXCEEDED");
-    const reservation = await reserveBudget(
-      runId,
-      route.model,
-      tokenCost(inputUpper, max, route.price),
-    );
+    const gateway = gatewayMode
+      ? await reserveGatewayBudget(runId, route.model, assertAccess)
+      : null;
+    const reservation =
+      gateway?.reservation ||
+      (await reserveBudget(
+        runId,
+        route.model,
+        tokenCost(inputUpper, max, route.price!),
+      ));
     await db.budgetReservation.update({
       where: { id: reservation.id },
       data: { inputTokens: inputUpper, outputTokens: max },
     });
     const start = Date.now();
     let received = false,
+      accounted = false,
       revoked: Error | undefined;
     const controller = new AbortController();
     const accessTimer = setInterval(() => {
@@ -105,6 +119,9 @@ export async function hackStructured<T>(
           model: route.model,
           temperature: 0.1,
           max_tokens: max,
+          ...(route.family === "glm-5.3-flash"
+            ? { reasoning_effort: hackConfig.HACKATHON_REASONING_EFFORT }
+            : {}),
           messages: [
             {
               role: "system",
@@ -114,14 +131,16 @@ export async function hackStructured<T>(
             },
             { role: "user", content },
           ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "result",
-              strict: true,
-              schema: z.toJSONSchema(schema),
-            },
-          },
+          response_format: jsonFallback
+            ? { type: "json_object" }
+            : {
+                type: "json_schema",
+                json_schema: {
+                  name: "result",
+                  strict: true,
+                  schema: z.toJSONSchema(schema),
+                },
+              },
         }),
         signal: AbortSignal.any([
           controller.signal,
@@ -131,7 +150,14 @@ export async function hackStructured<T>(
       received = true;
       const raw = await response.text();
       if (!response.ok) {
-        await settleBudget(reservation.id, "unknown");
+        if (gateway) {
+          await settleGatewayBudget(
+            reservation.id,
+            gateway.snapshot,
+            response.headers.get("x-litellm-response-cost"),
+          );
+          accounted = true;
+        } else await settleBudget(reservation.id, "unknown");
         throw providerError(response.status, raw.slice(0, 2000));
       }
       let parsed: z.infer<typeof completion>;
@@ -141,18 +167,32 @@ export async function hackStructured<T>(
         await settleBudget(reservation.id, "unknown");
         throw new HackathonProviderError("LLM_INVALID_RESPONSE");
       }
-      await settleBudget(reservation.id, {
-        input: parsed.usage.prompt_tokens,
-        output: parsed.usage.completion_tokens,
-        actual: tokenCost(
-          parsed.usage.prompt_tokens,
-          parsed.usage.completion_tokens,
-          route.price,
-        ),
-      });
+      if (gateway) {
+        await settleGatewayBudget(
+          reservation.id,
+          gateway.snapshot,
+          response.headers.get("x-litellm-response-cost"),
+          {
+            input: parsed.usage.prompt_tokens,
+            output: parsed.usage.completion_tokens,
+          },
+        );
+        accounted = true;
+      } else
+        await settleBudget(reservation.id, {
+          input: parsed.usage.prompt_tokens,
+          output: parsed.usage.completion_tokens,
+          actual: tokenCost(
+            parsed.usage.prompt_tokens,
+            parsed.usage.completion_tokens,
+            route.price!,
+          ),
+        });
       await assertAccess();
+      if (parsed.choices[0].finish_reason === "length")
+        throw new HackathonProviderError("LLM_OUTPUT_LIMIT");
       const output = schema.safeParse(
-        JSON.parse(parsed.choices[0].message.content),
+        JSON.parse(parsed.choices[0].message.content || ""),
       );
       if (!output.success)
         throw new HackathonProviderError("LLM_INVALID_RESPONSE");
@@ -168,11 +208,18 @@ export async function hackStructured<T>(
             reservationId: reservation.id,
             usage: parsed.usage,
             attempt,
+            billingMode: hackConfig.HACKATHON_BILLING_MODE,
+            reasoningEffort:
+              route.family === "glm-5.3-flash"
+                ? hackConfig.HACKATHON_REASONING_EFFORT
+                : null,
+            responseFormat: jsonFallback ? "json_object" : "json_schema",
           }),
         },
       });
       return output.data;
     } catch (error) {
+      if (gateway && !accounted) await settleBudget(reservation.id, "unknown");
       if (!received) await settleBudget(reservation.id, "unknown");
       if (revoked) throw revoked;
       if (
@@ -188,7 +235,9 @@ export async function hackStructured<T>(
           : new HackathonProviderError(
               error instanceof Error && /timeout/i.test(error.name)
                 ? "LLM_TIMEOUT"
-                : "LLM_INVALID_RESPONSE",
+                : error instanceof TypeError
+                  ? "LLM_UNAVAILABLE"
+                  : "LLM_INVALID_RESPONSE",
               error instanceof TypeError ||
                 (error instanceof Error && /timeout/i.test(error.name)),
             );
@@ -199,9 +248,27 @@ export async function hackStructured<T>(
           tool: route.model,
           status: e.code,
           durationMs: Date.now() - start,
-          data: { attempt, reservationId: reservation.id },
+          data: {
+            attempt,
+            reservationId: reservation.id,
+            receivedHeaders: received,
+            accounted,
+            failureKind: error instanceof Error ? error.name : null,
+            transportCode:
+              (error as { cause?: { code?: string } })?.cause?.code || null,
+          },
         },
       });
+      if (
+        gateway &&
+        accounted &&
+        e.code === "LLM_SCHEMA_UNSUPPORTED" &&
+        !jsonFallback
+      ) {
+        jsonFallback = true;
+        continue;
+      }
+      if (gateway && !accounted) throw e;
       if (!e.transient || attempt === 2) throw e;
       await new Promise((resolve) => setTimeout(resolve, 1000 * 2 ** attempt));
     } finally {

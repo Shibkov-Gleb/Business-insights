@@ -25,6 +25,7 @@ it("личный Gemini никогда не становится fallback", () =
   expect(http).not.toHaveBeenCalled();
 });
 it("неизвестная цена блокирует одобренную модель", () => {
+  hackConfig.HACKATHON_BILLING_MODE = "tariffs";
   Object.assign(hackConfig, {
     HACKATHON_EXTRACT_MODEL: "organizer-gemma",
     HACKATHON_MODEL_REGISTRY: JSON.stringify({

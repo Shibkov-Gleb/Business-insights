@@ -261,7 +261,8 @@ export async function bankSearch(
   >`
     SELECT p.*,m.title,m."publishedAt",m."dateStatus" FROM "BankPage" p JOIN "BankMaterial" m ON m.id=p."materialId"
     WHERE m.status IN ('ready','partial') AND (to_tsvector('russian',p.text) @@ websearch_to_tsquery('russian',${terms}) OR p.text % ${query})
-    ORDER BY ts_rank(to_tsvector('russian',p.text),websearch_to_tsquery('russian',${terms})) DESC,m."publishedAt" DESC NULLS LAST,p.id LIMIT 8`;
+    ORDER BY (m."dateStatus"='document_reviewed' AND m."publishedAt" BETWEEN ${new Date(now.getTime() - 366 * 86400000)} AND ${now} AND p.quality>=75) DESC NULLS LAST,
+    ts_rank(to_tsvector('russian',p.text),websearch_to_tsquery('russian',${terms})) DESC,m."publishedAt" DESC NULLS LAST,p.id LIMIT 16`;
   const result: CorporateEvidence[] = [];
   for (const p of pages) {
     // Keep exact source substrings, prefer narrative sentences without uncertain OCR numerals.
@@ -302,5 +303,18 @@ export async function bankSearch(
       });
     }
   }
-  return result.slice(0, 12);
+  // Verified, dated passages must not be crowded out by several uncertain
+  // fragments from one scan. Preserve uncertain material as an explicit gap.
+  result.sort(
+    (a, b) =>
+      Number(b.confidence === "verified" && !b.historical) -
+      Number(a.confidence === "verified" && !a.historical),
+  );
+  const seen = new Set<string>();
+  const first = result.filter((e) => {
+    if (seen.has(e.sourceId)) return false;
+    seen.add(e.sourceId);
+    return true;
+  });
+  return [...first, ...result.filter((e) => !first.includes(e))].slice(0, 12);
 }

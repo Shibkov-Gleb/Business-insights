@@ -1,0 +1,52 @@
+{
+  "at": "2026-10-25T17:49:52.110Z",
+  "algorithm": "alfa-2026-live-v2",
+  "status": "succeeded",
+  "runId": "2ab16c7f-b9e8-4e83-a699-98a2f829a577",
+  "chatRunId": "f566a8c1-a12c-4332-9561-954dde6c36bb",
+  "news": {
+    "url": "https://www.cbr.ru/press/PR/?file=23102026_133000key.htm",
+    "title": "Банк России принял решение сохранить ключевую ставку на уровне 14,00% годовых | Банк России",
+    "publishedAt": "2026-10-23T10:30:00.000Z"
+  },
+  "companySynthetic": true,
+  "models": [
+    "google/gemma-4-26b-a4b-it",
+    "z-ai/glm-5.3-flash"
+  ],
+  "referenceErrors": [],
+  "bankQuotesValid": true,
+  "bankQuoteCount": 0,
+  "chatAnswered": true,
+  "chatDemoMarker": false,
+  "costRub": null,
+  "usage": [
+    {
+      "model": "google/gemma-4-26b-a4b-it",
+      "prompt_tokens": 1428,
+      "completion_tokens": 17
+    },
+    {
+      "model": "z-ai/glm-5.3-flash",
+      "prompt_tokens": 5998,
+      "completion_tokens": 1130
+    },
+    {
+      "model": "z-ai/glm-5.3-flash",
+      "prompt_tokens": 4337,
+      "completion_tokens": 78
+    },
+    {
+      "model": "z-ai/glm-5.3-flash",
+      "prompt_tokens": 6762,
+      "completion_tokens": 424
+    }
+  ],
+  "independentSemanticReview": "pending",
+  "bankPositionAvailable": false,
+  "bankQuotesChecked": 3,
+  "notes": [
+    "Последний анализ явно сообщает об отсутствии подходящей актуальной позиции банка; это не заменяется прогнозом из более старого PDF",
+    "Предыдущая live-ревизия с датированной цитатой сохранена, новые наблюдения не переписывают историю"
+  ]
+}

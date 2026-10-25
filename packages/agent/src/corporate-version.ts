@@ -21,7 +21,12 @@ export async function corporateAnalysisKey() {
   return createHash("sha256")
     .update(
       JSON.stringify({
-        algorithm: "alfa-2026-v1",
+        algorithm:
+          config.APP_MODE === "live" ? "alfa-2026-live-v2" : "alfa-2026-v1",
+        reasoningEffort:
+          config.APP_MODE === "live"
+            ? hackConfig.HACKATHON_REASONING_EFFORT
+            : null,
         mode: config.APP_MODE,
         extract:
           config.APP_MODE === "demo"

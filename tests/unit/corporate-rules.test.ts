@@ -168,3 +168,20 @@ it("банковский тезис меняет причинную цепочк
   expect(withBank.checks).not.toEqual(without.checks);
   expect(withBank.bankView?.evidenceIds).toEqual(["bank-current"]);
 });
+
+it("извлечение выбирает только исходные фрагменты без переписывания цитат", async () => {
+  const { newsPassages } = await import(
+    "../../packages/agent/src/corporate-rules.ts"
+  );
+  const text =
+    "Ставка сохранена на уровне 14,00% годовых. Условия договора конкретной компании неизвестны. " +
+    "Длинный исходный фрагмент ".repeat(200);
+  const passages = newsPassages(text);
+  expect(passages.length).toBeGreaterThan(2);
+  expect(
+    passages.every(
+      (q) => q.length >= 20 && q.length <= 1800 && text.includes(q),
+    ),
+  ).toBe(true);
+  expect(() => newsPassages("мало")).toThrow("NEWS_TEXT_TOO_SHORT");
+});

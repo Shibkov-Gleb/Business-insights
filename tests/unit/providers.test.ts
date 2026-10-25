@@ -7,14 +7,20 @@ import {
   providerError,
 } from "../../packages/agent/src/providers.ts";
 import { BraveSearch } from "../../packages/agent/src/sources.ts";
-const old = { key: config.LLM_API_KEY, model: config.LLM_MODEL_ID };
+const old = {
+  key: config.LLM_API_KEY,
+  model: config.LLM_MODEL_ID,
+  variant: config.APP_VARIANT,
+};
 beforeEach(() => {
+  config.APP_VARIANT = "personal"; // This suite tests the separate personal adapter with a mocked HTTP server.
   config.LLM_API_KEY = "synthetic-contract-key";
   config.LLM_MODEL_ID = "synthetic-contract-model";
 });
 afterEach(() => {
   config.LLM_API_KEY = old.key;
   config.LLM_MODEL_ID = old.model;
+  config.APP_VARIANT = old.variant;
   vi.restoreAllMocks();
 });
 const response = (content: string) =>

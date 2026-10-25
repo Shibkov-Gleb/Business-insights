@@ -204,6 +204,7 @@ export const dailyBudgetSchema = z.object({
   reservedRub: z.string(),
   remainingRub: z.string(),
   pricingKnown: z.boolean(),
+  accountingMode: z.enum(["tariffs", "gateway"]).default("tariffs"),
 });
 export const importReportSchema = z.object({
   id: z.uuid(),

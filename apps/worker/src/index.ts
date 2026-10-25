@@ -1,6 +1,6 @@
 import { Queue, Worker } from "bullmq";
 import { Redis } from "ioredis";
-import { config } from "@context/config";
+import { config, hackConfig } from "@context/config";
 import { db, json } from "@context/db";
 import {
   analysisGraph,
@@ -19,7 +19,10 @@ import { liveLLM, newBudget } from "../../../packages/agent/src/providers.ts";
 import { z } from "zod";
 import { researchGraph } from "../../../packages/agent/src/research.ts";
 import { estimateCost } from "../../../packages/agent/src/cost.ts";
-import { corporateGraph, corporateChatGraph } from "../../../packages/agent/src/corporate.ts";
+import {
+  corporateGraph,
+  corporateChatGraph,
+} from "../../../packages/agent/src/corporate.ts";
 import { rubString } from "../../../packages/agent/src/hackathon-budget.ts";
 import { importBankPdf } from "../../../packages/agent/src/bank-corpus.ts";
 import { assertCorporateRun } from "../../../packages/agent/src/corporate.ts";
@@ -51,15 +54,48 @@ export async function processRun(runId: string) {
     await event(runId, "progress", { status: "running" });
     let budget: unknown = {};
     if (run.kind === "bank_import") {
-      const guard = async () => { const state = await assertCorporateRun(runId); const member = await db.membership.findUnique({ where: { orgId_userId: { userId: run.userId, orgId: run.orgId } } }); if (!member || !["owner", "admin"].includes(member.role)) throw new Error("ACCESS_REVOKED"); return state; };
+      const guard = async () => {
+        const state = await assertCorporateRun(runId);
+        const member = await db.membership.findUnique({
+          where: { orgId_userId: { userId: run.userId, orgId: run.orgId } },
+        });
+        if (!member || !["owner", "admin"].includes(member.role))
+          throw new Error("ACCESS_REVOKED");
+        return state;
+      };
       await guard();
-      const material = await db.bankMaterial.findUniqueOrThrow({ where: { id: run.resourceId! } });
-      const input = z.object({ bankImport: z.object({ title: z.string(), publishedAt: z.string().optional(), dateConfirmed: z.enum(["true", "false"]) }) }).parse(run.snapshot).bankImport;
-      await importBankPdf({ path: fileStore.resolve(material.storageKey), title: input.title, publishedAt: input.publishedAt, dateConfirmed: input.dateConfirmed === "true", guard, onProgress: (page, total) => event(runId, "progress", { node: "bank_ocr", page, total }) });
-      await guard(); await db.insightRun.update({ where: { id: runId }, data: { status: "succeeded", finishedAt: new Date() } });
+      const material = await db.bankMaterial.findUniqueOrThrow({
+        where: { id: run.resourceId! },
+      });
+      const input = z
+        .object({
+          bankImport: z.object({
+            title: z.string(),
+            publishedAt: z.string().optional(),
+            dateConfirmed: z.enum(["true", "false"]),
+          }),
+        })
+        .parse(run.snapshot).bankImport;
+      await importBankPdf({
+        path: fileStore.resolve(material.storageKey),
+        title: input.title,
+        publishedAt: input.publishedAt,
+        dateConfirmed: input.dateConfirmed === "true",
+        guard,
+        onProgress: (page, total) =>
+          event(runId, "progress", { node: "bank_ocr", page, total }),
+      });
+      await guard();
+      await db.insightRun.update({
+        where: { id: runId },
+        data: { status: "succeeded", finishedAt: new Date() },
+      });
       budget = { startedAt: run.acceptedAt.getTime(), paidCalls: 0 };
     } else if (run.kind === "corporate" || run.kind === "corporate_chat") {
-      const result = run.kind === "corporate" ? await corporateGraph(runId) : await corporateChatGraph(runId);
+      const result =
+        run.kind === "corporate"
+          ? await corporateGraph(runId)
+          : await corporateChatGraph(runId);
       budget = result.budget;
     } else if (run.kind === "research") {
       const result = await researchGraph(runId);
@@ -375,13 +411,38 @@ export async function processRun(runId: string) {
       outputTokens?: number;
       startedAt?: number;
     };
-    const reservations = run.kind.startsWith("corporate") ? await db.budgetReservation.findMany({ where: { runId } }) : [];
-    const cost = run.kind.startsWith("corporate") ? { currency: "RUB", amount: rubString(reservations.reduce((s, r) => s + (r.actual || 0n), 0n)), reserved: rubString(reservations.filter(r => ["reserved", "unknown"].includes(r.status)).reduce((s, r) => s + r.estimated, 0n)), estimated: false, unknownOutcomes: reservations.some(r => r.status === "unknown"), demo: config.APP_MODE === "demo" } : estimateCost(
-      usage.inputTokens || 0,
-      usage.outputTokens || 0,
-      config.TOKEN_PRICE_INPUT,
-      config.TOKEN_PRICE_OUTPUT,
-    );
+    const reservations = run.kind.startsWith("corporate")
+      ? await db.budgetReservation.findMany({ where: { runId } })
+      : [];
+    const cost = run.kind.startsWith("corporate")
+      ? {
+          currency: "RUB",
+          amount:
+            hackConfig.HACKATHON_BILLING_MODE === "gateway" &&
+            config.APP_MODE === "live"
+              ? null
+              : rubString(
+                  reservations.reduce((s, r) => s + (r.actual || 0n), 0n),
+                ),
+          basis:
+            hackConfig.HACKATHON_BILLING_MODE === "gateway"
+              ? "organizer_gateway_counter"
+              : "token_tariffs",
+          reserved: rubString(
+            reservations
+              .filter((r) => ["reserved", "unknown"].includes(r.status))
+              .reduce((s, r) => s + r.estimated, 0n),
+          ),
+          estimated: false,
+          unknownOutcomes: reservations.some((r) => r.status === "unknown"),
+          demo: config.APP_MODE === "demo",
+        }
+      : estimateCost(
+          usage.inputTokens || 0,
+          usage.outputTokens || 0,
+          config.TOKEN_PRICE_INPUT,
+          config.TOKEN_PRICE_OUTPUT,
+        );
     const elapsedMs = usage.startedAt ? Date.now() - usage.startedAt : null;
     await db.insightRun.update({
       where: { id: runId },
@@ -427,7 +488,14 @@ export async function processRun(runId: string) {
         where: { id: current.resourceId!, status: { not: "deleted" } },
         data: { status: "failed" },
       });
-    if (current.kind === "bank_import") await db.bankMaterial.updateMany({ where: { id: current.resourceId!, status: { notIn: ["ready", "partial"] } }, data: { status: cancelled ? "cancelled" : "failed" } });
+    if (current.kind === "bank_import")
+      await db.bankMaterial.updateMany({
+        where: {
+          id: current.resourceId!,
+          status: { notIn: ["ready", "partial"] },
+        },
+        data: { status: cancelled ? "cancelled" : "failed" },
+      });
     if (current.kind === "chat")
       await db.chatMessage.updateMany({
         where: { id: (current.snapshot as any).assistantId, status: "pending" },
@@ -490,7 +558,11 @@ const timer = setInterval(
 );
 const heartbeatKey = `context:worker:${config.APP_MODE}:${digest(new URL(config.DATABASE_URL).pathname).slice(0, 12)}`;
 const heartbeatClient = new Redis(config.REDIS_URL);
-const heartbeat = setInterval(() => { void heartbeatClient.set(heartbeatKey, new Date().toISOString(), "EX", 20).catch(() => console.error(JSON.stringify({ code: "HEARTBEAT_FAILED" }))); }, 5000);
+const heartbeat = setInterval(() => {
+  void heartbeatClient
+    .set(heartbeatKey, new Date().toISOString(), "EX", 20)
+    .catch(() => console.error(JSON.stringify({ code: "HEARTBEAT_FAILED" })));
+}, 5000);
 await dispatch();
 async function cleanup() {
   const before = new Date(Date.now() - config.RETENTION_DAYS * 86400000);

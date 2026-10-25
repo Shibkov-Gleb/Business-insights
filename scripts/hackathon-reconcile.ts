@@ -1,14 +1,42 @@
 import { z } from "zod";
 import { db } from "@context/db";
 import { hackModel } from "@context/config";
-import { settleBudget, tokenCost } from "../packages/agent/src/hackathon-budget.ts";
+import {
+  settleBudget,
+  tokenCost,
+} from "../packages/agent/src/hackathon-budget.ts";
 const [reservationId, input, output, confirmation] = process.argv.slice(2);
 z.uuid().parse(reservationId);
-if (confirmation !== "--confirmed-gateway-usage") throw new Error("Нужно сверить usage в шлюзе организаторов и указать --confirmed-gateway-usage");
-const inputTokens = z.coerce.number().int().nonnegative().parse(input), outputTokens = z.coerce.number().int().nonnegative().parse(output);
-const reservation = await db.budgetReservation.findUniqueOrThrow({ where: { id: reservationId } });
-const route = [hackModel("extract"), hackModel("reason")].find(x => x.model === reservation.model);
-if (!route) throw new Error("MODEL_PRICE_NOT_CONFIGURED");
-await settleBudget(reservation.id, { input: inputTokens, output: outputTokens, actual: tokenCost(inputTokens, outputTokens, route.price) });
-await db.auditRecord.create({ data: { orgId: null, userId: null, action: "hackathon.budget.reconciled", metadata: { reservationId, inputTokens, outputTokens, operator: "local-cli" } } });
-console.log(JSON.stringify({ reservationId, reconciled: true })); await db.$disconnect();
+if (confirmation !== "--confirmed-gateway-usage")
+  throw new Error(
+    "Нужно сверить usage в шлюзе организаторов и указать --confirmed-gateway-usage",
+  );
+const inputTokens = z.coerce.number().int().nonnegative().parse(input),
+  outputTokens = z.coerce.number().int().nonnegative().parse(output);
+const reservation = await db.budgetReservation.findUniqueOrThrow({
+  where: { id: reservationId },
+});
+const route = [hackModel("extract"), hackModel("reason")].find(
+  (x) => x.model === reservation.model,
+);
+if (!route?.price) throw new Error("MODEL_PRICE_NOT_CONFIGURED");
+await settleBudget(reservation.id, {
+  input: inputTokens,
+  output: outputTokens,
+  actual: tokenCost(inputTokens, outputTokens, route.price),
+});
+await db.auditRecord.create({
+  data: {
+    orgId: null,
+    userId: null,
+    action: "hackathon.budget.reconciled",
+    metadata: {
+      reservationId,
+      inputTokens,
+      outputTokens,
+      operator: "local-cli",
+    },
+  },
+});
+console.log(JSON.stringify({ reservationId, reconciled: true }));
+await db.$disconnect();

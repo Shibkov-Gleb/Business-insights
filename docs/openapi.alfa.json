@@ -4125,6 +4125,14 @@
                         },
                         "pricingKnown": {
                           "type": "boolean"
+                        },
+                        "accountingMode": {
+                          "default": "tariffs",
+                          "type": "string",
+                          "enum": [
+                            "tariffs",
+                            "gateway"
+                          ]
                         }
                       },
                       "required": [
@@ -19266,6 +19274,14 @@
           },
           "pricingKnown": {
             "type": "boolean"
+          },
+          "accountingMode": {
+            "default": "tariffs",
+            "type": "string",
+            "enum": [
+              "tariffs",
+              "gateway"
+            ]
           }
         },
         "required": [

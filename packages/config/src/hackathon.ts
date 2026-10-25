@@ -15,6 +15,8 @@ export const hackConfig = z
     HACKATHON_REASON_MODEL: z.string().default(""),
     HACKATHON_MODEL_REGISTRY: z.string().default("{}"),
     HACKATHON_MODEL_PRICES: z.string().default("{}"),
+    HACKATHON_BILLING_MODE: z.enum(["tariffs", "gateway"]).default("tariffs"),
+    HACKATHON_REASONING_EFFORT: z.enum(["low", "high", "max"]).default("low"),
     HACKATHON_BUDGET_RUB: z.coerce.number().positive().max(500).default(500),
     HACKATHON_BUDGET_TIMEZONE: z.string().default("Europe/Moscow"),
     HACKATHON_BUDGET_RESET_HOUR: z.coerce
@@ -79,12 +81,13 @@ export function hackModel(task: "extract" | "reason") {
   } catch {
     throw new Error("HACKATHON_PRICING_UNKNOWN");
   }
-  if (!prices[model]) throw new Error("HACKATHON_PRICING_UNKNOWN");
+  if (!prices[model] && hackConfig.HACKATHON_BILLING_MODE !== "gateway")
+    throw new Error("HACKATHON_PRICING_UNKNOWN");
   return {
     model,
     family: registry[model],
     endpoint: endpoint.toString().replace(/\/$/, ""),
-    price: prices[model],
+    price: prices[model] || null,
   };
 }
 export function hackReadiness() {

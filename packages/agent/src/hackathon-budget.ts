@@ -126,6 +126,8 @@ export async function dailyBudget() {
     remainingRub: rubString(
       cap > spent + reserved ? cap - spent - reserved : 0n,
     ),
-    pricingKnown: hackReadiness().ready,
+    pricingKnown:
+      hackConfig.HACKATHON_BILLING_MODE === "tariffs" && hackReadiness().ready,
+    accountingMode: hackConfig.HACKATHON_BILLING_MODE,
   };
 }

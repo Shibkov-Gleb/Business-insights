@@ -545,7 +545,9 @@ export function BankSettings() {
               </h2>
               <p>
                 {c.readiness.error ||
-                  "Разрешённые модели и тарифы проверены конфигурацией"}
+                  (c.budget.accountingMode === "gateway"
+                    ? "Разрешённые модели настроены. Общий лимит проверяется у шлюза перед каждым вызовом."
+                    : "Разрешённые модели и тарифы проверены конфигурацией")}
               </p>
             </div>
           </div>
@@ -555,19 +557,30 @@ export function BankSettings() {
               <strong>{Number(c.budget.capRub)} ₽</strong>
             </div>
             <div>
-              <span>СПИСАНО / РЕЗЕРВ</span>
+              <span>
+                {c.budget.accountingMode === "gateway"
+                  ? "ОСТАТОК ЛИМИТА / РЕЗЕРВ"
+                  : "СПИСАНО / РЕЗЕРВ"}
+              </span>
               <strong>
-                {Number(c.budget.spentRub).toFixed(2)} /{" "}
-                {Number(c.budget.reservedRub).toFixed(2)} ₽
+                {c.budget.accountingMode === "gateway"
+                  ? (
+                      (100 * Number(c.budget.remainingRub)) /
+                      Number(c.budget.capRub)
+                    ).toFixed(2) + "%"
+                  : Number(c.budget.spentRub).toFixed(2)}{" "}
+                / {Number(c.budget.reservedRub).toFixed(2)} ₽
               </strong>
             </div>
             <p>
               Окно с {c.budget.day}, сброс в{" "}
               {String(c.budget.resetHour).padStart(2, "0")}:00 ·{" "}
               {c.budget.timezone}.{" "}
-              {c.budget.pricingKnown
-                ? "Расчёт по тарифам организаторов."
-                : "Тарифы неизвестны. Платные запросы заблокированы."}
+              {c.budget.accountingMode === "gateway"
+                ? "Учёт по счётчику шлюза. Тарифы неизвестны, стоимость отдельного ответа в рублях не рассчитана."
+                : c.budget.pricingKnown
+                  ? "Расчёт по тарифам организаторов."
+                  : "Тарифы неизвестны. Платные запросы заблокированы."}
             </p>
           </div>
           <h2>Модели</h2>

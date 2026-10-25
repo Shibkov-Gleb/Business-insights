@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import { performance } from "node:perf_hooks";
 import { z } from "zod";
-import { config, hackReadiness } from "@context/config";
+import { config, hackConfig, hackReadiness } from "@context/config";
 import { db, json } from "@context/db";
 import {
   companyContextSchema,
@@ -25,8 +25,24 @@ if (
   !hackReadiness().ready
 )
   throw new Error(
-    "LIVE_EVALUATION_BLOCKED: нужен разрешённый шлюз, тариф и явный --confirmed-paid-evaluation",
+    "LIVE_EVALUATION_BLOCKED: нужен разрешённый шлюз, режим учёта и явный --confirmed-paid-evaluation",
   );
+async function gatewayCostUnits(
+  runId: string,
+  expected: number,
+): Promise<number | null> {
+  if (hackConfig.HACKATHON_BILLING_MODE !== "gateway" || !expected) return null;
+  const receipts = await db.corporateTrace.findMany({
+    where: { runId, tool: "gateway_cost_receipt" },
+    select: { data: true },
+  });
+  const costs = receipts.map(
+    (r) => (r.data as { responseCostUnits?: unknown }).responseCostUnits,
+  );
+  return costs.length === expected && costs.every((c) => typeof c === "number")
+    ? (costs as number[]).reduce((a, b) => a + b, 0)
+    : null;
+}
 const caseSchema = z.object({
   id: z.string(),
   split: z.string(),
@@ -42,20 +58,33 @@ const cases = z
     JSON.parse(await fs.readFile("data/hackathon/evaluation.json", "utf8")),
   )
   .filter((c) => c.split === "heldout");
-const batch = randomUUID(),
+const resumeId = process.argv.find((x) => x.startsWith("--resume="))?.slice(9);
+if (resumeId) z.uuid().parse(resumeId);
+const previous = resumeId
+  ? JSON.parse(
+      await fs.readFile(`.hackathon/reports/live-${resumeId}.json`, "utf8"),
+    )
+  : null;
+const batch = resumeId || randomUUID(),
   user = await db.user.findUniqueOrThrow({
     where: { email: "founder@example.test" },
   });
-const org = await db.organization.create({
-  data: {
-    name: `Live eval ${batch.slice(0, 8)} · синтетические данные`,
-    stage: "established",
-    description:
-      "Платный контрольный прогон на авторском отложенном наборе. Не реальные клиенты банка.",
-  },
-});
-await db.membership.create({
-  data: { orgId: org.id, userId: user.id, role: "owner" },
+const org = resumeId
+  ? await db.organization.findFirstOrThrow({
+      where: { name: `Live eval ${batch.slice(0, 8)} · синтетические данные` },
+    })
+  : await db.organization.create({
+      data: {
+        name: `Live eval ${batch.slice(0, 8)} · синтетические данные`,
+        stage: "established",
+        description:
+          "Платный контрольный прогон на авторском отложенном наборе. Не реальные клиенты банка.",
+      },
+    });
+await db.membership.upsert({
+  where: { orgId_userId: { orgId: org.id, userId: user.id } },
+  create: { orgId: org.id, userId: user.id, role: "owner" },
+  update: {},
 });
 const companies = new Map<
   string,
@@ -74,36 +103,50 @@ const results: {
   latencyMs: number;
   inputTokens: number;
   outputTokens: number;
-  costRub: string;
+  costRub: string | null;
+  gatewayCostUnits: number | null;
   unknownReservationRub: string;
   models: string[];
-}[] = [];
+}[] =
+  previous?.results?.filter((r: { status: string }) =>
+    ["succeeded", "partial"].includes(r.status),
+  ) || [];
 let stopped: string | null = null;
 try {
   for (const c of cases) {
+    if (results.some((r) => r.id === c.id)) continue;
     if (!companies.has(c.profile)) {
-      const scope = await db.analysisScope.create({
-        data: { orgId: org.id, name: c.profile },
+      const existing = await db.corporateCompany.findUnique({
+        where: { externalId: `eval-${batch}-${c.profile}` },
       });
-      const company = await db.corporateCompany.create({
-        data: {
-          externalId: `eval-${batch}-${c.profile}`,
-          name: `Eval ${c.profile} · синтетический`,
-          orgId: org.id,
-          scopeId: scope.id,
-          synthetic: true,
-          fields: json(
-            Object.fromEntries(c.context.facts.map((f) => [f.key, f.value])),
-          ),
-        },
-      });
-      await db.companyGrant.create({
-        data: {
+      const scope = existing
+        ? { id: existing.scopeId! }
+        : await db.analysisScope.create({
+            data: { orgId: org.id, name: c.profile },
+          });
+      const company =
+        existing ||
+        (await db.corporateCompany.create({
+          data: {
+            externalId: `eval-${batch}-${c.profile}`,
+            name: `Eval ${c.profile} · синтетический`,
+            orgId: org.id,
+            scopeId: scope.id,
+            synthetic: true,
+            fields: json(
+              Object.fromEntries(c.context.facts.map((f) => [f.key, f.value])),
+            ),
+          },
+        }));
+      await db.companyGrant.upsert({
+        where: { userId_companyId: { userId: user.id, companyId: company.id } },
+        create: {
           userId: user.id,
           companyId: company.id,
           canEdit: true,
           role: c.role,
         },
+        update: {},
       });
       const context = {
         ...c.context,
@@ -214,9 +257,11 @@ try {
       latencyMs: performance.now() - start,
       inputTokens: reservations.reduce((n, r) => n + (r.inputTokens || 0), 0),
       outputTokens: reservations.reduce((n, r) => n + (r.outputTokens || 0), 0),
-      costRub: rubString(
-        reservations.reduce((n, r) => n + (r.actual || 0n), 0n),
-      ),
+      costRub:
+        hackConfig.HACKATHON_BILLING_MODE === "gateway"
+          ? null
+          : rubString(reservations.reduce((n, r) => n + (r.actual || 0n), 0n)),
+      gatewayCostUnits: await gatewayCostUnits(run.id, reservations.length),
       unknownReservationRub: rubString(
         reservations
           .filter((r) => ["unknown", "reserved"].includes(r.status))
@@ -278,6 +323,19 @@ try {
     falseBankAttributions: results.filter((r) => r.falseBankAttribution).length,
     semanticExpertReview: "pending",
     finalReleaseAuthorized: false,
+    previousAttempts: previous
+      ? [
+          ...(previous.previousAttempts || []),
+          {
+            generatedAt: previous.generatedAt,
+            stopped: previous.stopped,
+            results: previous.results.filter(
+              (r: { status: string }) =>
+                !["succeeded", "partial"].includes(r.status),
+            ),
+          },
+        ]
+      : [],
     results,
   };
   await fs.mkdir(".hackathon/reports", { recursive: true });
