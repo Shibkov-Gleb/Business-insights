@@ -32,7 +32,11 @@ export function budgetIdentity(
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
-  }).format(now);
+  }).format(
+    new Date(
+      now.getTime() - hackConfig.HACKATHON_BUDGET_RESET_HOUR * 3_600_000,
+    ),
+  );
   const keyHash = createHash("sha256")
     .update(key || "unconfigured")
     .digest("hex");
@@ -115,6 +119,7 @@ export async function dailyBudget() {
   return {
     day: identity.day,
     timezone: hackConfig.HACKATHON_BUDGET_TIMEZONE,
+    resetHour: hackConfig.HACKATHON_BUDGET_RESET_HOUR,
     capRub: rubString(cap),
     spentRub: rubString(spent),
     reservedRub: rubString(reserved),

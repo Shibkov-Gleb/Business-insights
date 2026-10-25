@@ -4105,6 +4105,12 @@
                         "timezone": {
                           "type": "string"
                         },
+                        "resetHour": {
+                          "default": 3,
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 23
+                        },
                         "capRub": {
                           "type": "string"
                         },
@@ -19239,6 +19245,12 @@
           },
           "timezone": {
             "type": "string"
+          },
+          "resetHour": {
+            "default": 3,
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 23
           },
           "capRub": {
             "type": "string"

@@ -562,7 +562,9 @@ export function BankSettings() {
               </strong>
             </div>
             <p>
-              {c.budget.day} · {c.budget.timezone}.{" "}
+              Окно с {c.budget.day}, сброс в{" "}
+              {String(c.budget.resetHour).padStart(2, "0")}:00 ·{" "}
+              {c.budget.timezone}.{" "}
               {c.budget.pricingKnown
                 ? "Расчёт по тарифам организаторов."
                 : "Тарифы неизвестны. Платные запросы заблокированы."}

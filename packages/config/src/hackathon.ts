@@ -17,6 +17,12 @@ export const hackConfig = z
     HACKATHON_MODEL_PRICES: z.string().default("{}"),
     HACKATHON_BUDGET_RUB: z.coerce.number().positive().max(500).default(500),
     HACKATHON_BUDGET_TIMEZONE: z.string().default("Europe/Moscow"),
+    HACKATHON_BUDGET_RESET_HOUR: z.coerce
+      .number()
+      .int()
+      .min(0)
+      .max(23)
+      .default(3),
     HACKATHON_OUTPUT_TOKENS: z.coerce
       .number()
       .int()

@@ -20,6 +20,8 @@ export class HackathonProviderError extends Error {
   }
 }
 export function providerError(status: number, body: string) {
+  if (status === 402 || /budget\s+(?:has\s+been\s+)?exceeded/i.test(body))
+    return new HackathonProviderError("LLM_QUOTA");
   if (status === 401 || status === 403)
     return new HackathonProviderError("LLM_ACCESS");
   if (status === 404 || /model.*(not found|does not exist)/i.test(body))

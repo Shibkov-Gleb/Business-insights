@@ -198,6 +198,7 @@ export const corporateTraceSchema = z.object({
 export const dailyBudgetSchema = z.object({
   day: z.string(),
   timezone: z.string(),
+  resetHour: z.number().int().min(0).max(23).default(3),
   capRub: z.string(),
   spentRub: z.string(),
   reservedRub: z.string(),
