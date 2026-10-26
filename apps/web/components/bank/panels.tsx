@@ -453,7 +453,7 @@ export function BankFeedback({ companyId }: { companyId: string }) {
     ["corporate-feedback", companyId],
   );
   return (
-    <div>
+    <div className="bank-feedback">
       <p className="bank-intro">
         Обратная связь формирует очередь экспертного разбора. Авторская разметка
         демонстрации не считается оценкой банковских экспертов.

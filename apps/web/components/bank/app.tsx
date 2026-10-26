@@ -10,6 +10,18 @@ import {
 } from "@tanstack/react-query";
 import { z } from "zod";
 import {
+  ArrowUpRight,
+  Building2,
+  Clock3,
+  Home,
+  Layers3,
+  LibraryBig,
+  MessageSquare,
+  Newspaper,
+  Settings2,
+  ShieldCheck,
+} from "lucide-react";
+import {
   corporateCompanyItem,
   corporateRunSchema,
   hackathonIntegrationSchema,
@@ -55,15 +67,15 @@ export default function BankApplication() {
   );
 }
 const nav = [
-  ["home", "Главная", "⌂"],
-  ["feed", "Новостная аналитика", "↗"],
-  ["context", "Контекст компании", "▦"],
-  ["groups", "Группы компаний", "⊞"],
-  ["materials", "Экспертиза банка", "≡"],
-  ["chat", "Помощник", "↳"],
-  ["history", "Исследования", "◷"],
-  ["feedback", "Экспертный разбор", "✓"],
-  ["settings", "Настройки", "⚙"],
+  ["home", "Главная", Home],
+  ["feed", "Новостная аналитика", Newspaper],
+  ["context", "Контекст компании", Building2],
+  ["groups", "Группы компаний", Layers3],
+  ["materials", "Экспертиза банка", LibraryBig],
+  ["chat", "Помощник", MessageSquare],
+  ["history", "Исследования", Clock3],
+  ["feedback", "Экспертный разбор", ShieldCheck],
+  ["settings", "Настройки", Settings2],
 ] as const;
 const titles: Record<string, string> = {
   home: "Бизнес в контексте",
@@ -111,11 +123,11 @@ function BankLogin({ demo, done }: { demo: boolean; done: () => void }) {
         </div>
         <p className="bank-kicker">КОНТЕКСТ / НОВОСТНАЯ АНАЛИТИКА</p>
         <h1>
-          Важен не шум.
+          Новости,
           <br />
-          Важны
+          которые важны
           <br />
-          <em>последствия.</em>
+          <em>вашему бизнесу</em>
         </h1>
         <p>
           Новости, особенности вашей компании и экспертиза банка — в одной
@@ -128,9 +140,12 @@ function BankLogin({ demo, done }: { demo: boolean; done: () => void }) {
         </div>
       </div>
       <div className="bank-login-form">
-        <p className="bank-kicker">РАБОЧЕЕ ПРОСТРАНСТВО РУКОВОДИТЕЛЯ</p>
+        <p className="bank-kicker">Хакатонный прототип · Контекст</p>
         <h2>Войти в контекст</h2>
-        <p>Демонстрационный вход не связан с реальным интернет-банком.</p>
+        <p>
+          Используйте учётную запись прототипа. Вход моделируется и не связан с
+          реальным интернет-банком.
+        </p>
         <form onSubmit={(e) => void login(e)}>
           <label>
             Email
@@ -368,12 +383,12 @@ function BankWorkspace() {
             А<span />
           </b>
           <span>
-            Альфа-Бизнес<small>Демонстрационный контур</small>
+            Альфа-Бизнес<small>Хакатонный прототип</small>
           </span>
         </Link>
         <div className="bank-nav-rule" />
         <nav aria-label="Основная навигация">
-          {nav.map(([key, title, icon]) => (
+          {nav.map(([key, title, Icon]) => (
             <Link
               key={key}
               aria-current={
@@ -383,7 +398,7 @@ function BankWorkspace() {
               }
               href={key === "home" ? "/" : `/bank/${companyId}/${key}${query}`}
             >
-              <span aria-hidden>{icon}</span>
+              <Icon size={20} strokeWidth={1.7} aria-hidden />
               {title}
             </Link>
           ))}
@@ -435,8 +450,13 @@ function BankWorkspace() {
             </select>
           </label>
           <div className="bank-user">
-            {user.data.email}
-            <span>Доступ определяется отдельно от роли</span>
+            <span className="bank-avatar" aria-hidden>
+              {user.data.email.slice(0, 1).toUpperCase()}
+            </span>
+            <div>
+              {user.data.email}
+              <span>Учётная запись прототипа</span>
+            </div>
           </div>
         </header>
         <div className="bank-mode">
@@ -456,7 +476,7 @@ function BankWorkspace() {
                 day: "2-digit",
                 month: "long",
               })}
-              <b>2026</b>
+              <b>{new Date().getFullYear()}</b>
             </span>
           </div>
           {error && (
@@ -484,22 +504,36 @@ function BankWorkspace() {
                     className="bank-home-feature"
                   >
                     <div>
-                      <p>НОВОСТНАЯ АНАЛИТИКА</p>
+                      <p className="bank-feature-label">
+                        <Newspaper size={18} aria-hidden />
+                        Новостная аналитика
+                      </p>
                       <h2>
-                        Не просто
-                        <br />
-                        быть в курсе.
+                        Не просто быть в курсе.
                         <br />
                         <em>Быть готовым.</em>
                       </h2>
-                      <span>Открыть персональную повестку ↗</span>
+                      <p className="bank-feature-description">
+                        События рынка, экспертиза банка и последствия для вашей
+                        компании — в одном месте.
+                      </p>
+                      <span className="bank-feature-cta">
+                        Открыть персональную повестку{" "}
+                        <ArrowUpRight size={20} aria-hidden />
+                      </span>
                     </div>
                     <div className="bank-home-aside">
-                      <span>01 — СОБЫТИЕ</span>
+                      <span>
+                        <Newspaper size={20} aria-hidden /> События рынка
+                      </span>
                       <p>Что изменилось на рынке</p>
-                      <span>02 — ЭКСПЕРТИЗА</span>
+                      <span>
+                        <LibraryBig size={20} aria-hidden /> Экспертиза банка
+                      </span>
                       <p>Банковский тезис с источником</p>
-                      <span>03 — ВАША КОМПАНИЯ</span>
+                      <span>
+                        <Building2 size={20} aria-hidden /> Ваша компания
+                      </span>
                       <p>Конкретная зависимость и следующий вопрос</p>
                     </div>
                   </Link>

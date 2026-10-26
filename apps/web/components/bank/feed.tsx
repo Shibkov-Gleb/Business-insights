@@ -68,6 +68,7 @@ export function BankFeed({
         <article
           key={item.id}
           className={"bank-signal " + (i === 0 ? "lead" : "")}
+          data-category={item.data.category}
           style={{ "--order": Math.min(i, 5) } as React.CSSProperties}
         >
           <div className="bank-signal-number">
@@ -96,7 +97,12 @@ export function BankFeed({
             </Link>
             <p>{item.data.why}</p>
             <div className="bank-signal-footer">
-              {item.contextVersion !== version && <span>Оценка по предыдущему контексту v{item.contextVersion}. Обновите исследование.</span>}
+              {item.contextVersion !== version && (
+                <span>
+                  Оценка по предыдущему контексту v{item.contextVersion}.
+                  Обновите исследование.
+                </span>
+              )}
               <span>
                 {item.data.bankView
                   ? "Есть банковский тезис с цитатой"

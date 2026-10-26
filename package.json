@@ -20,6 +20,7 @@
     "api": "tsx apps/api/src/index.ts",
     "worker": "tsx apps/worker/src/index.ts",
     "hackathon:up": "node scripts/hackathon-up.mjs",
+    "hackathon:ui:preview": "node scripts/bank-ui-preview.mjs",
     "hackathon:import": "tsx scripts/hackathon-import.ts",
     "hackathon:seed": "tsx packages/db/src/corporate-seed.ts",
     "hackathon:evaluate": "tsx scripts/hackathon-evaluate.ts",

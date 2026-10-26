@@ -1,4 +1,5 @@
 export default {
+  devIndicators: process.env.BANK_UI_PREVIEW === "1" ? false : undefined,
   transpilePackages: ["@context/ui", "@context/contracts"],
   async rewrites() {
     return [

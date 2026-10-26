@@ -1,5 +1,5 @@
 "use client";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Loader2, Sparkles, X } from "lucide-react";
 export type Row = Record<string, any>;
@@ -82,13 +82,29 @@ export function Modal({
   wide?: boolean;
   side?: boolean;
 }) {
+  const opener = useRef<HTMLElement | null>(null);
   return (
     <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="overlay" />
         <Dialog.Content
-          className={"modal " + (wide ? "wide " : "") + (side ? "side-panel" : "")}
+          className={
+            "modal " + (wide ? "wide " : "") + (side ? "side-panel" : "")
+          }
           aria-describedby={undefined}
+          onOpenAutoFocus={() => {
+            opener.current =
+              document.activeElement instanceof HTMLElement
+                ? document.activeElement
+                : null;
+          }}
+          onCloseAutoFocus={(event) => {
+            // Controlled dialogs have no Radix Trigger to restore focus to.
+            if (opener.current?.isConnected) {
+              event.preventDefault();
+              opener.current.focus();
+            }
+          }}
         >
           <div className="modal-head">
             <Dialog.Title>{title}</Dialog.Title>
