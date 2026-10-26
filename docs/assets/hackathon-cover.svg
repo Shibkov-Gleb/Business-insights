@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="450" viewBox="0 0 1440 450" role="img" aria-labelledby="title desc">
+  <title id="title">Контекст. Новостная аналитика для Альфа-Бизнеса</title>
+  <desc id="desc">Событие, контекст компании, экспертиза банка и проверяемое решение. Хакатонная версия.</desc>
+  <rect width="1440" height="450" fill="#0B0B0D"/>
+  <path d="M56 48v292" stroke="#EF3124" stroke-width="8"/>
+  <g font-family="Arial, sans-serif" fill="#F4F1EB">
+    <text x="92" y="76" font-size="18" letter-spacing="4" fill="#EF675D">АЛЬФА ХАК 2026 / НОВОСТНАЯ АНАЛИТИКА</text>
+    <text x="88" y="191" font-size="104" font-weight="800" letter-spacing="-4">КОНТЕКСТ</text>
+    <text x="92" y="253" font-size="30">Рынок меняется.</text>
+    <text x="92" y="296" font-size="30">Понимайте последствия для бизнеса.</text>
+    <path d="M944 48v290M984 145h386M984 243h386" fill="none" stroke="#424244"/>
+    <g font-size="18" fill="#EF675D"><text x="984" y="87">01</text><text x="984" y="185">02</text><text x="984" y="283">03</text></g>
+    <g font-size="27" font-weight="700"><text x="1040" y="89">Компания</text><text x="1040" y="187">Экспертиза банка</text><text x="1040" y="285">Вывод и проверка</text></g>
+    <g font-size="16" fill="#BAB6B0"><text x="1040" y="119">Признаки, связи, ракурс</text><text x="1040" y="217">Документ, дата, точная цитата</text><text x="1040" y="315">Сценарии, основания, диалог</text></g>
+    <path d="M56 367h1314" fill="none" stroke="#424244"/>
+    <text x="56" y="409" font-size="18" fill="#BAB6B0">СОБСТВЕННЫЙ АГЕНТ · GEMMA / GLM · ИСТОЧНИКИ РЯДОМ С ВЫВОДОМ</text>
+    <text x="1370" y="410" font-size="14" text-anchor="end" fill="#BAB6B0">МОДЕЛИРУЕМАЯ ИНТЕГРАЦИЯ</text>
+  </g>
+</svg>

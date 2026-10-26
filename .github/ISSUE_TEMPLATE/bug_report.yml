@@ -1,0 +1,23 @@
+name: Ошибка прототипа
+description: Воспроизводимая ошибка на синтетическом примере
+title: "[Ошибка] "
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Ветка и commit SHA
+      description: Вывод git rev-parse HEAD и режим demo/live
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Шаги воспроизведения
+      description: Укажите экран, ракурс, ожидаемое и фактическое поведение на синтетическом примере.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Проверки и код ошибки
+      description: Можно указать requestId/runId. Не прикладывайте ключи, cookie, исходные данные или закрытый текст.

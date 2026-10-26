@@ -22,7 +22,8 @@
     "hackathon:up": "node scripts/hackathon-up.mjs",
     "hackathon:import": "tsx scripts/hackathon-import.ts",
     "hackathon:seed": "tsx packages/db/src/corporate-seed.ts",
-    "hackathon:evaluate": "tsx scripts/hackathon-evaluate.ts"
+    "hackathon:evaluate": "tsx scripts/hackathon-evaluate.ts",
+    "docs:check": "node scripts/check-docs.mjs"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "9.1.0",
